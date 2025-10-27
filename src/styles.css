@@ -1,9 +1,91 @@
 @import "tailwindcss";
-
+:host,
+:root {
+  --contrast: #232323;
+  --contrast-2: #3f3f3f;
+  --contrast-3: #707070;
+  --contrast-6: #999999;
+  --contrast-7: #d9d9d9;
+  --contrast-8: #dfdfdf;
+  --contrast-9: #e5e5e5;
+  --green-400: #288654;
+  --red-400: #a70000;
+  --orange-200: #f6d8ca;
+  --orange-400: #f07537;
+  --teal-050: #ecf9f8;
+  --teal-100: #cee8e9;
+  --teal-200: #b0dadb;
+  --teal-400: #48c0b9;
+  --teal-600: #107180;
+  --teal-700: #1a5b6e;
+  --yellow-200: #fce5ab;
+  --yellow-400: #ffc42d;
+  --color: white;
+  --padding: 30px;
+  --offset: 0px;
+  --outline: white;
+  color: var(--contrast);
+}
+:host,
+:host button,
+:root,
+:root button {
+  font-family: "Archivo", sans-serif;
+}
+.container {
+  margin: 0 auto;
+  padding: 0 var(--padding);
+  width: var(--width);
+}
+.visually-hidden {
+  border: 0 !important;
+  clip: rect(0, 0, 0, 0) !important;
+  height: 1px !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  position: absolute !important;
+  white-space: nowrap !important;
+  width: 1px !important;
+}
 body {
   color: #232323;
   font-family: "Archivo", sans-serif;
   margin: 0;
   min-height: 100vh;
   padding: 0;
+}
+@media (min-width: 600px) {
+  :host,
+  :root {
+    --padding: calc((100% - var(--width)) / 2);
+    --offset: 7px;
+    --width: 540px;
+  }
+}
+@media (min-width: 768px) {
+  :host,
+  :root {
+    --width: 712px;
+  }
+}
+@media (min-width: 900px) {
+  :host,
+  :root {
+    --width: 840px;
+  }
+}
+@media (min-width: 1024px) {
+  :host,
+  :root {
+    --width: 940px;
+  }
+}
+@media (min-width: 1280px) {
+  :host,
+  :root {
+    --padding: 10px;
+    --offset: 0px;
+    --width: 1180px;
+  }
 }
