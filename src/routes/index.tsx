@@ -1,33 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { siteTitle } from "@/config";
+
+import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
-  component: App,
+  component: Home,
+  head: () => ({ meta: [{ title: siteTitle }] }),
 });
 
-function App() {
+function Home() {
   return (
-    <div className="text-center">
-      <header className="min-h-screen flex flex-col items-center justify-center bg-[#282c34] text-white text-[calc(10px+2vmin)]">
-        <p>
-          Edit <code>src/routes/index.tsx</code> and save to reload.
-        </p>
-        <a
-          className="text-[#61dafb] hover:underline"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <a
-          className="text-[#61dafb] hover:underline"
-          href="https://tanstack.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn TanStack
-        </a>
-      </header>
-    </div>
+    <>
+      <h1>ACCESS Account</h1>
+      <p>This is a placeholder for the ACCESS account landing page.</p>
+      <ul>
+        <li>
+          <Link to="/register">Register for an account</Link>
+        </li>
+      </ul>
+    </>
   );
 }
