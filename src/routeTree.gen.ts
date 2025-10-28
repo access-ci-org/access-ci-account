@@ -9,10 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RegisterIndexRouteImport } from './routes/register/index'
 import { Route as RegisterVerifyRouteImport } from './routes/register/verify'
+import { Route as RegisterCompleteRouteImport } from './routes/register/complete'
 
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -28,39 +35,70 @@ const RegisterVerifyRoute = RegisterVerifyRouteImport.update({
   path: '/register/verify',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RegisterCompleteRoute = RegisterCompleteRouteImport.update({
+  id: '/register/complete',
+  path: '/register/complete',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/profile': typeof ProfileRoute
+  '/register/complete': typeof RegisterCompleteRoute
   '/register/verify': typeof RegisterVerifyRoute
   '/register': typeof RegisterIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/profile': typeof ProfileRoute
+  '/register/complete': typeof RegisterCompleteRoute
   '/register/verify': typeof RegisterVerifyRoute
   '/register': typeof RegisterIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/profile': typeof ProfileRoute
+  '/register/complete': typeof RegisterCompleteRoute
   '/register/verify': typeof RegisterVerifyRoute
   '/register/': typeof RegisterIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/register/verify' | '/register'
+  fullPaths:
+    | '/'
+    | '/profile'
+    | '/register/complete'
+    | '/register/verify'
+    | '/register'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/register/verify' | '/register'
-  id: '__root__' | '/' | '/register/verify' | '/register/'
+  to: '/' | '/profile' | '/register/complete' | '/register/verify' | '/register'
+  id:
+    | '__root__'
+    | '/'
+    | '/profile'
+    | '/register/complete'
+    | '/register/verify'
+    | '/register/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ProfileRoute: typeof ProfileRoute
+  RegisterCompleteRoute: typeof RegisterCompleteRoute
   RegisterVerifyRoute: typeof RegisterVerifyRoute
   RegisterIndexRoute: typeof RegisterIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -82,11 +120,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterVerifyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/register/complete': {
+      id: '/register/complete'
+      path: '/register/complete'
+      fullPath: '/register/complete'
+      preLoaderRoute: typeof RegisterCompleteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ProfileRoute: ProfileRoute,
+  RegisterCompleteRoute: RegisterCompleteRoute,
   RegisterVerifyRoute: RegisterVerifyRoute,
   RegisterIndexRoute: RegisterIndexRoute,
 }
