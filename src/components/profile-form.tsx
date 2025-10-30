@@ -13,6 +13,10 @@ import { Field, FieldGroup } from "@/components/ui/field";
 const ProfileForm = withForm({
   defaultValues: {
     email: "",
+    role: "",
+    degree: "",
+    degreeField: "",
+    timeZone: "",
   },
   render: function Render({ form }) {
     return (
@@ -35,6 +39,46 @@ const ProfileForm = withForm({
                   <field.TextField
                     label="Email Address"
                     placeholder="University or work email address"
+                  />
+                )}
+              />
+
+              <form.AppField
+                name="role"
+                children={(field) => (
+                  <field.TextField
+                    label="Which user persona at ACCESS best describes you:"
+                    placeholder=""
+                  />
+                )}
+              />
+
+              <form.AppField
+                name="degree"
+                children={(field) => (
+                  <field.TextField
+                    label="Degree"
+                    placeholder=""
+                  />
+                )}
+              />
+              
+              <form.AppField
+                name="degreeField"
+                children={(field) => (
+                  <field.TextField
+                    label="Degree Field"
+                    placeholder=""
+                  />
+                )}
+              />
+
+              <form.AppField
+                name="timeZone"
+                children={(field) => (
+                  <field.TextField
+                    label="Time Zone"
+                    placeholder=""
                   />
                 )}
               />
