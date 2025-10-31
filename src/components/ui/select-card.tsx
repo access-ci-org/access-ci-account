@@ -1,6 +1,7 @@
 import * as React from "react"
 import Select from "react-select"
 import { cn } from "@/lib/utils"
+import { FieldError } from "@/components/ui/field"
 
 export type SelectCardProps = {
   title?: string
@@ -15,6 +16,7 @@ export type SelectCardProps = {
   isLoading?: boolean
   isRtl?: boolean
   className?: string
+  error?: string
 }
 
 export function SelectCard({
@@ -29,6 +31,7 @@ export function SelectCard({
   isLoading = false,
   isRtl = false,
   className,
+  error,
 }: SelectCardProps) {
   const [internalValue, setInternalValue] = React.useState(defaultValue)
   const value = propValue ?? internalValue
@@ -62,12 +65,7 @@ export function SelectCard({
           }),
         }}
       />
-
-      {value && (
-        <div className="text-sm text-muted-foreground">
-          Selected: <span className="font-medium text-foreground">{value.label}</span>
-        </div>
-      )}
+      {error && <FieldError>{error}</FieldError>}
     </div>
   )
 }
