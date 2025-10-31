@@ -11,20 +11,20 @@ export const Route = createFileRoute("/profile")({
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
-  role: z.string().min(1, { message: "Please select a role." }),
-  degree: z.string().min(1, { message: "Please select a degree." }),
+  role: z.array(z.string()).min(1, { message: "Please select at least one role." }),
+  degree: z.array(z.string()).min(1, { message: "Please select a degree." }),
   degreeField: z.string().min(1, { message: "Please enter a degree field." }),
-  timeZone: z.string().min(1, { message: "Please select a time zone." }),
+  timeZone: z.array(z.string()).min(1, { message: "Please select a time zone." }),
 });
 
 function Profile() {
   const form = useAppForm({
     defaultValues: {
       email: "",
-      role: "",
-      degree: "",
+      role: [] as string[],
+      degree: [] as string[],
       degreeField: "",
-      timeZone: "",
+      timeZone: [] as string[],
     },
     validators: {
       onSubmit: formSchema,
