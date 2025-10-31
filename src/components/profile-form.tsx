@@ -8,15 +8,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Field, FieldGroup } from "@/components/ui/field";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
+import {  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select";
 
 const ProfileForm = withForm({
   defaultValues: {
     email: "",
-    role: "",
-    degree: "",
+    role: [] as string[],
+    degree: [] as string[],
     degreeField: "",
-    timeZone: "",
+    timeZone: [] as string[],
   },
   render: function Render({ form }) {
     return (
@@ -26,7 +28,7 @@ const ProfileForm = withForm({
           form.handleSubmit();
         }}
       >
-        <Card className="w-full sm:max-w-md my-5">
+        <Card className="w-full">
           <CardHeader>
             <CardTitle>Edit Profile</CardTitle>
             <CardDescription>Edit your ACCESS profile.</CardDescription>
@@ -44,23 +46,70 @@ const ProfileForm = withForm({
               />
 
               <form.AppField
-                name="role"
-                children={(field) => (
-                  <field.TextField
-                    label="Which user persona at ACCESS best describes you:"
-                    placeholder=""
-                  />
-                )}
+                name= "role"
+                children={() => {
+                  // Role Options
+                  const roleOptions = [
+                    "Researcher",
+                    "Educator",
+                    "Graduate Student",
+                    "Resource Provider",
+                    "Cyberinfrastructure (CI) Community Member",
+                  ];
+          
+                  // Renders Checkboxes & Options 
+                  return (
+                    <fieldset className="space-y-2">
+                      <legend className="text-sm mb-4">
+                        Which user person role at ACCESS best describes you:
+                      </legend>
+                      <div className="flex flex-wrap items-center gap-4">
+                      {/* Loops through array and displays options */}
+                        {roleOptions.map((option) => (
+                          <label key={option} className="inline-flex items-center gap-2 text-sm">
+                            {/* Renders Checkbox UI element */}
+                            <Checkbox/>
+                            {/* Shows options from roleOptions */}
+                            <span>{option}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </fieldset>
+                  );
+                }}
               />
+
 
               <form.AppField
                 name="degree"
-                children={(field) => (
-                  <field.TextField
-                    label="Degree"
-                    placeholder=""
-                  />
-                )}
+                children={() => {
+                  // Degree Options
+                  const degreeOptions = [
+                    "Bachelors",
+                    "Masters",
+                    "Ph.D.",
+                    "Graduate Certificate",
+                  ];
+
+                  // Renders Dropdown & Options
+                  return (
+                    <Field className="space-y-2">
+                      <FieldLabel className="font-medium">Degree</FieldLabel>
+                      <Select>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select degree level" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {degreeOptions.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </Field>
+                  );
+                }}
               />
               
               <form.AppField
@@ -68,19 +117,44 @@ const ProfileForm = withForm({
                 children={(field) => (
                   <field.TextField
                     label="Degree Field"
-                    placeholder=""
+                    placeholder="Enter your degree field"
                   />
                 )}
               />
 
               <form.AppField
-                name="timeZone"
-                children={(field) => (
-                  <field.TextField
-                    label="Time Zone"
-                    placeholder=""
-                  />
-                )}
+              name="timeZone"
+              children={() => {
+                // Time Zone Options
+                const timeZoneOptions = [
+                  "Eastern Daylight Time, Washington,  (GMT-4)",
+                  "Centeral Daylight Time, Chicago, (GMT-5)",
+                  "Mountain Daylight Time, Denver, (GMT-6)",
+                  "Mountain Standard Time, Phoenix, (GMT-7)",
+                  "Pacific Daylight Time, Los Angeles, (GMT-7)",
+                  "Alaska Daylight Time, Anchorage,  (GMT-8)",
+                  "Hawaii-Aleutian Standard Time, Honolulu, (GMT-10)",
+                ];
+
+                // Renders Dropdown & Options
+                return (
+                  <Field className="space-y-2">
+                    <FieldLabel className="font-medium">Time Zone</FieldLabel>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Time Zone" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {timeZoneOptions.map((option) => (
+                          <SelectItem key={option} value={option}>
+                            {option}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </Field>
+                );
+              }}
               />
             </FieldGroup>
           </CardContent>
