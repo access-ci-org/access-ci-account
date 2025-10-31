@@ -18,6 +18,9 @@ const CompleteRegistrationForm = withForm({
     last_name: "",
     email: "",
     institution: "",
+    academic_status: "",
+    residence_country: "",
+    citizenship_country: "",
   },
   render: function Render({ form }) {
     return (
@@ -74,10 +77,81 @@ const CompleteRegistrationForm = withForm({
 
                   // Map string value from form to {value, label} object
                   const selectedOption = options.find((o) => o.value === field.state.value) ?? undefined;
-
+                  
+                  const error = (field.state as any).error?.message;
                   return (
                     <SelectCard
                       title="Organization or Institution"
+                      options={options}
+                      value={selectedOption} // {value, label} | undefined
+                      onChange={(val) => {
+                        field.setValue(val?.value ?? "");
+                        
+                      }}
+                      error={error}
+                    />
+                  );
+                }}
+              />
+              <form.AppField
+                name="academic_status"
+                children={(field) => {
+                  const options = [
+                    { value: "Graduate", label: "Graduate" },
+                    { value: "good_standing", label: "Good Standing" },
+                    { value: "post_graduate", label: "Post Graduate" },
+                  ];
+
+                  // Map string value from form to {value, label} object
+                  const selectedOption = options.find((o) => o.value === field.state.value) ?? undefined;
+
+                  return (
+                    <SelectCard
+                      title="Academic Status"
+                      options={options}
+                      value={selectedOption} // {value, label} | undefined
+                      onChange={(val) => field.setValue(val?.value ?? "")}
+                    />
+                  );
+                }}
+              />
+              <form.AppField
+                name="residence_country"
+                children={(field) => {
+                  const options = [
+                    { value: "united_states", label: "United States" },
+                    { value: "england", label: "England" },
+                    { value: "mexico", label: "Mexico" },
+                  ];
+
+                  // Map string value from form to {value, label} object
+                  const selectedOption = options.find((o) => o.value === field.state.value) ?? undefined;
+
+                  return (
+                    <SelectCard
+                      title="Country of Residence"
+                      options={options}
+                      value={selectedOption} // {value, label} | undefined
+                      onChange={(val) => field.setValue(val?.value ?? "")}
+                    />
+                  );
+                }}
+              />
+              <form.AppField
+                name="citizenship_country"
+                children={(field) => {
+                  const options = [
+                    { value: "united_states", label: "United States" },
+                    { value: "england", label: "England" },
+                    { value: "mexico", label: "Mexico" },
+                  ];
+
+                  // Map string value from form to {value, label} object
+                  const selectedOption = options.find((o) => o.value === field.state.value) ?? undefined;
+
+                  return (
+                    <SelectCard
+                      title="Country of Citizenship"
                       options={options}
                       value={selectedOption} // {value, label} | undefined
                       onChange={(val) => field.setValue(val?.value ?? "")}
