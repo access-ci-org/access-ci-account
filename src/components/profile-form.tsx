@@ -90,7 +90,7 @@ const ProfileForm = withForm({
                         })}
                         <input type="hidden" name="role" value={value} />
                       </div>
-                      {roleError && (<p className="text-destructive text-xs font-normal">{roleError}</p>)}
+                      {roleError && (<p className="text-destructive !text-sm font-normal ">{roleError}</p>)}
                     </fieldset>
                   );
                 }}
@@ -123,7 +123,7 @@ const ProfileForm = withForm({
                           <SelectItem value="grad_certificate">Graduate Certificate</SelectItem>
                         </SelectContent>
                       </Select>
-                      {degreeError && (<p className="text-destructive text-xs font-normal" role="alert">{degreeError}</p>)}
+                      {degreeError && (<p className="text-destructive !text-sm font-normal" role="alert">{degreeError}</p>)}
                       <input type="hidden" name="degree" value={value} />
                     </Field>
                   );
@@ -170,7 +170,7 @@ const ProfileForm = withForm({
                           <SelectItem value="HST">Hawaii–Aleutian Standard Time (GMT-10) – Honolulu</SelectItem>
                         </SelectContent>
                       </Select>
-                      {tzError && (<p className="text-destructive text-xs font-normal" role="alert">{tzError}</p>)}
+                      {tzError && (<p className="text-destructive !text-sm font-normal" role="alert">{tzError}</p>)}
                       <input type="hidden" name="timeZone" value={value} />
                     </Field>
                   );
