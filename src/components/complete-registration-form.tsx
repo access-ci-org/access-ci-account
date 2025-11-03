@@ -68,108 +68,55 @@ const CompleteRegistrationForm = withForm({
               />
               <form.AppField
                 name="institution"
-                children={(field) => {
-                  const options = [
-                    { value: "university_of_michigan", label: "University of Michigan" },
-                    { value: "university_of_slip_rock", label: "Slippery Rock University" },
-                    { value: "university_of_indiana", label: "IUP" },
-                  ];
-
-                  // Map string value from form to {value, label} object
-                  const selectedOption = options.find((o) => o.value === field.state.value) ?? undefined;
-                  
-                  // Use getFieldMeta to access validation errors
-                  const fieldMeta = form.getFieldMeta("institution");
-                  const errorMessage = fieldMeta?.errors?.[0]?.message;
-
-                  return (
-                    <SelectCard
-                      title="Organization or Institution"
-                      options={options}
-                      value={selectedOption} // {value, label} | undefined
-                      onChange={(val) => field.setValue(val?.value ?? "")}
-                      error={errorMessage}
-                    />
-                  );
-                }}
+                children={() => (
+                  <SelectCard
+                    title = "Organization / Institution"
+                    options = {[
+                      { value: "university_of_michigan", label: "University of Michigan" },
+                      { value: "university_of_slip_rock", label: "Slippery Rock University" },
+                      { value: "university_of_indiana", label: "IUP" },
+                    ]}
+                  />
+                )}
               />
               <form.AppField
                 name="academic_status"
-                children={(field) => {
-                  const options = [
-                    { value: "Graduate", label: "Graduate" },
-                    { value: "good_standing", label: "Good Standing" },
-                    { value: "post_graduate", label: "Post Graduate" },
-                  ];
-
-                  // Map string value from form to {value, label} object
-                  const selectedOption = options.find((o) => o.value === field.state.value) ?? undefined;
-
-                  const fieldMeta = form.getFieldMeta("institution");
-                  const errorMessage = fieldMeta?.errors?.[0]?.message;
-
-                  return (
-                    <SelectCard
-                      title="Academic Status"
-                      options={options}
-                      value={selectedOption} // {value, label} | undefined
-                      onChange={(val) => field.setValue(val?.value ?? "")}
-                      error={errorMessage}
-                    />
-                  );
-                }}
+                children={() => (
+                  <SelectCard
+                    title = "Academic Status"
+                    options = {[
+                      { value: "Graduate", label: "Graduate" },
+                      { value: "good_standing", label: "Good Standing" },
+                      { value: "post_graduate", label: "Post Graduate" },
+                    ]}
+                  />
+                )}
               />
               <form.AppField
                 name="residence_country"
-                children={(field) => {
-                  const options = [
-                    { value: "united_states", label: "United States" },
-                    { value: "england", label: "England" },
-                    { value: "mexico", label: "Mexico" },
-                  ];
-
-                  // Map string value from form to {value, label} object
-                  const selectedOption = options.find((o) => o.value === field.state.value) ?? undefined;
-
-                  const fieldMeta = form.getFieldMeta("institution");
-                  const errorMessage = fieldMeta?.errors?.[0]?.message;
-
-                  return (
-                    <SelectCard
-                      title="Country of Residence"
-                      options={options}
-                      value={selectedOption} // {value, label} | undefined
-                      onChange={(val) => field.setValue(val?.value ?? "")}
-                      error={errorMessage}
-                    />
-                  );
-                }}
+                children={() => (
+                  <SelectCard
+                    title="Country of Residence"
+                    options={[
+                      { value: "united_states", label: "United States" },
+                      { value: "england", label: "England" },
+                      { value: "mexico", label: "Mexico" },
+                    ]}
+                  />
+                )}
               />
               <form.AppField
                 name="citizenship_country"
-                children={(field) => {
-                  const options = [
-                    { value: "united_states", label: "United States" },
-                    { value: "england", label: "England" },
-                    { value: "mexico", label: "Mexico" },
-                  ];
-
-                  // Map string value from form to {value, label} object
-                  const selectedOption = options.find((o) => o.value === field.state.value) ?? undefined;
-
-                  const fieldMeta = form.getFieldMeta("institution");
-                  const errorMessage = fieldMeta?.errors?.[0]?.message;
-
-                  return (
-                    <SelectCard
-                      title="Country of Citizenship"
-                      options={options}
-                      value={selectedOption} // {value, label} | undefined
-                      onChange={(val) => field.setValue(val?.value ?? "")}
-                      error={errorMessage}
-                    />
-                  );
-                }}
+                children={() => (
+                  <SelectCard
+                    title="Country of Citizenship"
+                    options={[
+                      { value: "united_states", label: "United States" },
+                      { value: "england", label: "England" },
+                      { value: "mexico", label: "Mexico" },
+                    ]}
+                  />
+                )}
               />
             </FieldGroup>
           </CardContent>
