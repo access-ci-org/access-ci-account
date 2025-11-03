@@ -1,7 +1,7 @@
-import * as React from "react"
 import Select from "react-select"
 import { cn } from "@/lib/utils"
-import { FieldError } from "@/components/ui/field"
+import { Field, FieldError, FieldLabel } from "@/components/ui/field"
+import { useFieldContext } from "@/hooks/form-context"
 
 export type SelectCardProps = {
   title?: string
@@ -16,13 +16,14 @@ export type SelectCardProps = {
   isLoading?: boolean
   isRtl?: boolean
   className?: string
-  error?: string
 }
 
+/**
+ * A Select dropdown field that pulls its value and validation state from the form context.
+ */
 export function SelectCard({
   title = "Select Option",
   options,
-  value: propValue,
   defaultValue,
   onChange,
   isClearable = true,
@@ -31,22 +32,31 @@ export function SelectCard({
   isLoading = false,
   isRtl = false,
   className,
-  error,
 }: SelectCardProps) {
-  const [internalValue, setInternalValue] = React.useState(defaultValue)
-  const value = propValue ?? internalValue
+  // Pull field context from the surrounding form
+  const field = useFieldContext<string>()
+
+  // Map string value from form to {value, label} object
+  const selectedOption = options.find((o) => o.value === field.state.value) ?? undefined
 
   const handleChange = (val: any) => {
     if (onChange) onChange(val ?? undefined)
-    else setInternalValue(val ?? undefined)
+
+    // Sync with form field
+    field.setValue(val?.value ?? "")
   }
 
+  // Determine invalid state and pull first validation error if it exists
+  const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
+  const errorMessage = field.state.meta.errors?.[0]?.message
+
   return (
-    <div className={cn("flex flex-col gap-2", className)}>
-      {title && <label className="text-sm font-medium text-foreground">{title}</label>}
+    <Field data-invalid={isInvalid} className={cn("flex flex-col gap-2", className)}>
+      {title && <FieldLabel htmlFor={field.name}>{title}</FieldLabel>}
       <Select
+        id={field.name}
         classNamePrefix="select"
-        value={value}
+        value={selectedOption}
         defaultValue={defaultValue}
         onChange={handleChange}
         isClearable={isClearable}
@@ -65,7 +75,7 @@ export function SelectCard({
           }),
         }}
       />
-      {error && <FieldError>{error}</FieldError>}
-    </div>
+      {isInvalid && <FieldError>{errorMessage}</FieldError>}
+    </Field>
   )
 }
