@@ -10,15 +10,16 @@ import {
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
-import {  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select";
+
 
 const ProfileForm = withForm({
   defaultValues: {
     email: "",
-    role: [] as string[],
-    degree: [] as string[],
+    role: "",
+    degree: "",
     degreeField: "",
-    timeZone: [] as string[],
+    timeZone: "",
   },
   render: function Render({ form }) {
     return (
@@ -46,34 +47,50 @@ const ProfileForm = withForm({
               />
 
               <form.AppField
-                name= "role"
-                children={() => {
+                name="role"
+                children={(field) => {
                   // Role Options
                   const roleOptions = [
-                    "Researcher",
-                    "Educator",
-                    "Graduate Student",
-                    "Resource Provider",
-                    "Cyberinfrastructure (CI) Community Member",
+                    { label: "Researcher", value: "researcher" },
+                    { label: "Educator", value: "educator" },
+                    { label: "Graduate Student", value: "grad_student" },
+                    { label: "Resource Provider", value: "resource_provider" },
+                    { label: "Cyberinfrastructure (CI) Community Member", value: "ci_member" },
                   ];
-          
+
+                  const value = field.state.value || ""; // Ensures that value holds a string
+                  const roleMeta = form.getFieldMeta("role"); // Message is extracted from form's metadeta
+                  const roleError = roleMeta?.errors?.[0]?.message; // Current validation error for role
+
                   // Renders Checkboxes & Options 
                   return (
                     <fieldset className="space-y-2">
-                      <legend className="text-sm mb-4">
+                      <FieldLabel className={`font-medium ${roleError ? "text-red-600" : ""}`}>
                         Which user person role at ACCESS best describes you:
-                      </legend>
+                      </FieldLabel>
                       <div className="flex flex-wrap items-center gap-4">
-                      {/* Loops through array and displays options */}
-                        {roleOptions.map((option) => (
-                          <label key={option} className="inline-flex items-center gap-2 text-sm">
-                            {/* Renders Checkbox UI element */}
-                            <Checkbox/>
-                            {/* Shows options from roleOptions */}
-                            <span>{option}</span>
-                          </label>
-                        ))}
+                        {/* Loops through array and displays options */}
+                        {roleOptions.map(({ label, value: optionValue }) => {
+                          const id = `role-${optionValue}`;
+                          const checked = value === optionValue;
+                          return (
+                            <label key={optionValue} className="inline-flex items-center gap-2 text-sm" htmlFor={id}>
+                              {/* Renders Checkbox UI element */}
+                              <Checkbox
+                                id={id}
+                                checked={checked}
+                                onCheckedChange={(nextChecked) => {
+                                  field.setValue(nextChecked ? optionValue : "");
+                                }}
+                              />
+                              {/* Shows options from roleOptions */}
+                              <span>{label}</span>
+                            </label>
+                          );
+                        })}
+                        <input type="hidden" name="role" value={value} />
                       </div>
+                      {roleError && (<p className="text-destructive text-xs font-normal">{roleError}</p>)}
                     </fieldset>
                   );
                 }}
@@ -82,36 +99,37 @@ const ProfileForm = withForm({
 
               <form.AppField
                 name="degree"
-                children={() => {
-                  // Degree Options
-                  const degreeOptions = [
-                    "Bachelors",
-                    "Masters",
-                    "Ph.D.",
-                    "Graduate Certificate",
-                  ];
+                children={(field) => {
+                  const value = field.state.value || "";// Ensures that value holds a string
+                  const degreeMeta = form.getFieldMeta("degree"); // Message is extracted from form's metadeta
+                  const degreeError = degreeMeta?.errors?.[0]?.message; // Current validation error for degree
 
                   // Renders Dropdown & Options
                   return (
                     <Field className="space-y-2">
-                      <FieldLabel className="font-medium">Degree</FieldLabel>
-                      <Select>
-                        <SelectTrigger>
+                      <FieldLabel className={`font-medium ${degreeError ? "text-red-600" : ""}`}>Degree</FieldLabel>
+                      <Select
+                        value={value}
+                        onValueChange={(v) => field.setValue(v)}
+
+                      >
+                        <SelectTrigger aria-invalid={!!degreeError}>
                           <SelectValue placeholder="Select degree level" />
                         </SelectTrigger>
                         <SelectContent>
-                          {degreeOptions.map((option) => (
-                            <SelectItem key={option} value={option}>
-                              {option}
-                            </SelectItem>
-                          ))}
+                          <SelectItem value="bachelors">Bachelors</SelectItem>
+                          <SelectItem value="masters">Masters</SelectItem>
+                          <SelectItem value="phd">Ph.D.</SelectItem>
+                          <SelectItem value="grad_certificate">Graduate Certificate</SelectItem>
                         </SelectContent>
                       </Select>
+                      {degreeError && (<p className="text-destructive text-xs font-normal" role="alert">{degreeError}</p>)}
+                      <input type="hidden" name="degree" value={value} />
                     </Field>
                   );
                 }}
               />
-              
+
               <form.AppField
                 name="degreeField"
                 children={(field) => (
@@ -123,38 +141,40 @@ const ProfileForm = withForm({
               />
 
               <form.AppField
-              name="timeZone"
-              children={() => {
-                // Time Zone Options
-                const timeZoneOptions = [
-                  "Eastern Daylight Time, Washington,  (GMT-4)",
-                  "Centeral Daylight Time, Chicago, (GMT-5)",
-                  "Mountain Daylight Time, Denver, (GMT-6)",
-                  "Mountain Standard Time, Phoenix, (GMT-7)",
-                  "Pacific Daylight Time, Los Angeles, (GMT-7)",
-                  "Alaska Daylight Time, Anchorage,  (GMT-8)",
-                  "Hawaii-Aleutian Standard Time, Honolulu, (GMT-10)",
-                ];
+                name="timeZone"
+                children={(field) => {
+                  const value = field.state.value || ""; // Ensures that value holds a string
+                  const tzMeta = form.getFieldMeta("timeZone"); // Message is extracted from form's metadeta
+                  const tzError = tzMeta?.errors?.[0]?.message; // Current validation error for timeZone
 
-                // Renders Dropdown & Options
-                return (
-                  <Field className="space-y-2">
-                    <FieldLabel className="font-medium">Time Zone</FieldLabel>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Time Zone" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {timeZoneOptions.map((option) => (
-                          <SelectItem key={option} value={option}>
-                            {option}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </Field>
-                );
-              }}
+                  // Renders Dropdown & Options
+                  return (
+                    <Field className="space-y-2">
+                      <FieldLabel className={`font-medium ${tzError ? "text-red-600" : ""}`}>
+                        Time Zone
+                      </FieldLabel>
+                      <Select
+                        value={value}
+                        onValueChange={(v) => field.setValue(v)}
+                      >
+                        <SelectTrigger aria-invalid={!!tzError}>
+                          <SelectValue placeholder="Select Time Zone" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="EDT">Eastern Daylight Time (GMT-4) – Washington</SelectItem>
+                          <SelectItem value="CDT">Central Daylight Time (GMT-5) – Chicago</SelectItem>
+                          <SelectItem value="MDT">Mountain Daylight Time (GMT-6) – Denver</SelectItem>
+                          <SelectItem value="MST">Mountain Standard Time (GMT-7) – Phoenix</SelectItem>
+                          <SelectItem value="PDT">Pacific Daylight Time (GMT-7) – Los Angeles</SelectItem>
+                          <SelectItem value="AKDT">Alaska Daylight Time (GMT-8) – Anchorage</SelectItem>
+                          <SelectItem value="HST">Hawaii–Aleutian Standard Time (GMT-10) – Honolulu</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {tzError && (<p className="text-destructive text-xs font-normal" role="alert">{tzError}</p>)}
+                      <input type="hidden" name="timeZone" value={value} />
+                    </Field>
+                  );
+                }}
               />
             </FieldGroup>
           </CardContent>
