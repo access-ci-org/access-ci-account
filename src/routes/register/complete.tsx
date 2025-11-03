@@ -36,8 +36,9 @@ function RegisterComplete() {
     onSubmit: async ({ value }) => {
       console.log(value);
     },
+    
   });
-
+  
   return (
     <>
       <h1>ACCESS Registration</h1>

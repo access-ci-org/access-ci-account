@@ -78,17 +78,17 @@ const CompleteRegistrationForm = withForm({
                   // Map string value from form to {value, label} object
                   const selectedOption = options.find((o) => o.value === field.state.value) ?? undefined;
                   
-                  const error = (field.state as any).error?.message;
+                  // Use getFieldMeta to access validation errors
+                  const fieldMeta = form.getFieldMeta("institution");
+                  const errorMessage = fieldMeta?.errors?.[0]?.message;
+
                   return (
                     <SelectCard
                       title="Organization or Institution"
                       options={options}
                       value={selectedOption} // {value, label} | undefined
-                      onChange={(val) => {
-                        field.setValue(val?.value ?? "");
-                        
-                      }}
-                      error={error}
+                      onChange={(val) => field.setValue(val?.value ?? "")}
+                      error={errorMessage}
                     />
                   );
                 }}
@@ -105,12 +105,16 @@ const CompleteRegistrationForm = withForm({
                   // Map string value from form to {value, label} object
                   const selectedOption = options.find((o) => o.value === field.state.value) ?? undefined;
 
+                  const fieldMeta = form.getFieldMeta("institution");
+                  const errorMessage = fieldMeta?.errors?.[0]?.message;
+
                   return (
                     <SelectCard
                       title="Academic Status"
                       options={options}
                       value={selectedOption} // {value, label} | undefined
                       onChange={(val) => field.setValue(val?.value ?? "")}
+                      error={errorMessage}
                     />
                   );
                 }}
@@ -127,12 +131,16 @@ const CompleteRegistrationForm = withForm({
                   // Map string value from form to {value, label} object
                   const selectedOption = options.find((o) => o.value === field.state.value) ?? undefined;
 
+                  const fieldMeta = form.getFieldMeta("institution");
+                  const errorMessage = fieldMeta?.errors?.[0]?.message;
+
                   return (
                     <SelectCard
                       title="Country of Residence"
                       options={options}
                       value={selectedOption} // {value, label} | undefined
                       onChange={(val) => field.setValue(val?.value ?? "")}
+                      error={errorMessage}
                     />
                   );
                 }}
@@ -149,12 +157,16 @@ const CompleteRegistrationForm = withForm({
                   // Map string value from form to {value, label} object
                   const selectedOption = options.find((o) => o.value === field.state.value) ?? undefined;
 
+                  const fieldMeta = form.getFieldMeta("institution");
+                  const errorMessage = fieldMeta?.errors?.[0]?.message;
+
                   return (
                     <SelectCard
                       title="Country of Citizenship"
                       options={options}
                       value={selectedOption} // {value, label} | undefined
                       onChange={(val) => field.setValue(val?.value ?? "")}
+                      error={errorMessage}
                     />
                   );
                 }}
