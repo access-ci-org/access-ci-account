@@ -11,7 +11,6 @@ export default function LabeledSelect({
     label,
     options,
     value,
-    defaultValue,
     onChange,
     placeholder,
 }: {
@@ -23,28 +22,25 @@ export default function LabeledSelect({
     onChange?: (value: string | null) => void;
     placeholder?: string;
 }) {
-    // Helper function to convert a string value to the corresponding Option object from the options list.
-    // Returns null if no matching option is found or if the value is undefined.
+
+    // Returns null if no matching option is found or if the value is undefined. 
     const toOption = (val?: string): Option | null => {
         if (!val) return null;
+        // Find the option in the options array where the option's value matches the input val.
+        // If no matching option is found, return null.
         return options.find(o => o.value === val) ?? null;
     };
 
-    // Initialize component state with the selected option based on the `value` or `defaultValue` prop.
-    // This state controls the currently selected option in the dropdown.
-    const [selected, setSelected] = React.useState<Option | null>(
-        toOption(value ?? defaultValue)
-    );
+    // Current selection from the value
+    const selectedOption = toOption(value);
 
-    // Event handler called when the user selects an option.
-    // Updates local state and calls the optional onChange callback with the selected value or null.
-    const handleChange = (next: SingleValue<Option>) => {
-        setSelected(next ?? null);
+    // Called when user makes a selection
+    // 'next' represents the selected option object or null if selection is cleared.
+    const handleChange = (next: Option | null) => {
         onChange?.(next ? next.value : null);
-    };
+      };
 
-
-    const field = useFieldContext<string[]>();
+    const field = useFieldContext<string>();
     const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
     return (
@@ -54,10 +50,24 @@ export default function LabeledSelect({
                 options={options}
                 isSearchable
                 placeholder={placeholder}
-                value={selected}
+                value={selectedOption}
                 onChange={handleChange}
-                className={isInvalid ? 'border-red-600 focus:ring-red-600' : undefined}
-            />
+                inputId={name}
+                instanceId={name}
+                styles={{
+                    control: (base) => ({
+                      // 'base' contains the default styles provided by react-select for the control element.
+                      // 'state' contains information about the current state of the control (e.g., focused).
+                      ...base, // Spread the default styles so we don't lose them.
+
+                      // If the field is invalid, use a red color.
+                      // If neither, keep the default border color.
+                      borderColor: isInvalid
+                        ? "rgb(220, 38, 38)" // red-600 for invalid state
+                          : base.borderColor,
+                    }),
+                  }}
+                />
             {isInvalid && <FieldError errors={field.state.meta.errors} />}
         </div>
     );
