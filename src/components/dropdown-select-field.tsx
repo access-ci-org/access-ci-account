@@ -57,7 +57,6 @@ export default function LabeledSelect({
                 styles={{
                     control: (base) => ({
                       // 'base' contains the default styles provided by react-select for the control element.
-                      // 'state' contains information about the current state of the control (e.g., focused).
                       ...base, // Spread the default styles so we don't lose them.
 
                       // If the field is invalid, use a red color.
