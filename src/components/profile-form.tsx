@@ -146,7 +146,7 @@ const ProfileForm = withForm({
           form.handleSubmit();
         }}
       >
-        <Card className="w-full">
+        <Card className="w-full mb-20">
           <CardHeader>
             <CardTitle>Edit Profile</CardTitle>
             <CardDescription>Edit your ACCESS profile.</CardDescription>
