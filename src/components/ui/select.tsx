@@ -13,18 +13,20 @@ export type SelectProps<Option = any> = ReactSelectProps<Option, false> & {
 function SelectContainer({
   className,
   ...props
-}: React.ComponentProps<"div">) {
+}: React.ComponentProps<"div"> & { "data-invalid"?: boolean }) {
   return (
     <div
       data-slot="select-container"
+      {...props}
       className={cn(
-        "flex flex-col gap-2 text-foreground", // 👈 reset text color here
+        "flex flex-col gap-2 text-foreground",
+        props["data-invalid"] && "border border-destructive rounded-md p-1",
         className
       )}
-      {...props}
     />
   )
 }
+
 
 function SelectLabel({
   className,
