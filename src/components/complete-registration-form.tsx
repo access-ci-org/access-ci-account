@@ -70,7 +70,7 @@ const CompleteRegistrationForm = withForm({
                 name="institution"
                 children={() => (
                   <SelectCard
-                    title = "Organization / Institution"
+                    title = "Organization or Institution"
                     options = {[
                       { value: "university_of_michigan", label: "University of Michigan" },
                       { value: "university_of_slip_rock", label: "Slippery Rock University" },

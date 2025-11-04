@@ -53,28 +53,38 @@ export function SelectCard({
   return (
     <Field data-invalid={isInvalid} className={cn("flex flex-col gap-2", className)}>
       {title && <FieldLabel htmlFor={field.name}>{title}</FieldLabel>}
-      <Select
-        id={field.name}
-        classNamePrefix="select"
-        value={selectedOption}
-        defaultValue={defaultValue}
-        onChange={handleChange}
-        isClearable={isClearable}
-        isSearchable={isSearchable}
-        isDisabled={isDisabled}
-        isLoading={isLoading}
-        isRtl={isRtl}
-        options={options}
-        styles={{
-          control: (base) => ({
-            ...base,
-            borderRadius: "0.5rem",
-            borderColor: "hsl(var(--border))",
-            boxShadow: "none",
-            "&:hover": { borderColor: "hsl(var(--primary))" },
-          }),
-        }}
-      />
+      <div className="text-foreground">
+        <Select
+          id={field.name}
+          classNamePrefix="select"
+          value={selectedOption}
+          defaultValue={defaultValue}
+          onChange={handleChange}
+          isClearable={isClearable}
+          isSearchable={isSearchable}
+          isDisabled={isDisabled}
+          isLoading={isLoading}
+          isRtl={isRtl}
+          options={options}
+          styles={{
+            control: (base) => ({
+              ...base,
+              borderRadius: "0.5rem",
+              borderWidth: "1px",
+              borderStyle: "solid",
+              borderColor: isInvalid
+                ? "hsl(var(--destructive)) !important"
+                : "hsl(var(--border)) !important",
+              boxShadow: "none",
+              "&:hover": {
+                borderColor: isInvalid
+                  ? "hsl(var(--destructive)) !important"
+                  : "hsl(var(--primary))  !important",
+              },
+            }),
+          }}
+        />
+      </div>
       {isInvalid && <FieldError>{errorMessage}</FieldError>}
     </Field>
   )
