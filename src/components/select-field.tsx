@@ -1,9 +1,7 @@
 import { cn } from "@/lib/utils"
 import { Field, FieldLabel } from "@/components/ui/field"
 import { useFieldContext } from "@/hooks/form-context"
-import {
-  SelectField as BaseSelectField, // 👈 rename here
-} from "@/components/ui/select"
+import { SelectField as BaseSelectField, } from "@/components/ui/select"
 import type { ActionMeta, SingleValue } from "react-select"
 
 export type SelectFieldProps = {
@@ -64,7 +62,6 @@ export function SelectField({
     >
       {title && <FieldLabel htmlFor={field.name}>{title}</FieldLabel>}
 
-      {/* 👇 use the renamed BaseSelectField */}
       <BaseSelectField
         id={field.name}
         error={isInvalid ? errorMessage : undefined}
@@ -77,6 +74,15 @@ export function SelectField({
         isDisabled={isDisabled}
         isLoading={isLoading}
         isRtl={isRtl}
+        styles={{
+                    control: (base) => ({
+                      ...base,
+
+                      borderColor: isInvalid
+                        ? "rgb(220, 38, 38)"
+                          : base.borderColor,
+                    }),
+                  }}
       />
     </Field>
   )
