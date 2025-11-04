@@ -58,10 +58,6 @@ export default function MultiSelectCheckboxGroup({
                         </label>
                     );
                 })}
-                {/* Render hidden inputs for each selected value to submit with form */}
-                {selected.map((v) => (
-                  <input key={v} type="hidden" name={name} value={v} />
-                ))}
             </div>
             {/* Show validation errors if invalid */}
             {isInvalid && <FieldError errors={field.state.meta.errors} />}
