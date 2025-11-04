@@ -10,8 +10,6 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldGroup } from "@/components/ui/field";
 
-import { SelectCard } from "@/components/ui/select-card"
-
 const CompleteRegistrationForm = withForm({
   defaultValues: {
     first_name: "",
@@ -68,8 +66,8 @@ const CompleteRegistrationForm = withForm({
               />
               <form.AppField
                 name="institution"
-                children={() => (
-                  <SelectCard
+                children={(field) => (
+                  <field.SelectField
                     title = "Organization or Institution"
                     options = {[
                       { value: "university_of_michigan", label: "University of Michigan" },
@@ -81,8 +79,8 @@ const CompleteRegistrationForm = withForm({
               />
               <form.AppField
                 name="academic_status"
-                children={() => (
-                  <SelectCard
+                children={(field) => (
+                  <field.SelectField
                     title = "Academic Status"
                     options = {[
                       { value: "Graduate", label: "Graduate" },
@@ -94,8 +92,8 @@ const CompleteRegistrationForm = withForm({
               />
               <form.AppField
                 name="residence_country"
-                children={() => (
-                  <SelectCard
+                children={(field) => (
+                  <field.SelectField
                     title="Country of Residence"
                     options={[
                       { value: "united_states", label: "United States" },
@@ -107,8 +105,8 @@ const CompleteRegistrationForm = withForm({
               />
               <form.AppField
                 name="citizenship_country"
-                children={() => (
-                  <SelectCard
+                children={(field) => (
+                  <field.SelectField
                     title="Country of Citizenship"
                     options={[
                       { value: "united_states", label: "United States" },
