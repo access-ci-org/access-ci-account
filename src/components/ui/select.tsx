@@ -144,11 +144,67 @@ function SelectSeparator({
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Separator>) {
   return (
+<<<<<<< HEAD
     <SelectPrimitive.Separator
       data-slot="select-separator"
       className={cn("bg-border pointer-events-none -mx-1 my-1 h-px", className)}
       {...props}
     />
+=======
+    <SelectContainer className={className}>
+      {label && <SelectLabel>{label}</SelectLabel>}
+
+      <Select<Option, false>
+        classNamePrefix="select"
+        classNames={{
+          control: (state) =>
+            cn(
+              "rounded-md border border-input bg-background text-foreground shadow-sm",
+              state.isDisabled && "opacity-50 cursor-not-allowed"
+            ),
+          menu: () =>
+            "z-50 mt-1 bg-popover border border-border rounded-md shadow-md",
+          option: (state) =>
+            cn(
+              "px-3 py-1.5 text-sm cursor-pointer text-foreground",
+              state.isSelected && "bg-primary text-primary-foreground",
+              !state.isSelected &&
+                "hover:bg-accent hover:text-accent-foreground"
+            ),
+          placeholder: () => "text-muted-foreground",
+        }}
+        styles={{
+          control: (base) => ({
+            ...base,
+            fontSize: "inherit",
+            fontWeight: 400,
+            color: "hsl(var(--foreground))",
+          }),
+          singleValue: (base) => ({
+            ...base,
+            fontSize: "inherit",
+            fontWeight: 400,
+            color: "hsl(var(--foreground))",
+          }),
+          input: (base) => ({
+            ...base,
+            fontSize: "inherit",
+            fontWeight: 400,
+            color: "hsl(var(--foreground))",
+          }),
+          placeholder: (base) => ({
+            ...base,
+            fontSize: "inherit",
+            fontWeight: 400,
+            color: "hsl(var(--muted-foreground))", // ✅ same as Input placeholder
+          }),
+        }}
+        {...props}
+      />
+
+      {error && <SelectError>{error}</SelectError>}
+    </SelectContainer>
+>>>>>>> 7fea18e (Finished styling of registration selectfield components like font size and color)
   )
 }
 
@@ -187,6 +243,7 @@ function SelectScrollDownButton({
     </SelectPrimitive.ScrollDownButton>
   )
 }
+
 
 export {
   Select,
