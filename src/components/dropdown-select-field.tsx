@@ -36,7 +36,7 @@ export default function LabeledSelect({
     // 'next' represents the selected option object or null if selection is cleared.
     const handleChange = (next: Option | null) => {
         onChange?.(next ? next.value : null);
-      };
+    };
 
     const field = useFieldContext<string>();
     const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
@@ -44,7 +44,7 @@ export default function LabeledSelect({
     return (
         <div>
             <FieldLabel className={`mb-3 ${isInvalid ? "text-red-600" : ""}`} >{label}</FieldLabel>
-            <Select 
+            <Select
                 options={options}
                 isSearchable
                 name={field.name}
@@ -53,32 +53,35 @@ export default function LabeledSelect({
                 onChange={handleChange}
                 inputId={name}
                 instanceId={name}
+                // Styles for dropdown box, overrides current React-Select styles
                 styles={{
                     control: (base, state) => ({
                         ...base,
+                        // Placeholder font size, responsive with browser size
                         fontSize: "1rem",
                         "@media (min-width: 768px)": {
-                          fontSize: "0.875rem",
+                            fontSize: "0.875rem",
                         },
+                        // Dropdown field border color and shadow
                         borderColor: isInvalid
-                          ? "rgb(220, 38, 38)"
-                          : state.isFocused
-                          ? "rgb(229, 229, 229)"
-                          : base.borderColor,
-                        boxShadow: isInvalid && state.isFocused
-                          ? "0 0 0 2px rgba(220, 38, 38, 0.3)"
-                          : state.isFocused
-                          ? "0 0 0 2px rgba(162, 162, 162, 0.5)"
-                          : "none",
-                        "&:hover": {
-                          borderColor: isInvalid
                             ? "rgb(220, 38, 38)"
-                            : "rgb(182, 182, 182)",
+                            : state.isFocused
+                                ? "rgb(229, 229, 229)"
+                                : base.borderColor, 
+                        boxShadow: isInvalid && state.isFocused
+                            ? "0 0 0 2px rgba(220, 38, 38, 0.3)"
+                            : state.isFocused
+                                ? "0 0 0 2px rgba(162, 162, 162, 0.5)"
+                                : "none",
+                        "&:hover": {
+                            borderColor: isInvalid
+                                ? "rgb(220, 38, 38)"
+                                : "rgb(182, 182, 182)",
                         },
-                      }),
-                  }}
-                />
-            {isInvalid && <FieldError errors={field.state.meta.errors} className="mt-3"/>}
+                    }),
+                }}
+            />
+            {isInvalid && <FieldError errors={field.state.meta.errors} className="mt-3" />}
         </div>
     );
 }
