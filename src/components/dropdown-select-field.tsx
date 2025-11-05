@@ -1,6 +1,4 @@
-import React from "react";
 import Select from "react-select";
-import type { SingleValue } from "react-select";
 import { useFieldContext } from "@/hooks/form-context";
 import { FieldLabel, FieldError } from "@/components/ui/field";
 
@@ -45,29 +43,39 @@ export default function LabeledSelect({
 
     return (
         <div>
-            <FieldLabel className={isInvalid ? "text-red-600" : undefined}>{label}</FieldLabel>
-            <Select
+            <FieldLabel className={`mb-3 ${isInvalid ? "text-red-600" : ""}`} >{label}</FieldLabel>
+            <Select 
                 options={options}
                 isSearchable
+                name={field.name}
                 placeholder={placeholder}
                 value={selectedOption}
                 onChange={handleChange}
                 inputId={name}
                 instanceId={name}
                 styles={{
-                    control: (base) => ({
-                      // 'base' contains the default styles provided by react-select for the control element.
-                      ...base, // Spread the default styles so we don't lose them.
-
-                      // If the field is invalid, use a red color.
-                      // If neither, keep the default border color.
-                      borderColor: isInvalid
-                        ? "rgb(220, 38, 38)" // red-600 for invalid state
+                    control: (base, state) => ({
+                        ...base,
+                        fontSize: "0.85rem",
+                        borderColor: isInvalid
+                          ? "rgb(220, 38, 38)"
+                          : state.isFocused
+                          ? "rgb(229, 229, 229)"
                           : base.borderColor,
-                    }),
+                        boxShadow: isInvalid && state.isFocused
+                          ? "0 0 0 2px rgba(220, 38, 38, 0.3)"
+                          : state.isFocused
+                          ? "0 0 0 2px rgba(162, 162, 162, 0.5)"
+                          : "none",
+                        "&:hover": {
+                          borderColor: isInvalid
+                            ? "rgb(220, 38, 38)"
+                            : "rgb(182, 182, 182)",
+                        },
+                      }),
                   }}
                 />
-            {isInvalid && <FieldError errors={field.state.meta.errors} />}
+            {isInvalid && <FieldError errors={field.state.meta.errors} className="mt-3"/>}
         </div>
     );
 }

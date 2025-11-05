@@ -31,7 +31,7 @@ export default function MultiSelectCheckboxGroup({
 
     return (
         <fieldset className="space-y-2">
-            <FieldLabel className={isInvalid ? "text-red-600" : undefined}>{label}</FieldLabel>
+            <FieldLabel className={`mb-3 ${isInvalid ? "text-red-600" : ""}`}>{label}</FieldLabel>
             <div className="flex flex-wrap items-center gap-4">
                 {options.map(({ label: optLabel, value: optValue }) => {
                     const id = `${name}-${optValue}`;
