@@ -39,7 +39,7 @@ export default function MultiSelectCheckboxGroup({
                     const checked = selected.includes(optValue);
                     return (
                         <label key={optValue} className="inline-flex items-center gap-2 text-sm" htmlFor={id}>
-                            <Checkbox
+                            <Checkbox 
                                 id={id}
                                 checked={checked}
                                 // Handle toggle logic: add or remove option from selected array
