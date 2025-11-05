@@ -1,6 +1,7 @@
 import Select from "react-select";
 import { useFieldContext } from "@/hooks/form-context";
 import { FieldLabel, FieldError } from "@/components/ui/field";
+import type React from "react";
 
 export type Option = { label: string; value: string };
 
@@ -13,7 +14,7 @@ export default function LabeledSelect({
     placeholder,
 }: {
     name: string;
-    label?: string;
+    label?: React.ReactNode;
     options: Option[];
     value?: string;
     defaultValue?: string;
