@@ -2,12 +2,13 @@ import { useFieldContext } from "@/hooks/form-context";
 
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import type React from "react";
 
 export default function TextField({
   label,
   placeholder,
 }: {
-  label: string;
+  label: React.ReactNode;
   placeholder: string;
 }) {
   const field = useFieldContext<string>();
