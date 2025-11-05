@@ -72,11 +72,11 @@ function SelectField<Option>({
       {label && <SelectLabel>{label}</SelectLabel>}
 
       <Select<Option, false>
-        classNamePrefix="select"  // 👈 important
+        classNamePrefix="select"
         classNames={{
           control: (state) =>
             cn(
-              "rounded-md border border-input bg-background text-foreground shadow-sm focus:border-ring focus:ring-1 focus:ring-ring",
+              "rounded-md border border-input bg-background text-foreground shadow-sm",
               state.isDisabled && "opacity-50 cursor-not-allowed"
             ),
           menu: () =>
@@ -91,17 +91,29 @@ function SelectField<Option>({
           placeholder: () => "text-muted-foreground",
         }}
         styles={{
+          control: (base) => ({
+            ...base,
+            fontSize: "inherit",
+            fontWeight: 400,
+            color: "hsl(var(--foreground))",
+          }),
           singleValue: (base) => ({
             ...base,
+            fontSize: "inherit",
+            fontWeight: 400,
             color: "hsl(var(--foreground))",
           }),
           input: (base) => ({
             ...base,
+            fontSize: "inherit",
+            fontWeight: 400,
             color: "hsl(var(--foreground))",
           }),
           placeholder: (base) => ({
             ...base,
-            color: "hsl(var(--muted-foreground))",
+            fontSize: "inherit",
+            fontWeight: 400,
+            color: "hsl(var(--muted-foreground))", // ✅ same as Input placeholder
           }),
         }}
         {...props}
@@ -111,6 +123,7 @@ function SelectField<Option>({
     </SelectContainer>
   )
 }
+
 
 
 
