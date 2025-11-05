@@ -10,6 +10,31 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldGroup } from "@/components/ui/field";
 
+// Option type defines selectable options for form fields
+type Option = { label: string; value: string };
+
+// ROLE_OPTIONS defines selectable user roles
+const INSTITUTION_OPTIONS: Option[] = [
+  { value: "university_of_michigan", label: "University of Michigan" },
+  { value: "university_of_slip_rock", label: "Slippery Rock University" },
+  { value: "university_of_indiana", label: "IUP" },
+];
+
+const COUNTRY_OPTIONS: Option[] = [
+  { value: "us", label: "United States" },
+  { value: "ca", label: "Canada" },
+  { value: "mx", label: "Mexico" },
+];
+const ACADEMIC_STATUS_OPTIONS: Option[] = [
+  { value: "undergraduate_student", label: "Undergraduate Student" },
+  { value: "graduate_student", label: "Graduate Student" },
+  { value: "faculty", label: "Faculty" },
+  { value: "staff", label: "Staff" },
+  { value: "other", label: "Other" },
+];
+const CITIZENSHIP_COUNTRY_OPTIONS: Option[] = COUNTRY_OPTIONS;
+
+
 const CompleteRegistrationForm = withForm({
   defaultValues: {
     first_name: "",
@@ -66,55 +91,67 @@ const CompleteRegistrationForm = withForm({
               />
               <form.AppField
                 name="institution"
-                children={(field) => (
-                  <field.SelectField
-                    title = "Organization or Institution"
-                    options = {[
-                      { value: "university_of_michigan", label: "University of Michigan" },
-                      { value: "university_of_slip_rock", label: "Slippery Rock University" },
-                      { value: "university_of_indiana", label: "IUP" },
-                    ]}
-                  />
-                )}
+                children={(field) => {
+                  const value = field.state.value; // Ensures that value holds a string
+                  return (
+                    <field.LabeledSelect
+                      label="Organization or Institution"
+                      name="institution"
+                      value={value}
+                      onChange={(v) => field.setValue(v ?? "")}
+                      placeholder="Select your institution"
+                      options={INSTITUTION_OPTIONS}
+                    />
+                  );
+                }}
               />
               <form.AppField
                 name="academic_status"
-                children={(field) => (
-                  <field.SelectField
-                    title = "Academic Status"
-                    options = {[
-                      { value: "Graduate", label: "Graduate" },
-                      { value: "good_standing", label: "Good Standing" },
-                      { value: "post_graduate", label: "Post Graduate" },
-                    ]}
-                  />
-                )}
+                children={(field) => {
+                  const value = field.state.value; // Ensures that value holds a string
+                  return (
+                    <field.LabeledSelect
+                      label="Academic Status"
+                      name="academic_status"
+                      value={value}
+                      onChange={(v) => field.setValue(v ?? "")}
+                      placeholder="Select your academic status"
+                      options={ACADEMIC_STATUS_OPTIONS}
+                    />
+                  );
+                }}
               />
               <form.AppField
                 name="residence_country"
-                children={(field) => (
-                  <field.SelectField
-                    title="Country of Residence"
-                    options={[
-                      { value: "united_states", label: "United States" },
-                      { value: "england", label: "England" },
-                      { value: "mexico", label: "Mexico" },
-                    ]}
-                  />
-                )}
+                children={(field) => {
+                  const value = field.state.value; // Ensures that value holds a string
+                  return (
+                    <field.LabeledSelect
+                      label="Current Country of Residence"
+                      name="residence_country"
+                      value={value}
+                      onChange={(v) => field.setValue(v ?? "")}
+                      placeholder="Select your country of residence"
+                      options={COUNTRY_OPTIONS}
+                    />
+                  );
+                }}
               />
               <form.AppField
                 name="citizenship_country"
-                children={(field) => (
-                  <field.SelectField
-                    title="Country of Citizenship"
-                    options={[
-                      { value: "united_states", label: "United States" },
-                      { value: "england", label: "England" },
-                      { value: "mexico", label: "Mexico" },
-                    ]}
-                  />
-                )}
+                children={(field) => {
+                  const value = field.state.value; // Ensures that value holds a string
+                  return (
+                    <field.LabeledSelect
+                      label="Citizenship"
+                      name="citizenship_country"
+                      value={value}
+                      onChange={(v) => field.setValue(v ?? "")}
+                      placeholder="Select your country of citizenship"
+                      options={CITIZENSHIP_COUNTRY_OPTIONS}
+                    />
+                  );
+                }}
               />
             </FieldGroup>
           </CardContent>
