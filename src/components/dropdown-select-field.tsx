@@ -56,7 +56,10 @@ export default function LabeledSelect({
                 styles={{
                     control: (base, state) => ({
                         ...base,
-                        fontSize: "0.85rem",
+                        fontSize: "1rem",
+                        "@media (min-width: 768px)": {
+                          fontSize: "0.875rem",
+                        },
                         borderColor: isInvalid
                           ? "rgb(220, 38, 38)"
                           : state.isFocused
