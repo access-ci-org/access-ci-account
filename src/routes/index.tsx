@@ -15,7 +15,13 @@ function Home() {
       <p>This is a placeholder for the ACCESS account landing page.</p>
       <ul>
         <li>
+          <Link to="/dashboard">My ACCESS Account dashboard</Link>
+        </li>
+        <li>
           <Link to="/register">Register for an account</Link>
+        </li>
+        <li>
+          <Link to="/register/verify">Verify your e-mail address</Link>
         </li>
         <li>
           <Link to="/register/complete">Complete your registration</Link>

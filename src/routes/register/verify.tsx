@@ -7,5 +7,5 @@ export const Route = createFileRoute("/register/verify")({
 });
 
 function RegisterVerify() {
-  return <div>Verify email address</div>;
+  return <h1>Verify Email Address</h1>;
 }

@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RegisterIndexRouteImport } from './routes/register/index'
 import { Route as RegisterVerifyRouteImport } from './routes/register/verify'
@@ -18,6 +19,11 @@ import { Route as RegisterCompleteRouteImport } from './routes/register/complete
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -43,6 +49,7 @@ const RegisterCompleteRoute = RegisterCompleteRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
   '/profile': typeof ProfileRoute
   '/register/complete': typeof RegisterCompleteRoute
   '/register/verify': typeof RegisterVerifyRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
   '/profile': typeof ProfileRoute
   '/register/complete': typeof RegisterCompleteRoute
   '/register/verify': typeof RegisterVerifyRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
   '/profile': typeof ProfileRoute
   '/register/complete': typeof RegisterCompleteRoute
   '/register/verify': typeof RegisterVerifyRoute
@@ -67,15 +76,23 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/dashboard'
     | '/profile'
     | '/register/complete'
     | '/register/verify'
     | '/register'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/profile' | '/register/complete' | '/register/verify' | '/register'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/profile'
+    | '/register/complete'
+    | '/register/verify'
+    | '/register'
   id:
     | '__root__'
     | '/'
+    | '/dashboard'
     | '/profile'
     | '/register/complete'
     | '/register/verify'
@@ -84,6 +101,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DashboardRoute: typeof DashboardRoute
   ProfileRoute: typeof ProfileRoute
   RegisterCompleteRoute: typeof RegisterCompleteRoute
   RegisterVerifyRoute: typeof RegisterVerifyRoute
@@ -97,6 +115,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -132,6 +157,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DashboardRoute: DashboardRoute,
   ProfileRoute: ProfileRoute,
   RegisterCompleteRoute: RegisterCompleteRoute,
   RegisterVerifyRoute: RegisterVerifyRoute,
