@@ -11,12 +11,12 @@ export function DashboardCard({ title, description, to }: DashboardCardProps) {
   return (
     <Link
       to={to}
-      className="block no-underline hover:no-underline cursor-pointer hover:bg-muted transition-colors"
+      className="block custom-link"
     >
       <Card>
         <CardHeader>
-          <CardTitle>{title}</CardTitle>
-          <CardDescription>{description}</CardDescription>
+          <CardTitle className="text-center text-lg">{title}</CardTitle>
+          <CardDescription className="text-base">{description}</CardDescription>
           <CardAction />
         </CardHeader>
       </Card>
