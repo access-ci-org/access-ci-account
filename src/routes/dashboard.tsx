@@ -39,12 +39,80 @@ function Dashboard() {
             </ol>
           </AlertDescription>
         </Alert>
-        <div className="flex flex-col">
+        <div className="flex flex-row items-center pt-7 pb-7 gap-10">
           <Card className="w-full max-w-sm">
             <CardHeader>
-              <CardTitle>Login to your account</CardTitle>
+              <CardTitle> Profile </CardTitle>
               <CardDescription>
-                Enter your email below to login to your account
+                Edit, update, or add to your profile.
+              </CardDescription>
+              <CardAction>
+              </CardAction>
+            </CardHeader>
+          </Card>
+
+          <Card className="w-full max-w-sm">
+            <CardHeader>
+              <CardTitle> Projects </CardTitle>
+              <CardDescription>
+                Find your allocations and projects.
+              </CardDescription>
+              <CardAction>
+              </CardAction>
+            </CardHeader>
+          </Card>
+
+          <Card className="w-full max-w-sm">
+            <CardHeader>
+              <CardTitle> SSH Keys </CardTitle>
+              <CardDescription>
+                Log into your resources securely. Find user names/SSH keys.
+              </CardDescription>
+              <CardAction>
+              </CardAction>
+            </CardHeader>
+          </Card>
+
+          <Card className="w-full max-w-sm">
+            <CardHeader>
+              <CardTitle> Metrics </CardTitle>
+              <CardDescription>
+                Use XDMoD to track your project's performance and efficiency.
+              </CardDescription>
+              <CardAction>
+              </CardAction>
+            </CardHeader>
+          </Card>
+        </div>
+
+        <div className="flex flex-row items-center pt-7 pb-7 gap-10">
+          <Card className="w-full max-w-sm">
+            <CardHeader>
+              <CardTitle> Publications </CardTitle>
+              <CardDescription>
+                Add your paper, dataset, software, dissertation, or other published work.
+              </CardDescription>
+              <CardAction>
+              </CardAction>
+            </CardHeader>
+          </Card>
+
+          <Card className="w-full max-w-sm">
+            <CardHeader>
+              <CardTitle> Community Persona </CardTitle>
+              <CardDescription>
+                Tag your skills and interests. Find affinity groups, contributions, and event registrations.
+              </CardDescription>
+              <CardAction>
+              </CardAction>
+            </CardHeader>
+          </Card>
+
+          <Card className="w-full max-w-sm">
+            <CardHeader>
+              <CardTitle> Help Tickets </CardTitle>
+              <CardDescription>
+                Find Help Tickets associated with your account.
               </CardDescription>
               <CardAction>
               </CardAction>
