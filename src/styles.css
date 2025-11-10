@@ -89,6 +89,9 @@ li {
 .intro {
   font-size: 24px;
 }
+.custom-link{
+  text-decoration: none !important;
+}
 @media (min-width: 600px) {
   :host,
   :root {

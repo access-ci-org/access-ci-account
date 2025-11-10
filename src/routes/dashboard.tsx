@@ -56,7 +56,7 @@ function Dashboard() {
             to="https://metrics.access-ci.org/"
           />
         </div>
-        <div className="grid grid-flow-col items-center pt-5 gap-10">
+        <div className="grid grid-flow-col items-center pt-5 pb-10 gap-10">
         <DashboardCard
             title="Publications"
             description="Add your paper, dataset, software, dissertation, or other publihsed work."
