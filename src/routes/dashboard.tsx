@@ -10,9 +10,7 @@ import {
 import {
   Card,
   CardAction,
-  CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -26,20 +24,23 @@ function Dashboard() {
   return (
     <>
       <h1>My ACCESS Account</h1>
-      <div className="min-h-full">
+      <div className="min-h-full pt-3">
+        <div>
         <Alert>
           <CheckCircle2Icon />
-          <AlertTitle>Congratulations! You've successfully created your ACCESS Account </AlertTitle>
+          <AlertTitle className="text-lg font-medium">Congratulations! You've successfully created your ACCESS Account </AlertTitle>
           <AlertDescription>
-            <h3> Next steps: </h3>
-            <ol>
-              <li>Review and edit your profile. Share your account with ORCID.</li>
-              <li>Start a project and get an allocation.</li>
-              <li>Add information to your Community Personas and participate in the ACCESS community.</li>
+            <h3 className="text-base"> Next steps: </h3>
+            <ol className="list-decimal pl-5">
+              <li className="text-sm"> Review and edit your profile. Share your account with ORCID.</li>
+              <li className="text-sm"> Start a project and get an allocation.</li>
+              <li className="text-sm"> Add information to your Community Personas and participate in the ACCESS community.</li>
             </ol>
           </AlertDescription>
         </Alert>
-        <div className="flex flex-row items-center pt-7 pb-7 gap-10">
+        </div>
+
+        <div className="flex flex-row items-center pt-5 gap-10">
           <Card className="w-full max-w-sm">
             <CardHeader>
               <CardTitle> Profile </CardTitle>
@@ -85,7 +86,7 @@ function Dashboard() {
           </Card>
         </div>
 
-        <div className="flex flex-row items-center pt-7 pb-7 gap-10">
+        <div className="flex flex-row items-center pb-7 gap-10">
           <Card className="w-full max-w-sm">
             <CardHeader>
               <CardTitle> Publications </CardTitle>
