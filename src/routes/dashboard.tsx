@@ -27,7 +27,7 @@ function Dashboard() {
             <AlertDescription>
               <h3 className="text-base"> Next steps: </h3>
               <ol className="list-decimal pl-5">
-                <div className="text-sm">
+                <div className="text-base">
                   <li> Review and edit your profile. Share your account with ORCID.</li>
                   <li> Start a project and get an allocation.</li>
                   <li> Add information to your Community Personas and participate in the ACCESS community.</li>
