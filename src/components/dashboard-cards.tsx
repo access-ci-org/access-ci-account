@@ -16,7 +16,7 @@ export function DashboardCard({ title, description, to }: DashboardCardProps) {
       <Card>
         <CardHeader>
           <CardTitle className="text-center text-lg">{title}</CardTitle>
-          <CardDescription className="text-base">{description}</CardDescription>
+          <CardDescription className="text-base font-normal">{description}</CardDescription>
           <CardAction />
         </CardHeader>
       </Card>
