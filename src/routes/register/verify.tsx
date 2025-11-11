@@ -8,7 +8,6 @@ const formSchema = z.object({
   otp_code: z
     .string()
     .length(6, { message: "OTP code must be 6 digits." })
-    .regex(/^\d+$/, { message: "OTP code must contain only digits." }),
 });
 
 export const Route = createFileRoute("/register/verify")({
@@ -30,14 +29,16 @@ function RegisterVerify() {
     });
   return (
     <>
-      <div className="min-h-[80vh] flex flex-col justify-center items-center bg-white px-4">
-        <h1 className="text-center text-2xl font-semibold text-gray-800">
-          Verify Email Address
-        </h1>
-        <p className="text-center text-sm text-gray-500 mt-2 mb-6">
-          Enter the 6-digit verification code sent to your registered email.
-        </p>
-        <VerifyEmailForm form={form} />
+      <div className="-mt-12 sm:-mt-14 md:-mt-16 pb-12 sm:pb-14 md:pb-16">
+        <div className="min-h-[80vh] flex flex-col justify-center items-center bg-white px-4">
+          <h1 className="text-center text-2xl font-semibold text-gray-800 mt-2">
+            Verify Email Address
+          </h1>
+          <p className="text-center text-sm text-gray-500 mt-1 mb-5">
+            Enter the 6-digit verification code sent to your registered email.
+          </p>
+          <VerifyEmailForm form={form} />
+        </div>
       </div>
     </>
   )

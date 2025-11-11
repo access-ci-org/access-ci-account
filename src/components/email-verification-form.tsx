@@ -19,8 +19,8 @@ const VerifyEmailForm = withForm({
           className="
             w-full 
             max-w-[90%] sm:max-w-[26rem] md:max-w-[30rem] lg:max-w-[32rem]
-            rounded-2xl border border-gray-200 shadow-md 
-            mt-6 sm:mt-8
+            rounded-2xl border border-gray-100 shadow-lg shadow-gray-200/50
+            mt-4 sm:mt-6
           "
         >
           <CardContent
