@@ -7,7 +7,7 @@ import VerifyEmailForm from "@/components/email-verification-form";
 const formSchema = z.object({
   otp_code: z
     .string()
-    .length(6, { message: "OTP code must be 6 digits." })
+    .length(6, { message: "OTP code must be 6 digits." }) // Only error is must be 6 digits due to only allowing numeric input
 });
 
 export const Route = createFileRoute("/register/verify")({
@@ -29,7 +29,7 @@ function RegisterVerify() {
     });
   return (
     <>
-      <div className="-mt-12 sm:-mt-14 md:-mt-16 pb-12 sm:pb-14 md:pb-16">
+      <div className="-mt-12 sm:-mt-14 md:-mt-16 pb-10 sm:pb-12 md:pb-14">
         <div className="min-h-[80vh] flex flex-col justify-center items-center bg-white px-4">
           <h1 className="text-center text-2xl font-semibold text-gray-800 mt-2">
             Verify Email Address

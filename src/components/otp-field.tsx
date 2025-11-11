@@ -75,7 +75,6 @@ export default function OTPField({
                         index={i} 
                         className="relative h-12 w-12 text-lg border border-gray-300 rounded-md flex items-center justify-center bg-white shadow-xs data-[active=true]:border-blue-500 data-[active=true]:ring-2 data-[active=true]:ring-blue-100"
                     >
-                        {/* Invisible real input that captures typing */}
                         <input
                         type="text"
                         inputMode="numeric"
