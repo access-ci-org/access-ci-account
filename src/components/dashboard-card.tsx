@@ -11,9 +11,9 @@ export function DashboardCard({ title, description, to }: DashboardCardProps) {
   return (
     <Link
       to={to}
-      className="block custom-link"
+      className="block custom-link h-full"
     >
-      <Card>
+      <Card className="h-full">
         <CardHeader>
           <CardTitle className="text-center text-xl pt-7">{title}</CardTitle>
           <CardDescription className="font-normal">{description}</CardDescription>

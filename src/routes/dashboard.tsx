@@ -8,7 +8,7 @@ import {
   AlertDescription,
   AlertTitle,
 } from "@/components/ui/alert"
-import { DashboardCard } from "@/components/dashboard-cards";
+import { DashboardCard } from "@/components/dashboard-card";
 
 export const Route = createFileRoute("/dashboard")({
   component: Dashboard,
