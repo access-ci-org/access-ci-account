@@ -12,6 +12,7 @@ export default function DropdownSelectField({
     value,
     onChange,
     placeholder,
+    required,
 }: {
     name: string;
     label?: React.ReactNode;
@@ -20,6 +21,7 @@ export default function DropdownSelectField({
     defaultValue?: string;
     onChange?: (value: string | null) => void;
     placeholder?: string;
+    required?: boolean;
 }) {
 
     // Returns null if no matching option is found or if the value is undefined. 
@@ -44,7 +46,7 @@ export default function DropdownSelectField({
 
     return (
         <div>
-            <FieldLabel className={`mb-3 ${isInvalid ? "text-red-600" : ""}`} >{label}</FieldLabel>
+            <FieldLabel required={required} className={`mb-3 ${isInvalid ? "text-red-600" : ""}`} >{label}</FieldLabel>
             <Select
                 options={options}
                 isSearchable

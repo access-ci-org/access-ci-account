@@ -66,12 +66,9 @@ const CompleteRegistrationForm = withForm({
                 name="first_name"
                 children={(field) => (
                   <field.TextField
-                    label= {
-                      <>
-                        First Name <span className="text-red-500 ml-0.5">*</span>
-                      </>
-                    }
+                    label= "First Name"
                     placeholder="e.g., John"
+                    required
                   />
                 )}
               />
@@ -79,12 +76,9 @@ const CompleteRegistrationForm = withForm({
                 name="last_name"
                 children={(field) => (
                   <field.TextField
-                    label= {
-                      <>
-                        Last Name <span className="text-red-500 ml-0.5">*</span>
-                      </>
-                    }
+                    label= "Last Name"
                     placeholder="e.g., Doe"
+                    required
                   />
                 )}
               />
@@ -92,12 +86,9 @@ const CompleteRegistrationForm = withForm({
                 name="email"
                 children={(field) => (
                   <field.TextField
-                    label= {
-                      <>
-                        Email Address <span className="text-red-500 ml-0.5">*</span>
-                      </>
-                    }
+                    label= "Email Address"
                     placeholder="University or work email address"
+                    required
                   />
                 )}
               />
@@ -106,17 +97,14 @@ const CompleteRegistrationForm = withForm({
                 children={(field) => {
                   const value = field.state.value; // Ensures that value holds a string
                   return (
-                    <field.LabeledSelect
-                      label= {
-                        <>
-                          Institution <span className="text-red-500 ml-0.5">*</span>
-                        </>
-                      }
+                    <field.DropdownSelectField
+                      label= "Institution"
                       name="institution"
                       value={value}
                       onChange={(v) => field.setValue(v ?? "")}
                       placeholder="Select your institution"
                       options={INSTITUTION_OPTIONS}
+                      required
                     />
                   );
                 }}
@@ -126,17 +114,14 @@ const CompleteRegistrationForm = withForm({
                 children={(field) => {
                   const value = field.state.value; // Ensures that value holds a string
                   return (
-                    <field.LabeledSelect
-                      label= {
-                        <>
-                          Academic Status <span className="text-red-500 ml-0.5">*</span>
-                        </>
-                      }
+                    <field.DropdownSelectField
+                      label= "Academic Status"
                       name="academic_status"
                       value={value}
                       onChange={(v) => field.setValue(v ?? "")}
                       placeholder="Select your academic status"
                       options={ACADEMIC_STATUS_OPTIONS}
+                      required
                     />
                   );
                 }}
@@ -146,17 +131,14 @@ const CompleteRegistrationForm = withForm({
                 children={(field) => {
                   const value = field.state.value; // Ensures that value holds a string
                   return (
-                    <field.LabeledSelect
-                      label= {
-                        <>
-                          Country of Residence <span className="text-red-500 ml-0.5">*</span>
-                        </>
-                      }
+                    <field.DropdownSelectField
+                      label= "Country of Residence"
                       name="residence_country"
                       value={value}
                       onChange={(v) => field.setValue(v ?? "")}
                       placeholder="Select your country of residence"
                       options={COUNTRY_OPTIONS}
+                      required
                     />
                   );
                 }}
@@ -166,17 +148,14 @@ const CompleteRegistrationForm = withForm({
                 children={(field) => {
                   const value = field.state.value; // Ensures that value holds a string
                   return (
-                    <field.LabeledSelect
-                      label= {
-                        <>
-                          Country of Citizenship <span className="text-red-500 ml-0.5">*</span>
-                        </>
-                      }
+                    <field.DropdownSelectField
+                      label= "Country of Citizenship"
                       name="citizenship_country"
                       value={value}
                       onChange={(v) => field.setValue(v ?? "")}
                       placeholder="Select your country of citizenship"
                       options={CITIZENSHIP_COUNTRY_OPTIONS}
+                      required
                     />
                   );
                 }}

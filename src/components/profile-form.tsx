@@ -72,6 +72,7 @@ const ProfileForm = withForm({
                   <field.TextField
                     label="Email Address"
                     placeholder="University or work email address"
+                    required
                   />
                 )}
               />

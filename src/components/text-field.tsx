@@ -7,16 +7,18 @@ import type React from "react";
 export default function TextField({
   label,
   placeholder,
+  required = false,
 }: {
   label: React.ReactNode;
   placeholder: string;
+  required?: boolean;
 }) {
   const field = useFieldContext<string>();
 
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
   return (
     <Field data-invalid={isInvalid}>
-      <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+      <FieldLabel required={required} htmlFor={field.name}>{label}</FieldLabel>
       <Input
         id={field.name}
         name={field.name}
