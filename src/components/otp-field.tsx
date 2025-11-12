@@ -54,7 +54,7 @@ export default function OTPField({
   }
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-start">
       {label && (
         <FieldLabel className={`mb-3 ${isInvalid ? "text-red-600" : ""}`}>
           {label}
@@ -66,7 +66,7 @@ export default function OTPField({
         value={otpValue}
         onChange={handleChange}
         aria-invalid={isInvalid}
-        containerClassName="flex justify-center"
+        containerClassName="flex justify-start"
       >
         <InputOTPGroup>
             {Array.from({ length }).map((_, i) => (

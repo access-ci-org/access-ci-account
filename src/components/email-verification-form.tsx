@@ -13,7 +13,7 @@ const VerifyEmailForm = withForm({
           e.preventDefault();
           form.handleSubmit();
         }}
-        className="w-full flex justify-center px-3 sm:px-0"
+        className="w-full flex justify-start px-3 sm:px-0"
       >
         <Card
           className="

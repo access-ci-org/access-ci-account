@@ -29,17 +29,15 @@ function RegisterVerify() {
     });
   return (
     <>
-      <div className="-mt-12 sm:-mt-14 md:-mt-16 pb-10 sm:pb-12 md:pb-14">
-        <div className="min-h-[80vh] flex flex-col justify-center items-center bg-white px-4">
-          <h1 className="text-center text-2xl font-semibold text-gray-800 mt-2">
+        <div className="min-h-[80vh] flex flex-col items-start bg-white px-4 sm:px-16 pt-10 sm:pt-12">
+          <h1 className="text-left text-2xl font-semibold text-gray-800 mt-2">
             Verify Email Address
           </h1>
-          <p className="text-center text-sm text-gray-500 mt-1 mb-5">
+          <p className="text-left text-sm text-gray-500 mt-1 mb-5 max-w-md">
             Enter the 6-digit verification code sent to your registered email.
           </p>
           <VerifyEmailForm form={form} />
         </div>
-      </div>
     </>
   )
 }
