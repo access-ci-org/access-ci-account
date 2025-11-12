@@ -5,14 +5,13 @@ import SubmitButton from "@/components/submit-button";
 import TextField from "@/components/text-field";
 import OTPField from "@/components/otp-field";
 import MultiSelectCheckboxGroup from "@/components/multi-select-checkbox-field";
-import { SelectField } from "@/components/select-field"
+import DropdownSelectField from "@/components/dropdown-select-field";
 
 export const { useAppForm, withForm } = createFormHook({
   fieldComponents: {
     TextField,
-    OTPField,
+    DropdownSelectField,
     MultiSelectCheckboxGroup,
-    SelectField,
   },
   formComponents: {
     SubmitButton,

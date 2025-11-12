@@ -11,10 +11,10 @@ export const Route = createFileRoute("/profile")({
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
-  role: z.array(z.string()).min(1, { message: "Please select at least one role." }),
-  degree: z.string().min(1, { message: "Please select a degree." }),
-  degreeField: z.string().min(1, {message: "Please enter your degree field"}),
-  timeZone: z.string().min(1, { message: "Please select a time zone." }),
+  role: z.array(z.string()).catch([]),
+  degree: z.string().catch(""),
+  degreeField: z.string().catch(""),
+  timeZone: z.string().catch(""),
 });
 
 function Profile() {
