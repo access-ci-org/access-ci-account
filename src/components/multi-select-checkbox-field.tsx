@@ -12,12 +12,14 @@ export default function MultiSelectCheckboxGroup({
     values,
     onChange,
     options,
+    required,
 }: {
     label: string;
     name: string;
     values?: string[] | string; // multiple selections; optional so we can default to []
     onChange: (v: string[]) => void; // return full selected array
     options: Option[];
+    required?: boolean;
 }) {
 
     const field = useFieldContext<string[]>();
@@ -31,7 +33,7 @@ export default function MultiSelectCheckboxGroup({
 
     return (
         <fieldset className="space-y-2">
-            <FieldLabel className={`mb-3 ${isInvalid ? "text-red-600" : ""}`}>{label}</FieldLabel>
+            <FieldLabel required={required} className={`mb-3 ${isInvalid ? "text-red-600" : ""}`}>{label}</FieldLabel>
             <div className="flex flex-wrap items-center gap-4">
                 {options.map(({ label: optLabel, value: optValue }) => {
                     const id = `${name}-${optValue}`;
