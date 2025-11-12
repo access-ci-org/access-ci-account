@@ -2,6 +2,7 @@ import Select from "react-select";
 import { useFieldContext } from "@/hooks/form-context";
 import { FieldLabel, FieldError } from "@/components/ui/field";
 import type React from "react";
+import { cn } from "@/lib/utils";
 
 export type Option = { label: string; value: string };
 
@@ -57,32 +58,34 @@ export default function DropdownSelectField({
                 inputId={name}
                 instanceId={name}
                 // Styles for dropdown box, overrides current React-Select styles
-                styles={{
-                    control: (base, state) => ({
-                        ...base,
-                        // Placeholder font size, responsive with browser size
-                        fontSize: "1rem",
-                        "@media (min-width: 768px)": {
-                            fontSize: "0.875rem",
-                        },
-                        // Dropdown field border color and shadow
-                        borderColor: isInvalid
-                            ? "rgb(220, 38, 38)"
-                            : state.isFocused
-                                ? "rgb(229, 229, 229)"
-                                : base.borderColor, 
-                        boxShadow: isInvalid && state.isFocused
-                            ? "0 0 0 2px rgba(220, 38, 38, 0.3)"
-                            : state.isFocused
-                                ? "0 0 0 2px rgba(162, 162, 162, 0.5)"
-                                : "none",
-                        "&:hover": {
-                            borderColor: isInvalid
-                                ? "rgb(220, 38, 38)"
-                                : "rgb(182, 182, 182)",
-                        },
-                    }),
+                classNames={{
+                    control: ({ isFocused, isDisabled }) =>
+                        cn(
+                        "flex w-full items-center rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs outline-none",
+                        "transition-colors placeholder:text-muted-foreground",
+                        "focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-ring",
+                        isFocused && "ring-1 ring-ring",
+                        isDisabled && "opacity-50 cursor-not-allowed",
+                        isInvalid ? "border-red-500" : "border-input"
+                        ),
+                    menu: () =>
+                        cn(
+                        "z-50 mt-1 rounded-md border bg-popover text-popover-foreground shadow-md"
+                        ),
+                    option: ({ isFocused, isSelected }) =>
+                        cn(
+                        "cursor-pointer px-3 py-2 text-sm transition-colors",
+                        // 👇 updated to be softer and theme-friendly
+                        isSelected
+                            ? "bg-primary/10 text-primary font-medium"
+                            : isFocused
+                            ? "bg-accent text-accent-foreground"
+                            : "text-foreground"
+                        ),
+                    placeholder: () => "text-muted-foreground",
+                    singleValue: () => "text-foreground",
                 }}
+                unstyled  // important: lets Tailwind handle styles instead of default React-Select styles
             />
             {isInvalid && <FieldError errors={field.state.meta.errors} className="mt-3" />}
         </div>
