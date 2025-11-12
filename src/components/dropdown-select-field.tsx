@@ -5,7 +5,7 @@ import type React from "react";
 
 export type Option = { label: string; value: string };
 
-export default function LabeledSelect({
+export default function DropdownSelectField({
     name,
     label,
     options,

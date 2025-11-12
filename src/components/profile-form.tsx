@@ -99,7 +99,7 @@ const ProfileForm = withForm({
                 children={(field) => {
                   const value = field.state.value; // Ensures that value holds a string
                   return (
-                    <field.LabeledSelect
+                    <field.DropdownSelectField
                       label="Degree"
                       name="degree"
                       value={value}
@@ -128,7 +128,7 @@ const ProfileForm = withForm({
                 children={(field) => {
                   const value = field.state.value || ""; // Ensures that value holds a string
                   return (
-                    <field.LabeledSelect
+                    <field.DropdownSelectField
                       label="Time Zone"
                       name="timeZone"
                       value={value}
