@@ -75,7 +75,6 @@ export default function DropdownSelectField({
                     option: ({ isFocused, isSelected }) =>
                         cn(
                         "cursor-pointer px-3 py-2 text-sm transition-colors",
-                        // 👇 updated to be softer and theme-friendly
                         isSelected
                             ? "bg-primary/10 text-primary font-medium"
                             : isFocused
@@ -85,7 +84,7 @@ export default function DropdownSelectField({
                     placeholder: () => "text-muted-foreground",
                     singleValue: () => "text-foreground",
                 }}
-                unstyled  // important: lets Tailwind handle styles instead of default React-Select styles
+                unstyled  // important: lets Tailwind handle styles instead of default React-Select styles ( Why inline styles was used before because unstyled was not set )
             />
             {isInvalid && <FieldError errors={field.state.meta.errors} className="mt-3" />}
         </div>
