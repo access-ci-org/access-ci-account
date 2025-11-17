@@ -26,7 +26,7 @@ const VerifyEmailForm = withForm({
           <CardContent
             className="
               flex flex-col items-center text-center 
-              px-4 sm:px-6 md:px-8 
+              px-2 sm:px-4 md:px-6 
               pt-8 pb-6 sm:pb-8 
               space-y-6
             "

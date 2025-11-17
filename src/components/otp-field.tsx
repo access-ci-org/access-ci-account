@@ -54,7 +54,7 @@ export default function OTPField({
   }
 
   return (
-    <div className="flex flex-col items-start">
+    <div className="flex flex-col items-center w-full">
       {label && (
         <FieldLabel className={`mb-3 ${isInvalid ? "text-red-600" : ""}`}>
           {label}
@@ -66,9 +66,11 @@ export default function OTPField({
         value={otpValue}
         onChange={handleChange}
         aria-invalid={isInvalid}
-        containerClassName="flex justify-start"
+        containerClassName="w-full flex justify-center overflow-hidden"
       >
-        <InputOTPGroup>
+        <InputOTPGroup
+          className = "w-full flex justify-center"
+        >
             {Array.from({ length }).map((_, i) => (
                 <React.Fragment key={i}>
                     <InputOTPSlot 
@@ -98,7 +100,7 @@ export default function OTPField({
                     </InputOTPSlot>
 
                     {(i + 1) % 3 === 0 && i !== length - 1 && (
-                        <InputOTPSeparator className="mx-3 text-gray-300" />
+                        <InputOTPSeparator className="mx-1.5 text-gray-300" />
                     )}
                 </React.Fragment>
             ))}

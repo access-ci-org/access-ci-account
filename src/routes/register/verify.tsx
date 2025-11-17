@@ -29,7 +29,7 @@ function RegisterVerify() {
     });
   return (
     <>
-        <div className="min-h-[80vh] flex flex-col items-start bg-white px-4 sm:px-16 pt-10 sm:pt-12">
+        <div className="min-h-screen flex flex-col items-start bg-white px-4 sm:px-16 pt-10 sm:pt-12">
           <h1 className="text-left text-2xl font-semibold text-gray-800 mt-2">
             Verify Email Address
           </h1>
