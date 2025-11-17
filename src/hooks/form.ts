@@ -12,6 +12,7 @@ export const { useAppForm, withForm } = createFormHook({
     TextField,
     DropdownSelectField,
     MultiSelectCheckboxGroup,
+    OTPField,
   },
   formComponents: {
     SubmitButton,
