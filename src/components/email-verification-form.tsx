@@ -4,7 +4,7 @@ import { FieldGroup } from "@/components/ui/field";
 
 const VerifyEmailForm = withForm({
   defaultValues: {
-    otp_code: "",
+    otp: "",
   },
   render: function Render({ form }) {
     return (
@@ -17,7 +17,7 @@ const VerifyEmailForm = withForm({
       >
         <Card
           className="
-            w-full 
+            w-full
             max-w-[90%] sm:max-w-[26rem] md:max-w-[30rem] lg:max-w-[32rem]
             rounded-2xl border border-gray-100 shadow-lg shadow-gray-200/50
             mt-4 sm:mt-6
@@ -25,18 +25,18 @@ const VerifyEmailForm = withForm({
         >
           <CardContent
             className="
-              flex flex-col items-center text-center 
-              px-2 sm:px-4 md:px-6 
-              pt-8 pb-6 sm:pb-8 
+              flex flex-col items-center text-center
+              px-2 sm:px-4 md:px-6
+              pt-8 pb-6 sm:pb-8
               space-y-6
             "
           >
             <FieldGroup className="w-full flex flex-col items-center space-y-6">
               <form.AppField
-                name="otp_code"
+                name="otp"
                 children={(field) => (
                   <field.OTPField
-                    name="otp_code"
+                    name="otp"
                     label="Enter the 6-digit code"
                     length={6}
                     placeholder="Check your email for the verification code"
