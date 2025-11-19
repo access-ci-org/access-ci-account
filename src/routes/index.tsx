@@ -20,15 +20,6 @@ function Home() {
         <li>
           <Link to="/register">Register for an account</Link>
         </li>
-        <li>
-          <Link to="/register/verify">Verify your e-mail address</Link>
-        </li>
-        <li>
-          <Link to="/register/complete">Complete your registration</Link>
-        </li>
-        <li>
-          <Link to="/profile">Edit your profile</Link>
-        </li>
       </ul>
     </>
   );
