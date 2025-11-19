@@ -50,7 +50,10 @@ export const sendOtpAtom = atom(
       });
       if (response?.error) {
         status = {
-          error: "Verification code could not be sent. Please try again later.",
+          error:
+            response.error === "number"
+              ? "Verification code could not be sent. Please try again later."
+              : response.error,
           sent: false,
         };
       } else {
@@ -79,7 +82,10 @@ export const verifyOtpAtom = atom(
       });
       if (response?.error) {
         status = {
-          error: "Verification code is expired or incorrect.",
+          error:
+            typeof response.error === "number"
+              ? "Verification code could not be checked. Please try again later."
+              : response.error,
           verified: false,
         };
       } else {
