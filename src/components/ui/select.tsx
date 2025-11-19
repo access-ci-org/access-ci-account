@@ -14,7 +14,6 @@ function Select({
 
 function SelectGroup({
   ...props
-<<<<<<< HEAD
 }: React.ComponentProps<typeof SelectPrimitive.Group>) {
   return <SelectPrimitive.Group data-slot="select-group" {...props} />
 }
@@ -85,19 +84,6 @@ function SelectContent({
         <SelectScrollDownButton />
       </SelectPrimitive.Content>
     </SelectPrimitive.Portal>
-=======
-}: React.ComponentProps<"div"> & { "data-invalid"?: boolean }) {
-  return (
-    <div
-      data-slot="select-container"
-      {...props}
-      className={cn(
-        "flex flex-col gap-2 text-foreground",
-        props["data-invalid"] && "border border-destructive rounded-md p-1",
-        className
-      )}
-    />
->>>>>>> f48065d (Red border around select input field for styling)
   )
 }
 
