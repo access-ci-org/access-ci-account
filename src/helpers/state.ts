@@ -34,11 +34,12 @@ const fetchApiJson = async (
 
 export const emailAtom = atom("");
 export const otpAtom = atom("");
-const otpStatusAtom = atom({ error: "", sent: false });
+const otpSendStatusAtom = atom({ error: "", sent: false });
+const otpVerifyStatusAtom = atom({ error: "", verified: false });
 export const tokenAtom = atom("");
 
 export const sendOtpAtom = atom(
-  (get) => get(otpStatusAtom),
+  (get) => get(otpSendStatusAtom),
   async (get, set) => {
     const email = get(emailAtom);
     let status = { error: "Email address is not set.", sent: false };
@@ -56,7 +57,37 @@ export const sendOtpAtom = atom(
         status = { error: "", sent: true };
       }
     }
-    set(otpStatusAtom, status);
+    set(otpSendStatusAtom, status);
+    return status;
+  },
+);
+
+export const verifyOtpAtom = atom(
+  (get) => get(otpVerifyStatusAtom),
+  async (get, set) => {
+    const email = get(emailAtom);
+    const otp = get(otpAtom);
+
+    let status = {
+      error: "Email address or verification code are not set.",
+      verified: false,
+    };
+    if (email && otp) {
+      const response = await fetchApiJson("/auth/verify-otp", {
+        method: "POST",
+        body: { email, otp },
+      });
+      if (response?.error) {
+        status = {
+          error: "Verification code is expired or incorrect.",
+          verified: false,
+        };
+      } else {
+        status = { error: "", verified: true };
+        set(tokenAtom, response.jwt);
+      }
+    }
+    set(otpVerifyStatusAtom, status);
     return status;
   },
 );

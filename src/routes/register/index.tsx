@@ -3,7 +3,7 @@ import * as z from "zod";
 import { useAppForm } from "@/hooks/form";
 import { siteTitle } from "@/config";
 import StartRegistrationForm from "@/components/start-registration-form";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useAtom } from "jotai";
 import { emailAtom, sendOtpAtom } from "@/helpers/state";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -20,8 +20,7 @@ const formSchema = z.object({
 
 function RegisterStart() {
   const [email, setEmail] = useAtom(emailAtom);
-  const otpStatus = useAtomValue(sendOtpAtom);
-  const sendOtp = useSetAtom(sendOtpAtom);
+  const [otpStatus, sendOtp] = useAtom(sendOtpAtom);
   const navigate = useNavigate();
 
   const form = useAppForm({
@@ -45,7 +44,7 @@ function RegisterStart() {
         Welcome! Create an account to use ACCESS resources and start or join
         projects.
       </p>
-      {otpStatus && otpStatus.error && (
+      {otpStatus?.error && (
         <Alert variant="destructive">
           <TriangleAlert />
           <AlertTitle>Error</AlertTitle>
