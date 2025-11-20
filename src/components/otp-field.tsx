@@ -29,7 +29,7 @@ export default function OTPField({
 
   // update digits only
   const handleChange = (val: string) => {
-    const cleaned = val.replace(/\D/g, "").slice(0, length)
+    const cleaned = val.replace(/[^A-Za-z0-9]/g, "").slice(0, length)
     setOtpValue(cleaned)
   }
 
@@ -40,7 +40,7 @@ export default function OTPField({
     const form = e.currentTarget.form
     if (!form) return
 
-    if (/^[0-9]$/.test(e.key)) {
+    if (/^[A-Za-z0-9]$/.test(e.key)) {
       const next = form.querySelector<HTMLInputElement>(
         `input[data-otp-index="${index + 1}"]`
       )
@@ -87,12 +87,12 @@ export default function OTPField({
                         onChange={(e) => {
                             const val = e.target.value
                             const chars = otpValue.split("")
-                            if (/^[0-9]$/.test(val)) {
-                            chars[i] = val
-                            handleChange(chars.join(""))
+                            if (/^[A-Za-z0-9]$/.test(val)) {
+                              chars[i] = val
+                              handleChange(chars.join(""))
                             } else if (val === "") {
-                            chars[i] = ""
-                            handleChange(chars.join(""))
+                              chars[i] = ""
+                              handleChange(chars.join(""))
                             }
                         }}
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"

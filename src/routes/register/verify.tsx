@@ -25,7 +25,7 @@ export const Route = createFileRoute("/register/verify")({
 });
 
 const formSchema = z.object({
-  otp: z.string().length(6, { message: "OTP code must be 6 digits." }), // Only error is must be 6 digits due to only allowing numeric input
+  otp: z.string().length(6, { message: "OTP code must be 6 digits and letters." }), // Only error is must be 6 digits due to only allowing numeric input
 });
 
 function RegisterVerify() {
