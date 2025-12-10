@@ -22,7 +22,7 @@ const StartRegistrationForm = withForm({
           form.handleSubmit();
         }}
       >
-        <Card className="w-full sm:max-w-md my-5">
+        <Card className="w-full max-w-lg my-5">
           <CardHeader>
             <CardTitle>Start Registration</CardTitle>
             <CardDescription>

@@ -9,6 +9,10 @@ import { emailAtom, sendOtpAtom } from "@/helpers/state";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { TriangleAlert } from "lucide-react";
 
+import ProgressBar from "@/components/progress-bar";
+
+import RegistrationLayout from "@/components/registration-layout";
+
 export const Route = createFileRoute("/register/")({
   component: RegisterStart,
   head: () => ({ meta: [{ title: `Register | ${siteTitle}` }] }),
@@ -51,7 +55,10 @@ function RegisterStart() {
           <AlertDescription>{otpStatus.error}</AlertDescription>
         </Alert>
       )}
-      <StartRegistrationForm form={form} />
+      <RegistrationLayout
+      left={<StartRegistrationForm form={form} />}
+      right={<ProgressBar />}
+      />
     </>
   );
 }

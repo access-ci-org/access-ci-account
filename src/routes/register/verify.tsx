@@ -14,6 +14,8 @@ import {
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { TriangleAlert } from "lucide-react";
+import ProgressBar from "@/components/progress-bar";
+import RegistrationLayout from "@/components/registration-layout";
 
 export const Route = createFileRoute("/register/verify")({
   component: RegisterVerify,
@@ -64,7 +66,10 @@ function RegisterVerify() {
           <AlertDescription>{verifyStatus.error}</AlertDescription>
         </Alert>
       )}
-      <VerifyEmailForm form={form} />
+      <RegistrationLayout
+      left= {<VerifyEmailForm form={form} />}
+      right={<ProgressBar />}
+      />
     </>
   );
 }

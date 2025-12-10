@@ -3,6 +3,8 @@ import * as z from "zod";
 import { useAppForm } from "@/hooks/form";
 import { siteTitle } from "@/config";
 import CompleteRegistrationForm from "@/components/complete-registration-form";
+import ProgressBar from "@/components/progress-bar";
+import RegistrationLayout from "@/components/registration-layout";
 
 export const Route = createFileRoute("/register/complete")({
   component: RegisterComplete,
@@ -42,7 +44,10 @@ function RegisterComplete() {
   return (
     <>
       <h1>ACCESS Registration</h1>
-      <CompleteRegistrationForm form={form} />
+      <RegistrationLayout
+      left={<CompleteRegistrationForm form={form} />}
+      right={<ProgressBar />}
+      />
     </>
   );
 }
