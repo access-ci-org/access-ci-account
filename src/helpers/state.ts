@@ -3,7 +3,7 @@ import { atom, createStore } from "jotai";
 
 export const store = createStore();
 
-const fetchApiJson = async (
+export const fetchApiJson = async (
   relativeUrl: string,
   { body = null, method = "GET" }: { body: any; method: string },
 ) => {
@@ -31,6 +31,36 @@ const fetchApiJson = async (
     }
   }
 };
+
+// API Type fields
+export type CountryApi = { countryId: number; countryName: string };
+export type AcademicStatusApi = { academicStatusId: number; name: string };
+
+// Backend responses from type fields
+type CountriesResponse = {
+  countries: CountryApi[];
+};
+
+type AcademicStatusesResponse = {
+  academicStatuses: AcademicStatusApi[];
+};
+
+// Read-only Atoms for fetching data from the API
+export const countriesAtom = atom(async () => {
+  const response = (await fetchApiJson("/country", {
+    method: "GET", body: null,
+  })) as CountriesResponse;
+
+return response.countries || []
+})
+
+export const academicStatusesAtom = atom(async () => {
+  const response = (await fetchApiJson("/academic-status", {
+    method: "GET", body: null,
+  })) as AcademicStatusesResponse;
+
+  return response.academicStatuses || []
+})
 
 export const emailAtom = atom("");
 export const otpAtom = atom("");

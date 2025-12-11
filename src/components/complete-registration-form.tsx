@@ -1,4 +1,7 @@
 import { withForm } from "@/hooks/form";
+// Imports for API interaction
+import { useAtom } from "jotai";
+import { countriesAtom, academicStatusesAtom } from "@/helpers/state";
 
 import {
   Card,
@@ -20,20 +23,6 @@ const INSTITUTION_OPTIONS: Option[] = [
   { value: "university_of_indiana", label: "IUP" },
 ];
 
-const COUNTRY_OPTIONS: Option[] = [
-  { value: "us", label: "United States" },
-  { value: "ca", label: "Canada" },
-  { value: "mx", label: "Mexico" },
-];
-const ACADEMIC_STATUS_OPTIONS: Option[] = [
-  { value: "undergraduate_student", label: "Undergraduate Student" },
-  { value: "graduate_student", label: "Graduate Student" },
-  { value: "faculty", label: "Faculty" },
-  { value: "staff", label: "Staff" },
-  { value: "other", label: "Other" },
-];
-const CITIZENSHIP_COUNTRY_OPTIONS: Option[] = COUNTRY_OPTIONS;
-
 
 const CompleteRegistrationForm = withForm({
   defaultValues: {
@@ -46,6 +35,24 @@ const CompleteRegistrationForm = withForm({
     citizenship_country: "",
   },
   render: function Render({ form }) {
+    // Fetching countries and academic status via atoms
+    const [countries] = useAtom(countriesAtom);
+    const [academicStatuses] = useAtom(academicStatusesAtom);
+
+    // Mapping API response to Option
+    const countryOptions: Option[] =
+      countries.map((country) => ({
+        value: country.countryId.toString(),
+        label: country.countryName,
+      }));
+
+    const academicStatusOptions: Option[] =
+      academicStatuses.map((status) => ({
+        value: status.academicStatusId.toString(),
+        label: status.name,
+      }));
+
+
     return (
       <form
         onSubmit={(e) => {
@@ -66,7 +73,7 @@ const CompleteRegistrationForm = withForm({
                 name="first_name"
                 children={(field) => (
                   <field.TextField
-                    label= "First Name"
+                    label="First Name"
                     placeholder="e.g., John"
                     required
                   />
@@ -76,7 +83,7 @@ const CompleteRegistrationForm = withForm({
                 name="last_name"
                 children={(field) => (
                   <field.TextField
-                    label= "Last Name"
+                    label="Last Name"
                     placeholder="e.g., Doe"
                     required
                   />
@@ -86,7 +93,7 @@ const CompleteRegistrationForm = withForm({
                 name="email"
                 children={(field) => (
                   <field.TextField
-                    label= "Email Address"
+                    label="Email Address"
                     placeholder="University or work email address"
                     required
                   />
@@ -98,7 +105,7 @@ const CompleteRegistrationForm = withForm({
                   const value = field.state.value; // Ensures that value holds a string
                   return (
                     <field.DropdownSelectField
-                      label= "Institution"
+                      label="Institution"
                       name="institution"
                       value={value}
                       onChange={(v) => field.setValue(v ?? "")}
@@ -115,12 +122,12 @@ const CompleteRegistrationForm = withForm({
                   const value = field.state.value; // Ensures that value holds a string
                   return (
                     <field.DropdownSelectField
-                      label= "Academic Status"
+                      label="Academic Status"
                       name="academic_status"
                       value={value}
                       onChange={(v) => field.setValue(v ?? "")}
                       placeholder="Select your academic status"
-                      options={ACADEMIC_STATUS_OPTIONS}
+                      options={academicStatusOptions}
                       required
                     />
                   );
@@ -132,12 +139,12 @@ const CompleteRegistrationForm = withForm({
                   const value = field.state.value; // Ensures that value holds a string
                   return (
                     <field.DropdownSelectField
-                      label= "Country of Residence"
+                      label="Country of Residence"
                       name="residence_country"
                       value={value}
                       onChange={(v) => field.setValue(v ?? "")}
                       placeholder="Select your country of residence"
-                      options={COUNTRY_OPTIONS}
+                      options={countryOptions}
                       required
                     />
                   );
@@ -149,12 +156,12 @@ const CompleteRegistrationForm = withForm({
                   const value = field.state.value; // Ensures that value holds a string
                   return (
                     <field.DropdownSelectField
-                      label= "Country of Citizenship"
+                      label="Country of Citizenship"
                       name="citizenship_country"
                       value={value}
                       onChange={(v) => field.setValue(v ?? "")}
                       placeholder="Select your country of citizenship"
-                      options={CITIZENSHIP_COUNTRY_OPTIONS}
+                      options={countryOptions}
                       required
                     />
                   );
