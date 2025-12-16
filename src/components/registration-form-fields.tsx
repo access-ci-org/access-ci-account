@@ -38,12 +38,6 @@ const RegistrationFormInputs = withForm({
     },
     render: function Render({ form }) {
         return (
-            <form
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    form.handleSubmit();
-                }}
-            >
 
                 <FieldGroup>
                     <form.AppField
@@ -145,7 +139,6 @@ const RegistrationFormInputs = withForm({
                         }}
                     />
                 </FieldGroup>
-            </form>
         );
     }
 });
