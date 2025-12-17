@@ -37,7 +37,7 @@ export default function ProgressBar() {
         <Stepper
           value={currentIndex + 1}
           orientation="vertical"
-          className="flex flex-col items-start gap-4"
+          className="flex flex-col items-start gap-1"
         >
           <StepperNav>
             {registrationSteps.map((step, index) => {
@@ -50,7 +50,7 @@ export default function ProgressBar() {
                   step={index + 1}
                   className="relative items-start"
                 >
-                  <StepperTrigger className="items-start pb-12 last:pb-0 gap-2.5">
+                  <StepperTrigger className="items-start pb-6 last:pb-0 gap-2.5">
                     <StepperIndicator
                       className={`
                         border-2 rounded-full w-6 h-6 flex items-center justify-center 
@@ -85,7 +85,7 @@ export default function ProgressBar() {
                   {index < registrationSteps.length - 1 && (
                     <StepperSeparator
                       className={`
-                        absolute inset-y-0 top-6 left-3 -order-1 m-0 -translate-x-1/2
+                        absolute inset-y-0 top-6 left-3 -order-1 m-0 -translate-x-1/2 h-1
                         ${isCompleted ? "bg-[var(--teal-700)]" : "bg-[var(--teal-700)]/40"}
                       `}
                     />

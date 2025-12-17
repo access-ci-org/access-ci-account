@@ -7,25 +7,12 @@ import { cn } from '@/lib/utils';
 // Types
 type StepperOrientation = 'horizontal' | 'vertical';
 type StepState = 'active' | 'completed' | 'inactive' | 'loading';
-type StepIndicators = {
-  active?: React.ReactNode;
-  completed?: React.ReactNode;
-  inactive?: React.ReactNode;
-  loading?: React.ReactNode;
-};
+
 
 interface StepperContextValue {
   activeStep: number;
-  setActiveStep: (step: number) => void;
   stepsCount: number;
   orientation: StepperOrientation;
-  registerTrigger: (node: HTMLButtonElement | null) => void;
-  triggerNodes: HTMLButtonElement[];
-  focusNext: (currentIdx: number) => void;
-  focusPrev: (currentIdx: number) => void;
-  focusFirst: () => void;
-  focusLast: () => void;
-  indicators: StepIndicators;
 }
 
 interface StepItemContextValue {
@@ -55,7 +42,6 @@ interface StepperProps extends React.HTMLAttributes<HTMLDivElement> {
   value?: number;
   onValueChange?: (value: number) => void;
   orientation?: StepperOrientation;
-  indicators?: StepIndicators;
 }
 
 function Stepper({
@@ -65,65 +51,21 @@ function Stepper({
   orientation = 'horizontal',
   className,
   children,
-  indicators = {},
   ...props
 }: StepperProps) {
-  const [activeStep, setActiveStep] = React.useState(defaultValue);
-  const [triggerNodes, setTriggerNodes] = React.useState<HTMLButtonElement[]>([]);
-
-  // Register/unregister triggers
-  const registerTrigger = React.useCallback((node: HTMLButtonElement | null) => {
-    setTriggerNodes((prev) => {
-      if (node && !prev.includes(node)) {
-        return [...prev, node];
-      } else if (!node && prev.includes(node!)) {
-        return prev.filter((n) => n !== node);
-      } else {
-        return prev;
-      }
-    });
-  }, []);
-
-  const handleSetActiveStep = React.useCallback(
-    (step: number) => {
-      if (value === undefined) {
-        setActiveStep(step);
-      }
-      onValueChange?.(step);
-    },
-    [value, onValueChange],
-  );
+  const [activeStep] = React.useState(defaultValue);
 
   const currentStep = value ?? activeStep;
 
-  // Keyboard navigation logic
-  const focusTrigger = (idx: number) => {
-    if (triggerNodes[idx]) triggerNodes[idx].focus();
-  };
-  const focusNext = (currentIdx: number) => focusTrigger((currentIdx + 1) % triggerNodes.length);
-  const focusPrev = (currentIdx: number) => focusTrigger((currentIdx - 1 + triggerNodes.length) % triggerNodes.length);
-  const focusFirst = () => focusTrigger(0);
-  const focusLast = () => focusTrigger(triggerNodes.length - 1);
 
   // Context value
   const contextValue = React.useMemo<StepperContextValue>(
     () => ({
       activeStep: currentStep,
-      setActiveStep: handleSetActiveStep,
-      stepsCount: React.Children.toArray(children).filter(
-        (child): child is React.ReactElement =>
-          React.isValidElement(child) && (child.type as { displayName?: string }).displayName === 'StepperItem',
-      ).length,
+      stepsCount: React.Children.count(children),
       orientation,
-      registerTrigger,
-      focusNext,
-      focusPrev,
-      focusFirst,
-      focusLast,
-      triggerNodes,
-      indicators,
     }),
-    [currentStep, handleSetActiveStep, children, orientation, registerTrigger, triggerNodes],
+    [currentStep, children, orientation],
   );
 
   return (
@@ -186,116 +128,42 @@ interface StepperTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonEleme
   asChild?: boolean;
 }
 
-function StepperTrigger({ asChild = false, className, children, tabIndex, ...props }: StepperTriggerProps) {
+function StepperTrigger({
+  className,
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
   const { state, isLoading } = useStepItem();
-  const stepperCtx = useStepper();
-  const { setActiveStep, activeStep, registerTrigger, triggerNodes, focusNext, focusPrev, focusFirst, focusLast } =
-    stepperCtx;
-  const { step, isDisabled } = useStepItem();
-  const isSelected = activeStep === step;
-  const id = `stepper-tab-${step}`;
-  const panelId = `stepper-panel-${step}`;
-
-  // Register this trigger for keyboard navigation
-  const btnRef = React.useRef<HTMLButtonElement>(null);
-  React.useEffect(() => {
-    if (btnRef.current) {
-      registerTrigger(btnRef.current);
-    }
-  }, [btnRef.current]);
-
-  // Find our index among triggers for navigation
-  const myIdx = React.useMemo(
-    () => triggerNodes.findIndex((n: HTMLButtonElement) => n === btnRef.current),
-    [triggerNodes, btnRef.current],
-  );
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
-    switch (e.key) {
-      case 'ArrowRight':
-      case 'ArrowDown':
-        e.preventDefault();
-        if (myIdx !== -1 && focusNext) focusNext(myIdx);
-        break;
-      case 'ArrowLeft':
-      case 'ArrowUp':
-        e.preventDefault();
-        if (myIdx !== -1 && focusPrev) focusPrev(myIdx);
-        break;
-      case 'Home':
-        e.preventDefault();
-        if (focusFirst) focusFirst();
-        break;
-      case 'End':
-        e.preventDefault();
-        if (focusLast) focusLast();
-        break;
-      case 'Enter':
-      case ' ':
-        e.preventDefault();
-        setActiveStep(step);
-        break;
-    }
-  };
-
-  if (asChild) {
-    return (
-      <span data-slot="stepper-trigger" data-state={state} className={className}>
-        {children}
-      </span>
-    );
-  }
 
   return (
-    <button
-      ref={btnRef}
-      role="tab"
-      id={id}
-      aria-selected={isSelected}
-      aria-controls={panelId}
-      tabIndex={typeof tabIndex === 'number' ? tabIndex : isSelected ? 0 : -1}
+    <div
       data-slot="stepper-trigger"
       data-state={state}
       data-loading={isLoading}
       className={cn(
-        'cursor-pointer focus-visible:border-ring focus-visible:ring-ring/50 inline-flex items-center gap-3 rounded-full outline-none focus-visible:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-60',
+        'flex items-start gap-2.5 select-none',
         className,
       )}
-      onClick={() => setActiveStep(step)}
-      onKeyDown={handleKeyDown}
-      disabled={isDisabled}
       {...props}
     >
       {children}
-    </button>
+    </div>
   );
 }
 
 function StepperIndicator({ children, className }: React.ComponentProps<'div'>) {
-  const { state, isLoading } = useStepItem();
-  const { indicators } = useStepper();
+  const { state } = useStepItem();
 
   return (
     <div
       data-slot="stepper-indicator"
       data-state={state}
       className={cn(
-        'relative flex items-center overflow-hidden justify-center size-6 shrink-0 border-background bg-accent text-accent-foreground rounded-full text-xs data-[state=completed]:bg-[var(--teal-700)]',
+        'relative flex items-center justify-center size-6 shrink-0 rounded-full',
         className,
       )}
     >
-      <div className="absolute">
-        {indicators &&
-        ((isLoading && indicators.loading) ||
-          (state === 'completed' && indicators.completed) ||
-          (state === 'active' && indicators.active) ||
-          (state === 'inactive' && indicators.inactive))
-          ? (isLoading && indicators.loading) ||
-            (state === 'completed' && indicators.completed) ||
-            (state === 'active' && indicators.active) ||
-            (state === 'inactive' && indicators.inactive)
-          : children}
-      </div>
+      {children}
     </div>
   );
 }
@@ -308,7 +176,7 @@ function StepperSeparator({ className }: React.ComponentProps<'div'>) {
       data-slot="stepper-separator"
       data-state={state}
       className={cn(
-        'm-0.5 rounded-full bg-muted group-data-[orientation=vertical]/stepper-nav:h-12 group-data-[orientation=vertical]/stepper-nav:w-0.5 group-data-[orientation=horizontal]/stepper-nav:h-0.5 group-data-[orientation=horizontal]/stepper-nav:flex-1',
+        'm-0.5 rounded-full bg-muted group-data-[orientation=vertical]/stepper-nav:h-6 group-data-[orientation=vertical]/stepper-nav:w-0.5 group-data-[orientation=horizontal]/stepper-nav:h-0.5 group-data-[orientation=horizontal]/stepper-nav:flex-1',
         className,
       )}
     />

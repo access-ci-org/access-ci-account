@@ -45,7 +45,7 @@ function RegisterComplete() {
     <>
       <h1>ACCESS Registration</h1>
       <RegistrationLayout
-      left={<CompleteRegistrationForm form={form} />}
+      left={<CompleteRegistrationForm form= {form} />}
       right={<ProgressBar />}
       />
     </>
