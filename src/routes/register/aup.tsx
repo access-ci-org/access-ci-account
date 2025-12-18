@@ -34,7 +34,6 @@ function AcceptableUsePolicy() {
     });
   return (
     <>
-      <h1>Acceptable Use Policy</h1>
       <RegistrationLayout
         left={<AcceptAupForm form={form}/>}
         right={<ProgressBar />}
