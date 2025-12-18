@@ -21,6 +21,7 @@ export default function CheckboxField({
             field.setValue(Boolean(checked))
           }
           aria-invalid={isInvalid}
+          className = "border-[var(--teal-700)] bg-white"
         />
 
         <FieldLabel required={required}>
