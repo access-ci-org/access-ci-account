@@ -10,6 +10,9 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldGroup } from "@/components/ui/field";
 
+// Import Registration Form to include in Profile Form Edit/View 
+import RegistrationFormInputs from "./registration-form-fields";
+
 // Option type defines selectable options for form fields
 type Option = { label: string; value: string };
 
@@ -44,7 +47,16 @@ const TIMEZONE_OPTIONS: Option[] = [
 
 const ProfileForm = withForm({
   defaultValues: {
+    // Registration Form existing fields
+    first_name: "",
+    last_name: "",
     email: "",
+    institution: "",
+    academic_status: "",
+    residence_country: "",
+    citizenship_country: "",
+
+    // Profile-Form existing fields
     role: [] as string[],
     degree: "",
     degreeField: "",
@@ -65,18 +77,9 @@ const ProfileForm = withForm({
           </CardHeader>
           <CardContent>
             <FieldGroup>
-              {/* Email field captures the user's email address */}
-              <form.AppField
-                name="email"
-                children={(field) => (
-                  <field.TextField
-                    label="Email Address"
-                    placeholder="University or work email address"
-                    required
-                  />
-                )}
-              />
-
+              {/* Importing Complete Registration Form fields */}
+              <RegistrationFormInputs form={form as any} />
+ 
               {/* Role field captures the user's role with a single-select checkbox */}
               <form.AppField
                 name="role"
