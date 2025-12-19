@@ -1,21 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
-import * as z from "zod";
 import { useAppForm } from "@/hooks/form";
 import { siteTitle } from "@/config";
 import ProfileForm from "@/components/profile-form";
+
+import { profileFormSchema } from "@/helpers/validation";
 
 export const Route = createFileRoute("/profile")({
   component: Profile,
   head: () => ({ meta: [{ title: `Profile | ${siteTitle}` }] }),
 });
 
-const formSchema = z.object({
-  email: z.string().email({ message: "Invalid email address." }),
-  role: z.array(z.string()).catch([]),
-  degree: z.string().catch(""),
-  degreeField: z.string().catch(""),
-  timeZone: z.string().catch(""),
-});
 
 function Profile() {
   const form = useAppForm({
@@ -25,9 +19,15 @@ function Profile() {
       degree: "",
       degreeField: "",
       timeZone: "",
+      first_name: "",
+      last_name: "",
+      institution: "",
+      academic_status: "",
+      residence_country: "",
+      citizenship_country: "",
     },
     validators: {
-      onSubmit: formSchema,
+      onSubmit: profileFormSchema,
     },
     onSubmit: async ({ value }) => {
       console.log(value);

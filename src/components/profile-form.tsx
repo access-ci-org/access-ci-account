@@ -13,7 +13,6 @@ import { Field, FieldGroup } from "@/components/ui/field";
 // Import Registration Form to include in Profile Form Edit/View 
 import RegistrationFormInputs from "./registration-form-fields";
 
-
 // Option type defines selectable options for form fields
 type Option = { label: string; value: string };
 

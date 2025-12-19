@@ -39,106 +39,107 @@ const RegistrationFormInputs = withForm({
     render: function Render({ form }) {
         return (
 
-                <FieldGroup>
-                    <form.AppField
-                        name="first_name"
-                        children={(field) => (
-                            <field.TextField
-                                label="First Name"
-                                placeholder="e.g., John"
+            <FieldGroup>
+                <form.AppField
+                    name="first_name"
+                >
+                    {(field) => (
+                        <field.TextField
+                            label="First Name"
+                            placeholder="e.g., John"
+                            required
+                        />
+                    )}
+                </form.AppField>
+                <form.AppField
+                    name="last_name"
+                    children={(field) => (
+                        <field.TextField
+                            label="Last Name"
+                            placeholder="e.g., Doe"
+                            required
+                        />
+                    )}
+                />
+                <form.AppField
+                    name="email"
+                    children={(field) => (
+                        <field.TextField
+                            label="Email Address"
+                            placeholder="University or work email address"
+                            required
+                        />
+                    )}
+                />
+                <form.AppField
+                    name="institution"
+                    children={(field) => {
+                        const value = field.state.value; // Ensures that value holds a string
+                        return (
+                            <field.DropdownSelectField
+                                label="Institution"
+                                name="institution"
+                                value={value}
+                                onChange={(v) => field.setValue(v ?? "")}
+                                placeholder="Select your institution"
+                                options={INSTITUTION_OPTIONS}
                                 required
                             />
-                        )}
-                    />
-                    <form.AppField
-                        name="last_name"
-                        children={(field) => (
-                            <field.TextField
-                                label="Last Name"
-                                placeholder="e.g., Doe"
+                        );
+                    }}
+                />
+                <form.AppField
+                    name="academic_status"
+                    children={(field) => {
+                        const value = field.state.value; // Ensures that value holds a string
+                        return (
+                            <field.DropdownSelectField
+                                label="Academic Status"
+                                name="academic_status"
+                                value={value}
+                                onChange={(v) => field.setValue(v ?? "")}
+                                placeholder="Select your academic status"
+                                options={ACADEMIC_STATUS_OPTIONS}
                                 required
                             />
-                        )}
-                    />
-                    <form.AppField
-                        name="email"
-                        children={(field) => (
-                            <field.TextField
-                                label="Email Address"
-                                placeholder="University or work email address"
+                        );
+                    }}
+                />
+                <form.AppField
+                    name="residence_country"
+                    children={(field) => {
+                        const value = field.state.value; // Ensures that value holds a string
+                        return (
+                            <field.DropdownSelectField
+                                label="Country of Residence"
+                                name="residence_country"
+                                value={value}
+                                onChange={(v) => field.setValue(v ?? "")}
+                                placeholder="Select your country of residence"
+                                options={COUNTRY_OPTIONS}
                                 required
                             />
-                        )}
-                    />
-                    <form.AppField
-                        name="institution"
-                        children={(field) => {
-                            const value = field.state.value; // Ensures that value holds a string
-                            return (
-                                <field.DropdownSelectField
-                                    label="Institution"
-                                    name="institution"
-                                    value={value}
-                                    onChange={(v) => field.setValue(v ?? "")}
-                                    placeholder="Select your institution"
-                                    options={INSTITUTION_OPTIONS}
-                                    required
-                                />
-                            );
-                        }}
-                    />
-                    <form.AppField
-                        name="academic_status"
-                        children={(field) => {
-                            const value = field.state.value; // Ensures that value holds a string
-                            return (
-                                <field.DropdownSelectField
-                                    label="Academic Status"
-                                    name="academic_status"
-                                    value={value}
-                                    onChange={(v) => field.setValue(v ?? "")}
-                                    placeholder="Select your academic status"
-                                    options={ACADEMIC_STATUS_OPTIONS}
-                                    required
-                                />
-                            );
-                        }}
-                    />
-                    <form.AppField
-                        name="residence_country"
-                        children={(field) => {
-                            const value = field.state.value; // Ensures that value holds a string
-                            return (
-                                <field.DropdownSelectField
-                                    label="Country of Residence"
-                                    name="residence_country"
-                                    value={value}
-                                    onChange={(v) => field.setValue(v ?? "")}
-                                    placeholder="Select your country of residence"
-                                    options={COUNTRY_OPTIONS}
-                                    required
-                                />
-                            );
-                        }}
-                    />
-                    <form.AppField
-                        name="citizenship_country"
-                        children={(field) => {
-                            const value = field.state.value; // Ensures that value holds a string
-                            return (
-                                <field.DropdownSelectField
-                                    label="Country of Citizenship"
-                                    name="citizenship_country"
-                                    value={value}
-                                    onChange={(v) => field.setValue(v ?? "")}
-                                    placeholder="Select your country of citizenship"
-                                    options={CITIZENSHIP_COUNTRY_OPTIONS}
-                                    required
-                                />
-                            );
-                        }}
-                    />
-                </FieldGroup>
+                        );
+                    }}
+                />
+                <form.AppField
+                    name="citizenship_country"
+                    children={(field) => {
+                        const value = field.state.value; // Ensures that value holds a string
+                        return (
+                            <field.DropdownSelectField
+                                label="Country of Citizenship"
+                                name="citizenship_country"
+                                value={value}
+                                onChange={(v) => field.setValue(v ?? "")}
+                                placeholder="Select your country of citizenship"
+                                options={CITIZENSHIP_COUNTRY_OPTIONS}
+                                required
+                            />
+                        );
+                    }}
+                />
+            </FieldGroup>
         );
     }
 });
