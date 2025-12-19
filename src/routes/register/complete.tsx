@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate} from "@tanstack/react-router";
 import * as z from "zod";
 import { useAppForm } from "@/hooks/form";
 import { siteTitle } from "@/config";
@@ -22,6 +22,7 @@ const formSchema = z.object({
 });
 
 function RegisterComplete() {
+  const navigate = useNavigate();
   const form = useAppForm({
     defaultValues: {
       first_name: "",
@@ -37,6 +38,7 @@ function RegisterComplete() {
     },
     onSubmit: async ({ value }) => {
       console.log(value);
+      navigate({ to: "/register/aup" });
     },
     
   });

@@ -15,6 +15,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as RegisterIndexRouteImport } from './routes/register/index'
 import { Route as RegisterVerifyRouteImport } from './routes/register/verify'
 import { Route as RegisterCompleteRouteImport } from './routes/register/complete'
+import { Route as RegisterAupRouteImport } from './routes/register/aup'
 
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
@@ -46,11 +47,17 @@ const RegisterCompleteRoute = RegisterCompleteRouteImport.update({
   path: '/register/complete',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RegisterAupRoute = RegisterAupRouteImport.update({
+  id: '/register/aup',
+  path: '/register/aup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/profile': typeof ProfileRoute
+  '/register/aup': typeof RegisterAupRoute
   '/register/complete': typeof RegisterCompleteRoute
   '/register/verify': typeof RegisterVerifyRoute
   '/register': typeof RegisterIndexRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/profile': typeof ProfileRoute
+  '/register/aup': typeof RegisterAupRoute
   '/register/complete': typeof RegisterCompleteRoute
   '/register/verify': typeof RegisterVerifyRoute
   '/register': typeof RegisterIndexRoute
@@ -68,6 +76,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/profile': typeof ProfileRoute
+  '/register/aup': typeof RegisterAupRoute
   '/register/complete': typeof RegisterCompleteRoute
   '/register/verify': typeof RegisterVerifyRoute
   '/register/': typeof RegisterIndexRoute
@@ -78,6 +87,7 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/profile'
+    | '/register/aup'
     | '/register/complete'
     | '/register/verify'
     | '/register'
@@ -86,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/profile'
+    | '/register/aup'
     | '/register/complete'
     | '/register/verify'
     | '/register'
@@ -94,6 +105,7 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/profile'
+    | '/register/aup'
     | '/register/complete'
     | '/register/verify'
     | '/register/'
@@ -103,6 +115,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
   ProfileRoute: typeof ProfileRoute
+  RegisterAupRoute: typeof RegisterAupRoute
   RegisterCompleteRoute: typeof RegisterCompleteRoute
   RegisterVerifyRoute: typeof RegisterVerifyRoute
   RegisterIndexRoute: typeof RegisterIndexRoute
@@ -152,6 +165,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterCompleteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/register/aup': {
+      id: '/register/aup'
+      path: '/register/aup'
+      fullPath: '/register/aup'
+      preLoaderRoute: typeof RegisterAupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -159,6 +179,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
   ProfileRoute: ProfileRoute,
+  RegisterAupRoute: RegisterAupRoute,
   RegisterCompleteRoute: RegisterCompleteRoute,
   RegisterVerifyRoute: RegisterVerifyRoute,
   RegisterIndexRoute: RegisterIndexRoute,
