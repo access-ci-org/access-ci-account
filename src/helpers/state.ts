@@ -1,4 +1,9 @@
-import { apiBaseUrl } from "@/config";
+import {
+  apiBaseUrl,
+  ssoCookieDomain,
+  ssoCookieName,
+  ssoCookiePath,
+} from "@/config";
 import { atom, createStore } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 
@@ -43,6 +48,12 @@ export const usernameAtom = atomWithStorage("username", "", undefined, {
 });
 export const tokenAtom = atomWithStorage("token", "", undefined, {
   getOnInit: true,
+});
+export const logoutAtom = atom(null, (_get, set) => {
+  set(emailAtom, "");
+  set(usernameAtom, "");
+  set(tokenAtom, "");
+  document.cookie = `${ssoCookieName}=; Max-Age=0; Path=${ssoCookiePath}; Domain=${ssoCookieDomain};`;
 });
 
 export const otpAtom = atom("");
