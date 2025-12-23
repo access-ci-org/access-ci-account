@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as LogoutRouteImport } from './routes/logout'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthTokenRouteImport } from './routes/auth-token'
@@ -22,6 +23,11 @@ import { Route as RegisterAupRouteImport } from './routes/register/aup'
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LogoutRoute = LogoutRouteImport.update({
+  id: '/logout',
+  path: '/logout',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -70,6 +76,7 @@ export interface FileRoutesByFullPath {
   '/auth-token': typeof AuthTokenRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/logout': typeof LogoutRoute
   '/profile': typeof ProfileRoute
   '/register/aup': typeof RegisterAupRoute
   '/register/complete': typeof RegisterCompleteRoute
@@ -81,6 +88,7 @@ export interface FileRoutesByTo {
   '/auth-token': typeof AuthTokenRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/logout': typeof LogoutRoute
   '/profile': typeof ProfileRoute
   '/register/aup': typeof RegisterAupRoute
   '/register/complete': typeof RegisterCompleteRoute
@@ -93,6 +101,7 @@ export interface FileRoutesById {
   '/auth-token': typeof AuthTokenRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/logout': typeof LogoutRoute
   '/profile': typeof ProfileRoute
   '/register/aup': typeof RegisterAupRoute
   '/register/complete': typeof RegisterCompleteRoute
@@ -106,6 +115,7 @@ export interface FileRouteTypes {
     | '/auth-token'
     | '/dashboard'
     | '/login'
+    | '/logout'
     | '/profile'
     | '/register/aup'
     | '/register/complete'
@@ -117,6 +127,7 @@ export interface FileRouteTypes {
     | '/auth-token'
     | '/dashboard'
     | '/login'
+    | '/logout'
     | '/profile'
     | '/register/aup'
     | '/register/complete'
@@ -128,6 +139,7 @@ export interface FileRouteTypes {
     | '/auth-token'
     | '/dashboard'
     | '/login'
+    | '/logout'
     | '/profile'
     | '/register/aup'
     | '/register/complete'
@@ -140,6 +152,7 @@ export interface RootRouteChildren {
   AuthTokenRoute: typeof AuthTokenRoute
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
+  LogoutRoute: typeof LogoutRoute
   ProfileRoute: typeof ProfileRoute
   RegisterAupRoute: typeof RegisterAupRoute
   RegisterCompleteRoute: typeof RegisterCompleteRoute
@@ -154,6 +167,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/logout': {
+      id: '/logout'
+      path: '/logout'
+      fullPath: '/logout'
+      preLoaderRoute: typeof LogoutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -220,6 +240,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthTokenRoute: AuthTokenRoute,
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
+  LogoutRoute: LogoutRoute,
   ProfileRoute: ProfileRoute,
   RegisterAupRoute: RegisterAupRoute,
   RegisterCompleteRoute: RegisterCompleteRoute,
