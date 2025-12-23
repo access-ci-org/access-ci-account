@@ -1,24 +1,27 @@
 import { apiBaseUrl } from "@/config";
 import { atom, createStore } from "jotai";
+import { atomWithStorage } from "jotai/utils";
 
 export const store = createStore();
 
 const fetchApiJson = async (
   relativeUrl: string,
-  { body = null, method = "GET" }: { body: any; method: string },
+  { body = null, method = "GET" }: { body: any; method: string } = {
+    body: null,
+    method: "GET",
+  },
 ) => {
   const absoluteUrl = `${apiBaseUrl}${relativeUrl}`;
-  const headers = new Headers();
+  const headers = new Headers({
+    accept: "application/json",
+    "content-type": "application/json",
+  });
   const token = store.get(tokenAtom);
   if (token) headers.append("Authorization", `Bearer ${token}`);
 
   const response = await fetch(absoluteUrl, {
     body: body ? JSON.stringify(body) : null,
-    headers: {
-      ...headers,
-      accept: "application/json",
-      "content-type": "application/json",
-    },
+    headers,
     method,
   });
   if (response.status < 200 || response.status > 299) {
@@ -32,11 +35,21 @@ const fetchApiJson = async (
   }
 };
 
-export const emailAtom = atom("");
+export const emailAtom = atomWithStorage("email", "", undefined, {
+  getOnInit: true,
+});
+export const usernameAtom = atomWithStorage("username", "", undefined, {
+  getOnInit: true,
+});
+export const tokenAtom = atomWithStorage("token", "", undefined, {
+  getOnInit: true,
+});
+
 export const otpAtom = atom("");
 const otpSendStatusAtom = atom({ error: "", sent: false });
 const otpVerifyStatusAtom = atom({ error: "", verified: false });
-export const tokenAtom = atom("");
+
+export const registrationFormAtom = atom({});
 
 export const sendOtpAtom = atom(
   (get) => get(otpSendStatusAtom),
@@ -97,3 +110,7 @@ export const verifyOtpAtom = atom(
     return status;
   },
 );
+
+export const accountAtom = atom(async (get) => {
+  return await fetchApiJson(`/account/${get(usernameAtom)}`);
+});

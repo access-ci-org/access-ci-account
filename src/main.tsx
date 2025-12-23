@@ -9,6 +9,7 @@ import { routeTree } from "./routeTree.gen";
 
 import "./styles.css";
 import reportWebVitals from "./reportWebVitals.ts";
+import { LoaderCircle } from "lucide-react";
 
 // Create a new router instance
 
@@ -19,6 +20,7 @@ const router = createRouter({
   context: {
     ...TanStackQueryProviderContext,
   },
+  defaultPendingComponent: () => <LoaderCircle className="animate-spin" />,
   defaultPreload: "intent",
   scrollRestoration: true,
   defaultStructuralSharing: true,

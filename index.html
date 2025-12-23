@@ -30,8 +30,8 @@
         universalMenus,
       } from "https://esm.sh/@access-ci/ui@0.13.0";
       universalMenus({
-        loginUrl: "/login",
-        logoutUrl: "/logout",
+        loginUrl: `${import.meta.env.BASE_URL}/login`,
+        logoutUrl: `${import.meta.env.BASE_URL}/logout`,
         target: document.getElementById("universal-menus"),
       });
       header({
