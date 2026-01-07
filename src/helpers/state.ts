@@ -8,17 +8,18 @@ export const fetchApiJson = async (
   { body = null, method = "GET" }: { body: any; method: string },
 ) => {
   const absoluteUrl = `${apiBaseUrl}${relativeUrl}`;
-  const headers = new Headers();
-  const token = store.get(tokenAtom);
-  if (token) headers.append("Authorization", `Bearer ${token}`);
+  const token = store.get(tokenAtom); // Gets JWT from Jotai global state instead of manually passing
 
+  const headers = new Headers({
+    accept: "application/json",
+    "content-type": "application/json",
+  });
+  if (token) headers.set("Authorization", `Bearer ${token}`); // Authorization header is added if token exists
+
+  // JSON Headers
   const response = await fetch(absoluteUrl, {
     body: body ? JSON.stringify(body) : null,
-    headers: {
-      ...headers,
-      accept: "application/json",
-      "content-type": "application/json",
-    },
+    headers,
     method,
   });
   if (response.status < 200 || response.status > 299) {
@@ -31,36 +32,6 @@ export const fetchApiJson = async (
     }
   }
 };
-
-// API Type fields
-export type CountryApi = { countryId: number; countryName: string };
-export type AcademicStatusApi = { academicStatusId: number; name: string };
-
-// Backend responses from type fields
-type CountriesResponse = {
-  countries: CountryApi[];
-};
-
-type AcademicStatusesResponse = {
-  academicStatuses: AcademicStatusApi[];
-};
-
-// Read-only Atoms for fetching data from the API
-export const countriesAtom = atom(async () => {
-  const response = (await fetchApiJson("/country", {
-    method: "GET", body: null,
-  })) as CountriesResponse;
-
-return response.countries || []
-})
-
-export const academicStatusesAtom = atom(async () => {
-  const response = (await fetchApiJson("/academic-status", {
-    method: "GET", body: null,
-  })) as AcademicStatusesResponse;
-
-  return response.academicStatuses || []
-})
 
 export const emailAtom = atom("");
 export const otpAtom = atom("");
@@ -119,11 +90,44 @@ export const verifyOtpAtom = atom(
           verified: false,
         };
       } else {
-        status = { error: "", verified: true };
+        status = { error: "", verified: true }; // Check to make sure it has jwt
         set(tokenAtom, response.jwt);
+        console.log("Token set in verifyOtpAtom:", response.jwt);
       }
     }
     set(otpVerifyStatusAtom, status);
     return status;
   },
 );
+
+// API Type fields
+export type CountryApi = { countryId: number; countryName: string };
+export type AcademicStatusApi = { academicStatusId: number; name: string };
+
+// Backend responses from type fields
+type CountriesResponse = {
+  countries: CountryApi[];
+};
+
+type AcademicStatusesResponse = {
+  academicStatuses: AcademicStatusApi[];
+};
+
+// Read-only Atoms for fetching data from the API
+export const countriesAtom = atom(async (get) => {
+  if (!get(tokenAtom)) return [];
+  const response = (await fetchApiJson("/country", {
+    method: "GET", body: null,
+  })) as CountriesResponse;
+
+return response.countries || []
+})
+
+export const academicStatusesAtom = atom(async (get) => {
+  if (!get(tokenAtom)) return [];
+  const response = (await fetchApiJson("/academic-status", {
+    method: "GET", body: null,
+  })) as AcademicStatusesResponse;
+
+  return response.academicStatuses || []
+})
