@@ -13,12 +13,12 @@ export const profileFormSchema = z.object({
   degreeField: z.string().catch(""),
   timeZone: z.string().catch(""),
 
-  first_name: requiredString("First name"),
-  last_name: requiredString("Last name"),
+  firstName: requiredString("First name"),
+  lastName: requiredString("Last name"),
   institution: requiredString("Institution"),
-  academic_status: requiredString("Academic status"),
-  residence_country: requiredString("Country of residence"),
-  citizenship_country: requiredString("Country of citizenship"),
+  academicStatus: requiredString("Academic status"),
+  residenceCountry: requiredString("Country of residence"),
+  citizenshipCountry: requiredString("Country of citizenship"),
 });
 
 export type ProfileFormValues = z.infer<typeof profileFormSchema>;

@@ -28,20 +28,20 @@ const CITIZENSHIP_COUNTRY_OPTIONS: Option[] = COUNTRY_OPTIONS;
 
 const RegistrationFormInputs = withForm({
     defaultValues: {
-        first_name: "",
-        last_name: "",
+        firstName: "",
+        lastName: "",
         email: "",
         institution: "",
-        academic_status: "",
-        residence_country: "",
-        citizenship_country: "",
+        academicStatus: "",
+        residenceCountry: "",
+        citizenshipCountry: "",
     },
     render: function Render({ form }) {
         return (
 
             <FieldGroup>
                 <form.AppField
-                    name="first_name"
+                    name="firstName"
                 >
                     {(field) => (
                         <field.TextField
@@ -52,7 +52,7 @@ const RegistrationFormInputs = withForm({
                     )}
                 </form.AppField>
                 <form.AppField
-                    name="last_name"
+                    name="lastName"
                     children={(field) => (
                         <field.TextField
                             label="Last Name"
@@ -89,13 +89,13 @@ const RegistrationFormInputs = withForm({
                     }}
                 />
                 <form.AppField
-                    name="academic_status"
+                    name="academicStatus"
                     children={(field) => {
                         const value = field.state.value; // Ensures that value holds a string
                         return (
                             <field.DropdownSelectField
                                 label="Academic Status"
-                                name="academic_status"
+                                name="academicStatus"
                                 value={value}
                                 onChange={(v) => field.setValue(v ?? "")}
                                 placeholder="Select your academic status"
@@ -106,13 +106,13 @@ const RegistrationFormInputs = withForm({
                     }}
                 />
                 <form.AppField
-                    name="residence_country"
+                    name="residenceCountry"
                     children={(field) => {
                         const value = field.state.value; // Ensures that value holds a string
                         return (
                             <field.DropdownSelectField
                                 label="Country of Residence"
-                                name="residence_country"
+                                name="residenceCountry"
                                 value={value}
                                 onChange={(v) => field.setValue(v ?? "")}
                                 placeholder="Select your country of residence"
@@ -123,13 +123,13 @@ const RegistrationFormInputs = withForm({
                     }}
                 />
                 <form.AppField
-                    name="citizenship_country"
+                    name="citizenshipCountry"
                     children={(field) => {
                         const value = field.state.value; // Ensures that value holds a string
                         return (
                             <field.DropdownSelectField
                                 label="Country of Citizenship"
-                                name="citizenship_country"
+                                name="citizenshipCountry"
                                 value={value}
                                 onChange={(v) => field.setValue(v ?? "")}
                                 placeholder="Select your country of citizenship"

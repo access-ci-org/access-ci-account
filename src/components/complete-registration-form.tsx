@@ -15,13 +15,13 @@ import RegistrationFormInputs from "./registration-form-fields";
 
 const CompleteRegistrationForm = withForm({
   defaultValues: {
-    first_name: "",
-    last_name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     institution: "",
-    academic_status: "",
-    residence_country: "",
-    citizenship_country: "",
+    academicStatus: "",
+    residenceCountry: "",
+    citizenshipCountry: "",
   },
   render: function Render({ form }) {
     return (

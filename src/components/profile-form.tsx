@@ -48,13 +48,13 @@ const TIMEZONE_OPTIONS: Option[] = [
 const ProfileForm = withForm({
   defaultValues: {
     // Registration Form existing fields
-    first_name: "",
-    last_name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     institution: "",
-    academic_status: "",
-    residence_country: "",
-    citizenship_country: "",
+    academicStatus: "",
+    residenceCountry: "",
+    citizenshipCountry: "",
 
     // Profile-Form existing fields
     role: [] as string[],

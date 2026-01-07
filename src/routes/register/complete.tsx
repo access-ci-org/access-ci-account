@@ -16,13 +16,13 @@ function RegisterComplete() {
   const navigate = useNavigate();
   const form = useAppForm({
     defaultValues: {
-      first_name: "",
-      last_name: "",
+      firstName: "",
+      lastName: "",
       email: "",
       institution: "",
-      academic_status: "",
-      residence_country: "",
-      citizenship_country: "",
+      academicStatus: "",
+      residenceCountry: "",
+      citizenshipCountry: "",
     },
     validators: {
       onSubmit: profileFormSchema,

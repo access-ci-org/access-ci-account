@@ -14,8 +14,8 @@ import { LoaderCircle } from "lucide-react";
 // Define the search schema
 const searchSchema = z.object({
   jwt: z.jwt(),
-  first_name: z.string(),
-  last_name: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
 });
 
 export const Route = createFileRoute("/auth-token")({
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/auth-token")({
 });
 
 function AuthToken() {
-  const { jwt, first_name, last_name } = useSearch({ from: "/auth-token" });
+  const { jwt, firstName, lastName } = useSearch({ from: "/auth-token" });
   const navigate = useNavigate();
   const setToken = useSetAtom(tokenAtom);
   const setUsername = useSetAtom(usernameAtom);
@@ -35,7 +35,7 @@ function AuthToken() {
     const payload = parseJwt(jwt);
     setUsername(payload?.uid ?? "");
     setToken(jwt);
-    setRegistrationForm({ firstName: first_name, lastName: last_name });
+    setRegistrationForm({ firstName: firstName, lastName: lastName });
 
     navigate({ to: "/dashboard" });
   }, []);
