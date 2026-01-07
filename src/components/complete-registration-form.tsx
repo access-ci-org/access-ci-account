@@ -31,7 +31,7 @@ const CompleteRegistrationForm = withForm({
           form.handleSubmit();
         }}
       >
-        <Card className="w-full sm:max-w-md my-5">
+        <Card className="w-full my-5">
           <CardHeader>
             <CardTitle>Complete Registration</CardTitle>
             <CardDescription>
