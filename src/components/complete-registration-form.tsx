@@ -3,10 +3,7 @@ import { withForm } from "@/hooks/form";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Field, FieldGroup } from "@/components/ui/field";
 
@@ -31,13 +28,7 @@ const CompleteRegistrationForm = withForm({
           form.handleSubmit();
         }}
       >
-        <Card className="w-full my-5">
-          <CardHeader>
-            <CardTitle>Complete Registration</CardTitle>
-            <CardDescription>
-              Please tell us about yourself to complete your registration.
-            </CardDescription>
-          </CardHeader>
+        <Card className="w-full my-5 border-none rounded-none shadow-none bg-transparent bg-[var(--teal-050)]">
           <CardContent>
             <FieldGroup>
               <RegistrationFormInputs form={form as any} />

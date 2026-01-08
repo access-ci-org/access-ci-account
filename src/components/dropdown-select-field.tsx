@@ -61,16 +61,17 @@ export default function DropdownSelectField({
                 classNames={{
                     control: ({ isFocused, isDisabled }) =>
                         cn(
-                        "flex w-full items-center rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs outline-none",
+                        "bg-white border rounded-none shadow focus:ring-2 focus:ring-input focus:border-input",
+                        "flex w-full items-center px-3 py-2 text-sm outline-none",
                         "transition-colors placeholder:text-muted-foreground",
                         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-ring",
-                        isFocused && "ring-1 ring-ring",
+                        isFocused && "border-ring ring-[3px] ring-ring/50",
                         isDisabled && "opacity-50 cursor-not-allowed",
-                        isInvalid ? "border-red-500" : "border-input"
+                        isInvalid ? "border-red-500" : "border-[var(--teal-700)]"
                         ),
                     menu: () =>
                         cn(
-                        "z-50 mt-1 rounded-md border bg-popover text-popover-foreground shadow-md"
+                        "z-50 mt-1 border bg-white shadow-md"
                         ),
                     option: ({ isFocused, isSelected }) =>
                         cn(
@@ -83,6 +84,7 @@ export default function DropdownSelectField({
                         ),
                     placeholder: () => "text-muted-foreground",
                     singleValue: () => "text-foreground",
+                    
                 }}
                 unstyled  // important: lets Tailwind handle styles instead of default React-Select styles ( Why inline styles was used before because unstyled was not set )
             />

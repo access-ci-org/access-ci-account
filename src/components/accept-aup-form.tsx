@@ -21,7 +21,7 @@ const AcceptAupForm = withForm({
           form.handleSubmit()
         }}
       >
-        <Card className="w-full max-w-lg border-none rounded-none shadow-none bg-transparent min-h-screen bg-[var(--teal-050)]">
+        <Card className="w-full my-5 border-none rounded-none shadow-none bg-transparent bg-[var(--teal-050)]">
           <CardHeader className= "text-lg font-bold">
               Acceptable Use Policy
               <CardDescription className = "font-normal">
