@@ -35,7 +35,7 @@ function AuthToken() {
     const payload = parseJwt(jwt);
     setUsername(payload?.uid ?? "");
     setToken(jwt);
-    setRegistrationForm({ firstName: firstName, lastName: lastName });
+    setRegistrationForm({ firstName, lastName });
 
     navigate({ to: "/dashboard" });
   }, []);
