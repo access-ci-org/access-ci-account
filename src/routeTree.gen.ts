@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SshKeysRouteImport } from './routes/ssh-keys'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as LogoutRouteImport } from './routes/logout'
 import { Route as LoginRouteImport } from './routes/login'
@@ -20,6 +21,11 @@ import { Route as RegisterVerifyRouteImport } from './routes/register/verify'
 import { Route as RegisterCompleteRouteImport } from './routes/register/complete'
 import { Route as RegisterAupRouteImport } from './routes/register/aup'
 
+const SshKeysRoute = SshKeysRouteImport.update({
+  id: '/ssh-keys',
+  path: '/ssh-keys',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -78,6 +84,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/profile': typeof ProfileRoute
+  '/ssh-keys': typeof SshKeysRoute
   '/register/aup': typeof RegisterAupRoute
   '/register/complete': typeof RegisterCompleteRoute
   '/register/verify': typeof RegisterVerifyRoute
@@ -90,6 +97,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/profile': typeof ProfileRoute
+  '/ssh-keys': typeof SshKeysRoute
   '/register/aup': typeof RegisterAupRoute
   '/register/complete': typeof RegisterCompleteRoute
   '/register/verify': typeof RegisterVerifyRoute
@@ -103,6 +111,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/profile': typeof ProfileRoute
+  '/ssh-keys': typeof SshKeysRoute
   '/register/aup': typeof RegisterAupRoute
   '/register/complete': typeof RegisterCompleteRoute
   '/register/verify': typeof RegisterVerifyRoute
@@ -117,6 +126,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/logout'
     | '/profile'
+    | '/ssh-keys'
     | '/register/aup'
     | '/register/complete'
     | '/register/verify'
@@ -129,6 +139,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/logout'
     | '/profile'
+    | '/ssh-keys'
     | '/register/aup'
     | '/register/complete'
     | '/register/verify'
@@ -141,6 +152,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/logout'
     | '/profile'
+    | '/ssh-keys'
     | '/register/aup'
     | '/register/complete'
     | '/register/verify'
@@ -154,6 +166,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   LogoutRoute: typeof LogoutRoute
   ProfileRoute: typeof ProfileRoute
+  SshKeysRoute: typeof SshKeysRoute
   RegisterAupRoute: typeof RegisterAupRoute
   RegisterCompleteRoute: typeof RegisterCompleteRoute
   RegisterVerifyRoute: typeof RegisterVerifyRoute
@@ -162,6 +175,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/ssh-keys': {
+      id: '/ssh-keys'
+      path: '/ssh-keys'
+      fullPath: '/ssh-keys'
+      preLoaderRoute: typeof SshKeysRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profile': {
       id: '/profile'
       path: '/profile'
@@ -242,6 +262,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   LogoutRoute: LogoutRoute,
   ProfileRoute: ProfileRoute,
+  SshKeysRoute: SshKeysRoute,
   RegisterAupRoute: RegisterAupRoute,
   RegisterCompleteRoute: RegisterCompleteRoute,
   RegisterVerifyRoute: RegisterVerifyRoute,
