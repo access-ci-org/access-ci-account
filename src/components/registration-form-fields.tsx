@@ -1,6 +1,8 @@
 import { withForm } from "@/hooks/form";
 import { FieldGroup } from "@/components/ui/field";
-
+// Imports for API interaction
+import { useAtom } from "jotai";
+import { countriesAtom, academicStatusesAtom } from "@/helpers/state";
 
 // Option type defines selectable options for form fields
 type Option = { label: string; value: string };
@@ -11,20 +13,6 @@ const INSTITUTION_OPTIONS: Option[] = [
     { value: "university_of_slip_rock", label: "Slippery Rock University" },
     { value: "university_of_indiana", label: "IUP" },
 ];
-
-const COUNTRY_OPTIONS: Option[] = [
-    { value: "us", label: "United States" },
-    { value: "ca", label: "Canada" },
-    { value: "mx", label: "Mexico" },
-];
-const ACADEMIC_STATUS_OPTIONS: Option[] = [
-    { value: "undergraduate_student", label: "Undergraduate Student" },
-    { value: "graduate_student", label: "Graduate Student" },
-    { value: "faculty", label: "Faculty" },
-    { value: "staff", label: "Staff" },
-    { value: "other", label: "Other" },
-];
-const CITIZENSHIP_COUNTRY_OPTIONS: Option[] = COUNTRY_OPTIONS;
 
 const RegistrationFormInputs = withForm({
     defaultValues: {
@@ -37,6 +25,23 @@ const RegistrationFormInputs = withForm({
         citizenshipCountry: "",
     },
     render: function Render({ form }) {
+        // Fetching countries and academic status via atoms
+        const [countries] = useAtom(countriesAtom);
+        const [academicStatuses] = useAtom(academicStatusesAtom);
+    
+        // Mapping API response to Option
+        const countryOptions: Option[] =
+          countries.map((country) => ({
+            value: country.countryId.toString(),
+            label: country.countryName,
+          }));
+    
+        const academicStatusOptions: Option[] =
+          academicStatuses.map((status) => ({
+            value: status.academicStatusId.toString(),
+            label: status.name,
+          }));
+    
         return (
 
             <FieldGroup>
@@ -99,7 +104,7 @@ const RegistrationFormInputs = withForm({
                                 value={value}
                                 onChange={(v) => field.setValue(v ?? "")}
                                 placeholder="Select your academic status"
-                                options={ACADEMIC_STATUS_OPTIONS}
+                                options={academicStatusOptions}
                                 required
                             />
                         );
@@ -116,7 +121,7 @@ const RegistrationFormInputs = withForm({
                                 value={value}
                                 onChange={(v) => field.setValue(v ?? "")}
                                 placeholder="Select your country of residence"
-                                options={COUNTRY_OPTIONS}
+                                options={countryOptions}
                                 required
                             />
                         );
@@ -133,7 +138,7 @@ const RegistrationFormInputs = withForm({
                                 value={value}
                                 onChange={(v) => field.setValue(v ?? "")}
                                 placeholder="Select your country of citizenship"
-                                options={CITIZENSHIP_COUNTRY_OPTIONS}
+                                options={countryOptions}
                                 required
                             />
                         );
