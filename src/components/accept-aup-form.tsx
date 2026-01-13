@@ -21,8 +21,9 @@ const AcceptAupForm = withForm({
           form.handleSubmit()
         }}
       >
+        <h1>ACCESS Registration </h1>
         <Card className="w-full my-5 border-none rounded-none shadow-none bg-transparent bg-[var(--teal-050)]">
-          <CardHeader className= "text-lg font-bold">
+          <CardHeader className= "text-lg font-bold font-archivo text-[24px]">
               Acceptable Use Policy
               <CardDescription className = "font-normal">
               Please review and accept the ACCESS terms of service to continue.
