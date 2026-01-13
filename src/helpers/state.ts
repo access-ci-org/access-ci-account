@@ -92,7 +92,6 @@ export const verifyOtpAtom = atom(
       } else {
         status = { error: "", verified: true }; // Check to make sure it has jwt
         set(tokenAtom, response.jwt);
-        console.log("Token set in verifyOtpAtom:", response.jwt);
       }
     }
     set(otpVerifyStatusAtom, status);
