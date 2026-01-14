@@ -188,6 +188,7 @@ function FieldSeparator({
   )
 }
 
+// Don't know if it's okay if I change styling here for error messages
 function FieldError({
   className,
   children,
@@ -214,7 +215,7 @@ function FieldError({
     }
 
     return (
-      <ul className="ml-4 flex list-disc flex-col gap-1">
+      <ul className="text-destructive !text-sm text-decoration-none">
         {uniqueErrors.map(
           (error, index) =>
             error?.message && <li key={index}>{error.message}</li>
