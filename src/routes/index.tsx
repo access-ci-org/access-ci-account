@@ -20,6 +20,9 @@ function Home() {
         <li>
           <Link to="/register">Register for an account</Link>
         </li>
+        <li>
+          <Link to="/ssh-keys">Manage SSH Keys</Link>
+        </li>
       </ul>
     </>
   );
