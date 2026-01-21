@@ -6,22 +6,19 @@ export default function RegistrationLayout({
   right: React.ReactNode;
 }) {
   return (
-    <div className="w-full flex flex-col md:flex-row justify-center gap-10 py-10">
+    <div
+      className="
+        w-full max-w-[1180px]
+        grid grid-cols-1 gap-[20px]
+        lg:grid-cols-[minmax(0,880px)_minmax(0,280px)]
+        lg:items-start
+      "
+    >
+      {/* Main column */}
+      <div className="min-w-0">{left}</div>
 
-      {/* LEFT COLUMN */}
-      <div className="flex-1 flex justify-center">
-        <div className="w-full max-w-xl">  {/* <-- Fixed shared width */}
-          {left}
-        </div>
-      </div>
-
-      {/* RIGHT COLUMN */}
-      <div className="flex-1 flex justify-center">
-        <div className="w-full max-w-xl">  {/* <-- Same width as left */}
-          {right}
-        </div>
-      </div>
-
+      {/* Sidebar column */}
+      <aside className="min-w-0 lg:pt-2">{right}</aside>
     </div>
   );
 }

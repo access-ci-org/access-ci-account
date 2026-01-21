@@ -70,7 +70,7 @@ const ProfileForm = withForm({
           form.handleSubmit();
         }}
       >
-        <Card className="w-full mb-20">
+        <Card className="w-full my-5 border-none rounded-none shadow-none bg-transparent bg-[var(--teal-050)]">
           <CardHeader>
             <CardTitle>Edit Profile</CardTitle>
             <CardDescription>Edit your ACCESS profile.</CardDescription>

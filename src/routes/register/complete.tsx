@@ -36,7 +36,7 @@ function RegisterComplete() {
   
   return (
     <>
-      <h1>ACCESS Registration</h1>
+      <h1>ACCESS Required Registration Information</h1>
       <RegistrationLayout
       left={<CompleteRegistrationForm form= {form} />}
       right={<ProgressBar />}
