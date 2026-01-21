@@ -4,7 +4,7 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import type React from "react";
 import { useState } from "react";
-import { IoMdEye, IoMdEyeOff } from "react-icons/io";
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function PasswordTextField({
     label,
@@ -40,7 +40,7 @@ export default function PasswordTextField({
                     onClick={() => setShowPassword((prev) => !prev)}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-xl text-gray-500 hover:text-gray-700 focus:outline-none"
                 >
-                    {showPassword ? <IoMdEyeOff /> : <IoMdEye />}
+                    {showPassword ? <EyeOff /> : <Eye />}
                 </button>
             </div>
             <div className="text-destructive text-small text-decoration-none leading-tight inline-block">
