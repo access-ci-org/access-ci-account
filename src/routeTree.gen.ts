@@ -10,12 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProfileRouteImport } from './routes/profile'
-<<<<<<< HEAD
+import { Route as PasswordRouteImport } from './routes/password'
 import { Route as LogoutRouteImport } from './routes/logout'
 import { Route as LoginRouteImport } from './routes/login'
-=======
-import { Route as PasswordRouteImport } from './routes/password'
->>>>>>> ramps-954-password-change-form
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthTokenRouteImport } from './routes/auth-token'
 import { Route as IndexRouteImport } from './routes/index'
@@ -29,7 +26,11 @@ const ProfileRoute = ProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
-<<<<<<< HEAD
+const PasswordRoute = PasswordRouteImport.update({
+  id: '/password',
+  path: '/password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LogoutRoute = LogoutRouteImport.update({
   id: '/logout',
   path: '/logout',
@@ -38,11 +39,6 @@ const LogoutRoute = LogoutRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
-=======
-const PasswordRoute = PasswordRouteImport.update({
-  id: '/password',
-  path: '/password',
->>>>>>> ramps-954-password-change-form
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -85,12 +81,9 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth-token': typeof AuthTokenRoute
   '/dashboard': typeof DashboardRoute
-<<<<<<< HEAD
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
-=======
   '/password': typeof PasswordRoute
->>>>>>> ramps-954-password-change-form
   '/profile': typeof ProfileRoute
   '/register/aup': typeof RegisterAupRoute
   '/register/complete': typeof RegisterCompleteRoute
@@ -101,12 +94,9 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth-token': typeof AuthTokenRoute
   '/dashboard': typeof DashboardRoute
-<<<<<<< HEAD
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
-=======
   '/password': typeof PasswordRoute
->>>>>>> ramps-954-password-change-form
   '/profile': typeof ProfileRoute
   '/register/aup': typeof RegisterAupRoute
   '/register/complete': typeof RegisterCompleteRoute
@@ -118,12 +108,9 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/auth-token': typeof AuthTokenRoute
   '/dashboard': typeof DashboardRoute
-<<<<<<< HEAD
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
-=======
   '/password': typeof PasswordRoute
->>>>>>> ramps-954-password-change-form
   '/profile': typeof ProfileRoute
   '/register/aup': typeof RegisterAupRoute
   '/register/complete': typeof RegisterCompleteRoute
@@ -136,12 +123,9 @@ export interface FileRouteTypes {
     | '/'
     | '/auth-token'
     | '/dashboard'
-<<<<<<< HEAD
     | '/login'
     | '/logout'
-=======
     | '/password'
->>>>>>> ramps-954-password-change-form
     | '/profile'
     | '/register/aup'
     | '/register/complete'
@@ -152,12 +136,9 @@ export interface FileRouteTypes {
     | '/'
     | '/auth-token'
     | '/dashboard'
-<<<<<<< HEAD
     | '/login'
     | '/logout'
-=======
     | '/password'
->>>>>>> ramps-954-password-change-form
     | '/profile'
     | '/register/aup'
     | '/register/complete'
@@ -168,12 +149,9 @@ export interface FileRouteTypes {
     | '/'
     | '/auth-token'
     | '/dashboard'
-<<<<<<< HEAD
     | '/login'
     | '/logout'
-=======
     | '/password'
->>>>>>> ramps-954-password-change-form
     | '/profile'
     | '/register/aup'
     | '/register/complete'
@@ -185,12 +163,9 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthTokenRoute: typeof AuthTokenRoute
   DashboardRoute: typeof DashboardRoute
-<<<<<<< HEAD
   LoginRoute: typeof LoginRoute
   LogoutRoute: typeof LogoutRoute
-=======
   PasswordRoute: typeof PasswordRoute
->>>>>>> ramps-954-password-change-form
   ProfileRoute: typeof ProfileRoute
   RegisterAupRoute: typeof RegisterAupRoute
   RegisterCompleteRoute: typeof RegisterCompleteRoute
@@ -207,7 +182,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
-<<<<<<< HEAD
+    '/password': {
+      id: '/password'
+      path: '/password'
+      fullPath: '/password'
+      preLoaderRoute: typeof PasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/logout': {
       id: '/logout'
       path: '/logout'
@@ -220,13 +201,6 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
-=======
-    '/password': {
-      id: '/password'
-      path: '/password'
-      fullPath: '/password'
-      preLoaderRoute: typeof PasswordRouteImport
->>>>>>> ramps-954-password-change-form
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -285,12 +259,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthTokenRoute: AuthTokenRoute,
   DashboardRoute: DashboardRoute,
-<<<<<<< HEAD
   LoginRoute: LoginRoute,
   LogoutRoute: LogoutRoute,
-=======
   PasswordRoute: PasswordRoute,
->>>>>>> ramps-954-password-change-form
   ProfileRoute: ProfileRoute,
   RegisterAupRoute: RegisterAupRoute,
   RegisterCompleteRoute: RegisterCompleteRoute,
