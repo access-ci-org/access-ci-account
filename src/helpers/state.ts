@@ -159,3 +159,31 @@ export const academicStatusesAtom = atom(async (get) => {
 
   return response.academicStatuses || []
 })
+
+// Retrieving Domain information based on email address
+
+// Pulls domain from email address
+const getDomainFromEmail = (email: string) => {
+  if (!email) return null;
+  const email_parts = email.trim().toLowerCase().split("@");
+if (email_parts.length !==2 || !email_parts[1]) return null;
+  return email_parts[1];
+}
+
+// Domain lookup response 
+export type DomainResponse = { domain?: string; organizations?: unknown[]; idps?: unknown[]; }
+
+export const domainAtom = atom(async (get) => {
+  if (!get(tokenAtom)) return null;
+  const email = get(emailAtom);
+  const domain = getDomainFromEmail(email);
+  if (!domain) return null;
+
+  const response = (await fetchApiJson(`/domain/${domain}`, {
+    method: "GET", body: null,
+  })) as DomainResponse | { error : unknown };
+  if ((response as any).error) {
+    return null;
+  }
+  return response as DomainResponse;
+});
