@@ -28,6 +28,7 @@ export default function TextField({
         aria-invalid={isInvalid}
         placeholder={placeholder}
         autoComplete="off"
+        className="bg-white border-[var(--teal-700)] rounded-none shadow-none"
       />
       {isInvalid && <FieldError errors={field.state.meta.errors} />}
     </Field>

@@ -2,7 +2,17 @@ import { createFileRoute } from "@tanstack/react-router";
 import { siteTitle } from "@/config";
 
 
-import { CheckCircle2Icon } from "lucide-react"
+import {
+  User,
+  Folder,
+  KeyRound,
+  BarChart3,
+  FileText,
+  Users,
+  LifeBuoy,
+  CheckCircle2Icon,
+} from "lucide-react";
+
 import {
   Alert,
   AlertDescription,
@@ -21,7 +31,7 @@ function Dashboard() {
       <h1>My ACCESS Account</h1>
       <div className="min-h-full pt-3">
         <div>
-          <Alert>
+          <Alert className= "border-none rounded-none shadow-none bg-transparent bg-[var(--teal-050)] p-4">
             <CheckCircle2Icon />
             <AlertTitle className="text-lg font-medium">Congratulations! You've successfully created your ACCESS Account </AlertTitle>
             <AlertDescription>
@@ -39,6 +49,7 @@ function Dashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch pt-6">
           <div className="w-full h-full">
             <DashboardCard
+              icon={User}
               title="Profile"
               description="Edit, update, or add to your profile."
               to="/profile"
@@ -46,6 +57,7 @@ function Dashboard() {
           </div>
           <div className="w-full h-full">
             <DashboardCard
+              icon={Folder}
               title="Projects"
               description="Find your allocations and projects."
               to="https://allocations.access-ci.org/"
@@ -53,6 +65,7 @@ function Dashboard() {
           </div>
           <div className="w-full h-full">
             <DashboardCard
+              icon={KeyRound}
               title="SSH Keys"
               description="Log into your resources securely. Find user names/SSH keys."
               to="/ssh-keys"
@@ -60,6 +73,7 @@ function Dashboard() {
           </div>
           <div className="w-full h-full">
             <DashboardCard
+              icon={BarChart3}
               title="Metrics"
               description="Use XDMoD to track your project's performance and efficiency."
               to="https://metrics.access-ci.org/"
@@ -69,6 +83,7 @@ function Dashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 items-stretch pt-6 pb-6">
           <div className="w-full h-full">
             <DashboardCard
+              icon={FileText}
               title="Publications"
               description="Add your paper, dataset, software, dissertation, or other publihsed work."
               to="https://allocations.access-ci.org/publications"
@@ -76,6 +91,7 @@ function Dashboard() {
           </div>
           <div className="w-full h-full">
             <DashboardCard
+              icon={Users}
               title="Community Persona"
               description="Tag your skills and interests. Find affinity groups, contributions, and event registrations."
               to="https://support.access-ci.org/community-persona"
@@ -83,6 +99,7 @@ function Dashboard() {
           </div>
           <div className="w-full h-full">
             <DashboardCard
+              icon={LifeBuoy}
               title="Help Tickets"
               description="Find Help Tickts assocaited with your account."
               to="https://access-ci.atlassian.net/servicedesk/customer/user/requests"
