@@ -1,6 +1,6 @@
 export const siteTitle = "ACCESS Account";
 export const apiBaseUrl =
-  import.meta.env.VITE_API_BASE_URL || "https://account.access-ci.org/api/v1";
+  import.meta.env.VITE_API_BASE_URL || "/api/v1" //"https://account.access-ci.org/api/v1";
 
 export const MIN_LENGTH: number = 12;
 export const MAX_LENGTH: number = 64;

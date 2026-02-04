@@ -5,7 +5,7 @@ import {
   ssoCookiePath,
 } from "@/config";
 import { atom, createStore } from "jotai";
-import { atomWithStorage } from "jotai/utils";
+import { atomWithStorage, loadable } from "jotai/utils";
 
 export const store = createStore();
 
@@ -26,19 +26,31 @@ const fetchApiJson = async (
   });
   if (token) headers.set("Authorization", `Bearer ${token}`); // Authorization header is added if token exists
 
-  const response = await fetch(absoluteUrl, {
-    body: body ? JSON.stringify(body) : null,
-    headers,
-    method,
-  });
-  if (response.status < 200 || response.status > 299) {
-    return { error: { status: response.status } };
-  } else {
+  let response: Response;
+  try {
+    response = await fetch(absoluteUrl, {
+      body: body ? JSON.stringify(body) : null,
+      headers,
+      method,
+    });
+  } catch (e) {
+    // ✅ this is the big missing piece
+    return { error: { message: "Network error", detail: String(e) } };
+  }
+
+  if (!response.ok) {
+    // Optional improvement: capture FastAPI detail if present
+    let detail: any = null;
     try {
-      return await response.json();
-    } catch (error) {
-      return { error: { message: error } };
-    }
+      detail = await response.json();
+    } catch {}
+    return { error: { status: response.status, detail } };
+  }
+
+  try {
+    return await response.json();
+  } catch (error) {
+    return { error: { message: "Invalid JSON response", detail: String(error) } };
   }
 };
 
@@ -131,7 +143,12 @@ export const accountAtom = atom(async (get) => {
 // API Type fields
 export type CountryApi = { countryId: number; countryName: string };
 export type AcademicStatusApi = { academicStatusId: number; name: string };
-
+export type TermsAndConditionsApi = {
+  id: string | number;
+  description: string;
+  url: string;
+  body: string; // HTML string
+};
 // Backend responses from type fields
 type CountriesResponse = {
   countries: CountryApi[];
@@ -159,3 +176,16 @@ export const academicStatusesAtom = atom(async (get) => {
 
   return response.academicStatuses || []
 })
+
+export const termsAndConditionsAtom = atom(async (get) => {
+  if (!get(tokenAtom)) return null;
+  const response = (await fetchApiJson("/terms-and-conditions", {
+    method: "GET", body: null,
+  })) as TermsAndConditionsApi | { error: any };
+
+  if ((response as any)?.error) return null;
+
+  return response as TermsAndConditionsApi;
+});
+
+export const termsAndConditionsLoadableAtom = loadable(termsAndConditionsAtom);
