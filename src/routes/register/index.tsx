@@ -16,6 +16,11 @@ import RegistrationLayout from "@/components/registration-layout";
 export const Route = createFileRoute("/register/")({
   component: RegisterStart,
   head: () => ({ meta: [{ title: `Register | ${siteTitle}` }] }),
+  validateSearch: (search: Record<string, unknown>) => {
+    return {
+      error: typeof search.error === "string" ? search.error : undefined,
+    };
+  },
 });
 
 const formSchema = z.object({
@@ -26,6 +31,7 @@ function RegisterStart() {
   const [email, setEmail] = useAtom(emailAtom);
   const [otpStatus, sendOtp] = useAtom(sendOtpAtom);
   const navigate = useNavigate();
+  const { error } = Route.useSearch();
 
   const form = useAppForm({
     defaultValues: {
@@ -48,6 +54,16 @@ function RegisterStart() {
         Welcome! Create an account to use ACCESS resources and start or join
         projects.
       </p>
+      {error === "ineligible_domain" && (
+        <Alert variant="destructive">
+          <TriangleAlert />
+          <AlertTitle>Email domain ineligible</AlertTitle>
+          <AlertDescription>
+            This email domain is not eligible for ACCESS. Please try a different email address.
+          </AlertDescription>
+        </Alert>
+      )}
+
       {otpStatus?.error && (
         <Alert variant="destructive">
           <TriangleAlert />
