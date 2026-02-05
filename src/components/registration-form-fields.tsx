@@ -1,18 +1,14 @@
 import { withForm } from "@/hooks/form";
 import { FieldGroup } from "@/components/ui/field";
+import { useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
+
 // Imports for API interaction
 import { useAtom } from "jotai";
-import { countriesAtom, academicStatusesAtom } from "@/helpers/state";
+import { countriesAtom, academicStatusesAtom, domainAtom } from "@/helpers/state";
 
 // Option type defines selectable options for form fields
 type Option = { label: string; value: string };
-
-// ROLE_OPTIONS defines selectable user roles
-const INSTITUTION_OPTIONS: Option[] = [
-    { value: "university_of_michigan", label: "University of Michigan" },
-    { value: "university_of_slip_rock", label: "Slippery Rock University" },
-    { value: "university_of_indiana", label: "IUP" },
-];
 
 const RegistrationFormInputs = withForm({
     defaultValues: {
@@ -25,23 +21,43 @@ const RegistrationFormInputs = withForm({
         citizenshipCountry: "",
     },
     render: function Render({ form }) {
-        // Fetching countries and academic status via atoms
+        const navigate = useNavigate();
+
+        // Fetching countries, academic status, and domains via atoms
         const [countries] = useAtom(countriesAtom);
         const [academicStatuses] = useAtom(academicStatusesAtom);
-    
+        const [domain] = useAtom(domainAtom);
+
+        useEffect(() => {
+            if (domain === null) {
+                navigate({
+                    to: "/register",
+                    search: { error: "ineligible_domain" },
+                    replace: true,
+                });
+            }
+    }, [domain, navigate]);
+
         // Mapping API response to Option
         const countryOptions: Option[] =
-          countries.map((country) => ({
-            value: country.countryId.toString(),
-            label: country.countryName,
-          }));
-    
+            countries.map((country) => ({
+                value: country.countryId.toString(),
+                label: country.countryName,
+            }));
+
         const academicStatusOptions: Option[] =
-          academicStatuses.map((status) => ({
-            value: status.academicStatusId.toString(),
-            label: status.name,
-          }));
-    
+            academicStatuses.map((status) => ({
+                value: status.academicStatusId.toString(),
+                label: status.name,
+            }));
+        
+        const domainOptions: Option[] =
+            domain?.organizations?.map((org: any) => ({
+              value: org.organizationId.toString(),
+              label: org.organizationName,
+            })) ?? [];
+        
+
         return (
 
             <FieldGroup>
@@ -87,7 +103,7 @@ const RegistrationFormInputs = withForm({
                                 value={value}
                                 onChange={(v) => field.setValue(v ?? "")}
                                 placeholder="Select your institution"
-                                options={INSTITUTION_OPTIONS}
+                                options={domainOptions.length > 0 ? domainOptions : [{ label: "No eligible institutions found", value: ""}]}
                                 required
                             />
                         );
