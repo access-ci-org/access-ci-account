@@ -148,7 +148,7 @@ export const countriesAtom = atom(async (get) => {
     method: "GET", body: null,
   })) as CountriesResponse;
 
-return response.countries || []
+  return response.countries || []
 })
 
 export const academicStatusesAtom = atom(async (get) => {
@@ -161,17 +161,54 @@ export const academicStatusesAtom = atom(async (get) => {
 })
 
 // Retrieving Domain information based on email address
+export type Idp = {
+  displayName: string;
+  entityId: string;
+};
+
+export type CarnegieCategory = {
+  category_id: number;
+  category: string;
+  display_category: string;
+  relative_order: number;
+  description: string | null;
+  is_active: boolean;
+};
+
+export type Organization = {
+  organizationId: number;
+  orgTypeId: number;
+  organizationAbbrev: string | null;
+  organizationName: string | null;
+  organizationUrl: string | null;
+  organizationPhone: string | null;
+  nsfOrgCode: string | null;
+  isReconciled: boolean;
+  amieName: string | null;
+  countryId: number | null;
+  stateId: number | null;
+  latitude: string | null;
+  longitude: string | null;
+  isMsi: boolean | null;
+  isActive: boolean;
+
+  carnegieCategories: CarnegieCategory[];
+  state: string | null;
+  country: string | null;
+  orgType: string | null;
+};
+
 
 // Pulls domain from email address
 const getDomainFromEmail = (email: string) => {
   if (!email) return null;
   const email_parts = email.trim().toLowerCase().split("@");
-if (email_parts.length !==2 || !email_parts[1]) return null;
+  if (email_parts.length !== 2 || !email_parts[1]) return null;
   return email_parts[1];
 }
 
 // Domain lookup response 
-export type DomainResponse = { domain?: string; organizations?: unknown[]; idps?: unknown[]; }
+export type DomainResponse = { domain: string; organizations: Organization[]; idps: Idp[]; isEligible: boolean }
 
 export const domainAtom = atom(async (get) => {
   if (!get(tokenAtom)) return null;
@@ -181,9 +218,30 @@ export const domainAtom = atom(async (get) => {
 
   const response = (await fetchApiJson(`/domain/${domain}`, {
     method: "GET", body: null,
-  })) as DomainResponse | { error : unknown };
+  })) as DomainResponse | { error: { status: number; message: string } };
+  // Handle backend errors
   if ((response as any).error) {
-    return null;
+    const err = (response as any).error as { status?: number; message?: string };
+    const msg = (err?.message || "").toString();
+
+    // Handle ineligible domain case - sends 400 error 
+    if (err?.status === 400 && msg.includes("Ineligible domain")) {
+      return {
+        domain,
+        organizations: [],
+        idps: [],
+        isEligible: false,
+      } as DomainResponse;
+    }
+    return null; // For all other errors return null
   }
-  return response as DomainResponse;
+
+  // Success path: eligible
+  const data = response as DomainResponse;
+  return {
+    domain: data.domain,
+    organizations: data.organizations || [],
+    idps: data.idps || [],
+    isEligible: true,
+  };
 });
