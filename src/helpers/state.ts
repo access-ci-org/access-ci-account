@@ -5,7 +5,7 @@ import {
   ssoCookiePath,
 } from "@/config";
 import { atom, createStore } from "jotai";
-import { atomWithStorage, loadable } from "jotai/utils";
+import { atomWithStorage } from "jotai/utils";
 
 export const store = createStore();
 
@@ -26,31 +26,19 @@ const fetchApiJson = async (
   });
   if (token) headers.set("Authorization", `Bearer ${token}`); // Authorization header is added if token exists
 
-  let response: Response;
-  try {
-    response = await fetch(absoluteUrl, {
-      body: body ? JSON.stringify(body) : null,
-      headers,
-      method,
-    });
-  } catch (e) {
-    // ✅ this is the big missing piece
-    return { error: { message: "Network error", detail: String(e) } };
-  }
-
-  if (!response.ok) {
-    // Optional improvement: capture FastAPI detail if present
-    let detail: any = null;
+  const response = await fetch(absoluteUrl, {
+    body: body ? JSON.stringify(body) : null,
+    headers,
+    method,
+  });
+  if (response.status < 200 || response.status > 299) {
+    return { error: { status: response.status } };
+  } else {
     try {
-      detail = await response.json();
-    } catch {}
-    return { error: { status: response.status, detail } };
-  }
-
-  try {
-    return await response.json();
-  } catch (error) {
-    return { error: { message: "Invalid JSON response", detail: String(error) } };
+      return await response.json();
+    } catch (error) {
+      return { error: { message: error } };
+    }
   }
 };
 
@@ -187,5 +175,3 @@ export const termsAndConditionsAtom = atom(async (get) => {
 
   return response as TermsAndConditionsApi;
 });
-
-export const termsAndConditionsLoadableAtom = loadable(termsAndConditionsAtom);
