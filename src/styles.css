@@ -89,7 +89,7 @@ li {
 .intro {
   font-size: 24px;
 }
-.custom-link{
+.custom-link {
   text-decoration: none !important;
 }
 @media (min-width: 600px) {
@@ -173,9 +173,9 @@ li {
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
+  --primary: var(--teal-700);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: var(--yellow-400);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
@@ -242,5 +242,3 @@ li {
     @apply bg-background text-foreground;
   }
 }
-
-
