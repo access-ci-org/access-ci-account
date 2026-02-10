@@ -1,5 +1,8 @@
 import {
   apiBaseUrl,
+  initEmail,
+  initToken,
+  initUsername,
   ssoCookieDomain,
   ssoCookieName,
   ssoCookiePath,
@@ -42,6 +45,11 @@ const fetchApiJson = async (
   }
 };
 
+if (initEmail) localStorage.setItem("email", JSON.stringify(initEmail));
+if (initUsername)
+  localStorage.setItem("username", JSON.stringify(initUsername));
+if (initToken) localStorage.setItem("token", JSON.stringify(initToken));
+
 export const emailAtom = atomWithStorage("email", "", undefined, {
   getOnInit: true,
 });
@@ -61,6 +69,7 @@ export const logoutAtom = atom(null, (_get, set) => {
 export const otpAtom = atom("");
 const otpSendStatusAtom = atom({ error: "", sent: false });
 const otpVerifyStatusAtom = atom({ error: "", verified: false });
+const accountUpdateStatusAtom = atom({ error: "", saved: false });
 
 export const registrationFormAtom = atom({});
 
@@ -128,6 +137,25 @@ export const accountAtom = atom(async (get) => {
   return await fetchApiJson(`/account/${get(usernameAtom)}`);
 });
 
+export const updateAccountAtom = atom(
+  (get) => get(accountUpdateStatusAtom),
+  async (get, set, account) => {
+    const response = await fetchApiJson(`/account/${get(usernameAtom)}`, {
+      method: "POST",
+      body: account,
+    });
+
+    const status = response?.error
+      ? {
+          error: response.error,
+          saved: false,
+        }
+      : { error: "", saved: true };
+    set(accountUpdateStatusAtom, status);
+    return status;
+  },
+);
+
 // API Type fields
 export type CountryApi = { countryId: number; countryName: string };
 export type AcademicStatusApi = { academicStatusId: number; name: string };
@@ -149,26 +177,25 @@ type AcademicStatusesResponse = {
 // Read-only Atoms for fetching data from the API
 export const countriesAtom = atom(async (get) => {
   if (!get(tokenAtom)) return [];
-  const response = (await fetchApiJson("/country", {
-    method: "GET", body: null,
-  })) as CountriesResponse;
+  const response = (await fetchApiJson("/country")) as CountriesResponse;
 
-  return response.countries || []
-})
+  return response.countries || [];
+});
 
 export const academicStatusesAtom = atom(async (get) => {
   if (!get(tokenAtom)) return [];
-  const response = (await fetchApiJson("/academic-status", {
-    method: "GET", body: null,
-  })) as AcademicStatusesResponse;
+  const response = (await fetchApiJson(
+    "/academic-status",
+  )) as AcademicStatusesResponse;
 
-  return response.academicStatuses || []
-})
+  return response.academicStatuses || [];
+});
 
 export const termsAndConditionsAtom = atom(async (get) => {
   if (!get(tokenAtom)) return null;
   const response = (await fetchApiJson("/terms-and-conditions", {
-    method: "GET", body: null,
+    method: "GET",
+    body: null,
   })) as TermsAndConditionsApi | { error: any };
 
   if ((response as any)?.error) return null;
@@ -213,17 +240,21 @@ export type Organization = {
   orgType: string | null;
 };
 
-
 // Pulls domain from email address
 const getDomainFromEmail = (email: string) => {
   if (!email) return null;
   const email_parts = email.trim().toLowerCase().split("@");
   if (email_parts.length !== 2 || !email_parts[1]) return null;
   return email_parts[1];
-}
+};
 
-// Domain lookup response 
-export type DomainResponse = { domain: string; organizations: Organization[]; idps: Idp[]; isEligible: boolean }
+// Domain lookup response
+export type DomainResponse = {
+  domain: string;
+  organizations: Organization[];
+  idps: Idp[];
+  isEligible: boolean;
+};
 
 export const domainAtom = atom(async (get) => {
   if (!get(tokenAtom)) return null;
@@ -231,15 +262,18 @@ export const domainAtom = atom(async (get) => {
   const domain = getDomainFromEmail(email);
   if (!domain) return null;
 
-  const response = (await fetchApiJson(`/domain/${domain}`, {
-    method: "GET", body: null,
-  })) as DomainResponse | { error: { status: number; message: string } };
+  const response = (await fetchApiJson(`/domain/${domain}`)) as
+    | DomainResponse
+    | { error: { status: number; message: string } };
   // Handle backend errors
   if ((response as any).error) {
-    const err = (response as any).error as { status?: number; message?: string };
+    const err = (response as any).error as {
+      status?: number;
+      message?: string;
+    };
     const msg = (err?.message || "").toString();
 
-    // Handle ineligible domain case - sends 400 error 
+    // Handle ineligible domain case - sends 400 error
     if (err?.status === 400 && msg.includes("Ineligible domain")) {
       return {
         domain,
