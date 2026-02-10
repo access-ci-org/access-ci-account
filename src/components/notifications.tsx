@@ -46,39 +46,37 @@ export function NotificationsBar() {
 
     return (
         <div className="w-full">
-            <div className="mx-auto w-full max-w-5xl px-4 pt-4">
-                <div className="space-y-2">
-                    {notifications.map((n) => (
-                        <div
-                            key={n.id}
-                            className={cn(
-                                "relative rounded-xl border p-4 shadow-sm",
-                                variantClasses(n.variant),
-                            )}
-                            role="status"
-                            aria-live="polite"
-                        >
-                            <div className="pr-10">
-                                {n.title ? (
-                                    <div className="text-sm font-semibold">{n.title}</div>
-                                ) : null}
-                                <div className="text-sm">{n.message}</div>
-                            </div>
-
-                            {n.dismissible !== false ? (
-                                <button
-                                    type="button"
-                                    onClick={() => dismiss(n.id)}
-                                    className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-black/5"
-                                    aria-label="Dismiss notification"
-                                >
-                                    <X className="h-4 w-4" />
-                                </button>
+            <div className="space-y-2">
+                {notifications.map((n) => (
+                    <div
+                        key={n.id}
+                        className={cn(
+                            "relative rounded-xl border p-4 shadow-sm",
+                            variantClasses(n.variant),
+                        )}
+                        role="status"
+                        aria-live="polite"
+                    >
+                        <div className="pr-10">
+                            {n.title ? (
+                                <div className="text-sm font-semibold">{n.title}</div>
                             ) : null}
+                            <div className="text-sm">{n.message}</div>
                         </div>
-                    ))}
-                </div>
-            </div>
+
+                        {n.dismissible !== false ? (
+                            <button
+                                type="button"
+                                onClick={() => dismiss(n.id)}
+                                className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-black/5"
+                                aria-label="Dismiss notification"
+                            >
+                                <X className="h-4 w-4" />
+                            </button>
+                        ) : null}
+                    </div>
+                ))}
+            </div>   
         </div>
     );
 }
