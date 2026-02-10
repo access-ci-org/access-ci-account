@@ -12,6 +12,9 @@ import type { QueryClient } from "@tanstack/react-query";
 import { Provider } from "jotai";
 import { store } from "@/helpers/state";
 
+// Notifications
+import { NotificationsBar } from "@/components/notifications";
+
 interface MyRouterContext {
   queryClient: QueryClient;
 }
@@ -20,6 +23,10 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
     <Provider store={store}>
       <HeadContent />
+      
+      {/* Notifications below header */}
+      <NotificationsBar />
+
       <Outlet />
       <TanStackDevtools
         config={{
