@@ -131,7 +131,12 @@ export const accountAtom = atom(async (get) => {
 // API Type fields
 export type CountryApi = { countryId: number; countryName: string };
 export type AcademicStatusApi = { academicStatusId: number; name: string };
-
+export type TermsAndConditionsApi = {
+  id: string | number;
+  description: string;
+  url: string;
+  body: string; // HTML string
+};
 // Backend responses from type fields
 type CountriesResponse = {
   countries: CountryApi[];
@@ -160,6 +165,16 @@ export const academicStatusesAtom = atom(async (get) => {
   return response.academicStatuses || []
 })
 
+export const termsAndConditionsAtom = atom(async (get) => {
+  if (!get(tokenAtom)) return null;
+  const response = (await fetchApiJson("/terms-and-conditions", {
+    method: "GET", body: null,
+  })) as TermsAndConditionsApi | { error: any };
+
+  if ((response as any)?.error) return null;
+
+  return response as TermsAndConditionsApi;
+});
 // Retrieving Domain information based on email address
 export type Idp = {
   displayName: string;
