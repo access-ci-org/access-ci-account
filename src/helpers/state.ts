@@ -193,10 +193,9 @@ export const academicStatusesAtom = atom(async (get) => {
 
 export const termsAndConditionsAtom = atom(async (get) => {
   if (!get(tokenAtom)) return null;
-  const response = (await fetchApiJson("/terms-and-conditions", {
-    method: "GET",
-    body: null,
-  })) as TermsAndConditionsApi | { error: any };
+  const response = (await fetchApiJson("/terms-and-conditions")) as
+    | TermsAndConditionsApi
+    | { error: any };
 
   if ((response as any)?.error) return null;
 
