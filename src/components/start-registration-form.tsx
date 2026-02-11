@@ -9,8 +9,32 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Field, FieldGroup } from "@/components/ui/field";
+// Notifcation Imports
+import { NotificationsBar } from "@/components/notifications";
+import { notificationsAtom } from "@/helpers/notification";
+import { useSetAtom } from "jotai";
 
 const StartRegistrationForm = withForm({
+  const setNotifications = useSetAtom(notificationsAtom);
+
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.get("error") === "ineligible_domain") {
+      setNotifications((prev) => [
+        ...prev,
+        {
+          id: crypto.randomUUID(),
+          variant: "error",
+          title: "Ineligible Email Domain",
+          message:
+            params.get("message") ||
+            "Email domain is ineligible for ACCESS.",
+          autoCloseMs: 8000, // optional
+        },
+      ]);
+    }
+  }, [setNotifications]);
   defaultValues: {
     email: "",
   },
@@ -23,6 +47,7 @@ const StartRegistrationForm = withForm({
         }}
       >
         <Card className="w-full max-w-lg my-5">
+          <NotificationsBar />
           <CardHeader>
             <CardTitle>Start Registration</CardTitle>
             <CardDescription>

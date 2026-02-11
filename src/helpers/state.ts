@@ -253,6 +253,7 @@ export type DomainResponse = {
   organizations: Organization[];
   idps: Idp[];
   isEligible: boolean;
+  isActive: boolean;
 };
 
 export const domainAtom = atom(async (get) => {
@@ -279,6 +280,7 @@ export const domainAtom = atom(async (get) => {
         organizations: [],
         idps: [],
         isEligible: false,
+        isActive: false,
       } as DomainResponse;
     }
     return null; // For all other errors return null
@@ -291,5 +293,6 @@ export const domainAtom = atom(async (get) => {
     organizations: data.organizations || [],
     idps: data.idps || [],
     isEligible: true,
+    isActive: true,
   };
 });
