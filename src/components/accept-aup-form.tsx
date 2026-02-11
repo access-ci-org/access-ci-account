@@ -1,6 +1,18 @@
-import { withForm } from "@/hooks/form"
-import { Card, CardHeader, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import * as React from "react"
+import { withForm } from "@/hooks/form"
+import { useAtomValue, useSetAtom } from "jotai"
+import {
+  Card,
+  CardHeader,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card"
+
+import { registrationDataAtom } from "@/helpers/registration-data"
+import { usernameAtom } from "@/helpers/state"
+import { useNavigate } from "@tanstack/react-router"
+
 import TermsAndConditionsBox from "@/components/terms-and-conditions-box"
 
 const AcceptAupForm = withForm({
