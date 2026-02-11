@@ -1,4 +1,6 @@
+import * as React from "react"
 import { withForm } from "@/hooks/form"
+import { useAtomValue, useSetAtom } from "jotai"
 import {
   Card,
   CardHeader,
@@ -6,6 +8,10 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card"
+
+import { registrationDataAtom } from "@/helpers/registration-data"
+import { usernameAtom } from "@/helpers/state"
+import { useNavigate } from "@tanstack/react-router"
 
 
 const AcceptAupForm = withForm({
