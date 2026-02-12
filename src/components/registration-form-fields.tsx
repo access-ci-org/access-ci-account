@@ -2,7 +2,7 @@ import { withForm } from "@/hooks/form";
 import { FieldGroup } from "@/components/ui/field";
 // Imports for API interaction
 import { useAtom } from "jotai";
-import { countriesAtom, academicStatusesAtom, domainAtom} from "@/helpers/state";
+import { countriesAtom, academicStatusesAtom, domainAtom } from "@/helpers/state";
 
 // Navigation Imports
 import { useNavigate } from "@tanstack/react-router";
@@ -29,40 +29,44 @@ const RegistrationFormInputs = withForm({
         // Fetching countries, academic status, and domains via atoms
         const [countries] = useAtom(countriesAtom);
         const [academicStatuses] = useAtom(academicStatusesAtom);
+
         const [domain] = useAtom(domainAtom);
+        const noKnownOrgs = Array.isArray(domain) && domain.length === 0;
 
         useEffect(() => {
             if (domain === null) {
                 navigate({
                     to: "/register",
-                    search: { 
+                    search: {
                         error: "ineligible_domain",
-                        message: "The email domain you entered is ineligible for ACCESS registration. Please use another email address, or open a help ticket here."
                     },
                     replace: true,
                 });
             }
         }, [domain, navigate]);
-    
+
         // Mapping API response to Option
         const countryOptions: Option[] =
-          countries.map((country) => ({
-            value: country.countryId.toString(),
-            label: country.countryName,
-          }));
-    
+            countries.map((country) => ({
+                value: country.countryId.toString(),
+                label: country.countryName,
+            }));
+
         const academicStatusOptions: Option[] =
-          academicStatuses.map((status) => ({
-            value: status.academicStatusId.toString(),
-            label: status.name,
-          }));
+            academicStatuses.map((status) => ({
+                value: status.academicStatusId.toString(),
+                label: status.name,
+            }));
 
         const domainOptions: Option[] =
-            domain?.organizations?.map((org: any) => ({
-            value: org.organizationId.toString(),
-            label: org.organizationName,
+            domain?.map((org) => ({
+                value: org.organizationId.toString(),
+                label:
+                    org.organizationName ??
+                    org.organizationAbbrev ??
+                    `Organization ${org.organizationId}`,
             })) ?? [];
-    
+
         return (
 
             <FieldGroup>
@@ -97,6 +101,20 @@ const RegistrationFormInputs = withForm({
                         />
                     )}
                 />
+                {noKnownOrgs && (
+                    <p className="!text-sm text-muted-foreground">
+                        We couldn’t find any organizations matching your email domain. Please open a help ticket{" "}
+                        <a
+                            href="https://support.access-ci.org/"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="underline"
+                        >
+                            here
+                        </a>{" "}
+                        to request that your organization be added.
+                    </p>
+                )}
                 <form.AppField
                     name="institution"
                     children={(field) => {
@@ -108,7 +126,7 @@ const RegistrationFormInputs = withForm({
                                 value={value}
                                 onChange={(v) => field.setValue(v ?? "")}
                                 placeholder="Select your institution"
-                                options={domainOptions.length > 0 ? domainOptions : [{ label: "No eligible institutions found", value: "No eligible institutions found, please open a help ticket here: "}]}
+                                options={domainOptions}
                                 required
                             />
                         );

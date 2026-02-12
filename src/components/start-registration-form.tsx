@@ -1,3 +1,5 @@
+"use client";
+import React from "react";
 import { withForm } from "@/hooks/form";
 
 import {
@@ -9,36 +11,46 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Field, FieldGroup } from "@/components/ui/field";
-// Notifcation Imports
-import { NotificationsBar } from "@/components/notifications";
+
 import { notificationsAtom } from "@/helpers/notification";
 import { useSetAtom } from "jotai";
 
 const StartRegistrationForm = withForm({
-  const setNotifications = useSetAtom(notificationsAtom);
-
-  React.useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-
-    if (params.get("error") === "ineligible_domain") {
-      setNotifications((prev) => [
-        ...prev,
-        {
-          id: crypto.randomUUID(),
-          variant: "error",
-          title: "Ineligible Email Domain",
-          message:
-            params.get("message") ||
-            "Email domain is ineligible for ACCESS.",
-          autoCloseMs: 8000, // optional
-        },
-      ]);
-    }
-  }, [setNotifications]);
   defaultValues: {
     email: "",
   },
   render: function Render({ form }) {
+    const setNotifications = useSetAtom(notificationsAtom);
+
+    React.useEffect(() => {
+      const params = new URLSearchParams(window.location.search);
+
+      if (params.get("error") === "ineligible_domain") {
+        setNotifications((prev) => [
+          ...prev,
+          {
+            id: crypto.randomUUID(),
+            variant: "error",
+            title: "Ineligible Email Domain",
+            message: (
+              <p className="!text-sm text-muted-foreground">
+                We couldn’t find any organizations matching your email domain. Please open a help ticket{" "}
+                <a
+                  href="https://support.access-ci.org/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline"
+                >
+                  here
+                </a>{" "}
+                to request that your organization be added.
+              </p>
+            ),
+          },
+        ]);
+      }
+    }, [setNotifications]);
+
     return (
       <form
         onSubmit={(e) => {
@@ -47,12 +59,10 @@ const StartRegistrationForm = withForm({
         }}
       >
         <Card className="w-full max-w-lg my-5">
-          <NotificationsBar />
           <CardHeader>
             <CardTitle>Start Registration</CardTitle>
             <CardDescription>
-              Enter your university or work email address to start the
-              registration process.
+              Enter your university or work email address to start the registration process.
             </CardDescription>
           </CardHeader>
           <CardContent>

@@ -5,7 +5,7 @@ export type NotificationType = 'success' | 'error' | 'info' | 'warning';
 export type AppNotification = {
     id: string;
     title?: string;
-    message: string;
+    message: React.ReactNode | string;
     variant?: NotificationType;
     dismissible?: boolean;
     autoCloseMs?: number; // time in milliseconds to auto close the notification

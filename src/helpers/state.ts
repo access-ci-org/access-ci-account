@@ -147,9 +147,9 @@ export const updateAccountAtom = atom(
 
     const status = response?.error
       ? {
-          error: response.error,
-          saved: false,
-        }
+        error: response.error,
+        saved: false,
+      }
       : { error: "", saved: true };
     set(accountUpdateStatusAtom, status);
     return status;
@@ -201,6 +201,7 @@ export const termsAndConditionsAtom = atom(async (get) => {
 
   return response as TermsAndConditionsApi;
 });
+
 // Retrieving Domain information based on email address
 export type Idp = {
   displayName: string;
@@ -232,6 +233,7 @@ export type Organization = {
   longitude: string | null;
   isMsi: boolean | null;
   isActive: boolean;
+  isEligible: boolean | null;
 
   carnegieCategories: CarnegieCategory[];
   state: string | null;
@@ -239,6 +241,7 @@ export type Organization = {
   orgType: string | null;
 };
 
+// --------- Helper functions for Domain Atom ---------
 // Pulls domain from email address
 const getDomainFromEmail = (email: string) => {
   if (!email) return null;
@@ -246,15 +249,20 @@ const getDomainFromEmail = (email: string) => {
   if (email_parts.length !== 2 || !email_parts[1]) return null;
   return email_parts[1];
 };
+// Checks eligibility of the domain
+const isOrgActiveAndEligible = (org: Organization) => {
+  return org.isActive === true && org.isEligible === true;
+};
 
 // Domain lookup response
 export type DomainResponse = {
   domain: string;
   organizations: Organization[];
   idps: Idp[];
-  isEligible: boolean;
-  isActive: boolean;
 };
+
+// Domain look up result
+export type DomainOrganizations = Organization[] | null;
 
 export const domainAtom = atom(async (get) => {
   if (!get(tokenAtom)) return null;
@@ -266,33 +274,18 @@ export const domainAtom = atom(async (get) => {
     | DomainResponse
     | { error: { status: number; message: string } };
   // Handle backend errors
-  if ((response as any).error) {
-    const err = (response as any).error as {
-      status?: number;
-      message?: string;
-    };
-    const msg = (err?.message || "").toString();
-
-    // Handle ineligible domain case - sends 400 error
-    if (err?.status === 400 && msg.includes("Ineligible domain")) {
-      return {
-        domain,
-        organizations: [],
-        idps: [],
-        isEligible: false,
-        isActive: false,
-      } as DomainResponse;
-    }
-    return null; // For all other errors return null
+  if ((response as any)?.error) {
+    return null;
   }
 
   // Success path: eligible
   const data = response as DomainResponse;
-  return {
-    domain: data.domain,
-    organizations: data.organizations || [],
-    idps: data.idps || [],
-    isEligible: true,
-    isActive: true,
-  };
+
+  const rawOrgs = data.organizations ?? [];
+  const filteredOrgs = rawOrgs.filter(isOrgActiveAndEligible);
+  
+  if (rawOrgs.length === 0) return [];      // unknown domain / no org matches
+  if (filteredOrgs.length === 0) return null; // known but ineligible
+
+  return filteredOrgs; // eligible orgs
 });
