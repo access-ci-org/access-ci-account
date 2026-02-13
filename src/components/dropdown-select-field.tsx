@@ -1,10 +1,28 @@
-import Select from "react-select";
+import Select, { type MultiValue } from "react-select";
 import { useFieldContext } from "@/hooks/form-context";
 import { FieldLabel, FieldError } from "@/components/ui/field";
 import type React from "react";
 import { cn } from "@/lib/utils";
 
 export type Option<T> = { label: string; value: T };
+
+type DropdownSelectFieldProps<T, IsMulti extends boolean = boolean> = {
+  name: string;
+  label?: React.ReactNode;
+  options: Option<T>[];
+  placeholder?: string;
+  required?: boolean;
+} & (IsMulti extends true
+  ? {
+      value?: T[];
+      defaultValue?: T[];
+      onChange?: (value: T[] | null) => void;
+    }
+  : {
+      value?: T;
+      defaultValue?: T;
+      onChange?: (value: T | null) => void;
+    });
 
 export default function DropdownSelectField<T>({
   name,
@@ -14,21 +32,13 @@ export default function DropdownSelectField<T>({
   onChange,
   placeholder,
   required,
-}: {
-  name: string;
-  label?: React.ReactNode;
-  options: Option<T>[];
-  value?: T;
-  defaultValue?: T;
-  onChange?: (value: T | null) => void;
-  placeholder?: string;
-  required?: boolean;
-}) {
+}: DropdownSelectFieldProps<T, boolean>) {
   // Returns null if no matching option is found or if the value is undefined.
-  const toOption = (val?: T): Option<T> | null => {
+  const toOption = (val?: T | T[]): Option<T> | Option<T>[] | null => {
     if (!val) return null;
     // Find the option in the options array where the option's value matches the input val.
     // If no matching option is found, return null.
+    if (Array.isArray(val)) return options.filter((o) => val.includes(o.value));
     return options.find((o) => o.value === val) ?? null;
   };
 
@@ -37,8 +47,13 @@ export default function DropdownSelectField<T>({
 
   // Called when user makes a selection
   // 'next' represents the selected option object or null if selection is cleared.
-  const handleChange = (next: Option<T> | null) => {
-    onChange?.(next ? next.value : null);
+  const handleChange = (next: Option<T> | MultiValue<Option<T>> | null) => {
+    const newValue = next
+      ? "value" in next
+        ? next.value
+        : next.map((item) => item.value)
+      : null;
+    onChange?.(newValue as (T & T[]) | null);
   };
 
   const field = useFieldContext<string>();
@@ -58,6 +73,7 @@ export default function DropdownSelectField<T>({
         name={field.name}
         placeholder={placeholder}
         value={selectedOption}
+        isMulti={Array.isArray(value)}
         onChange={handleChange}
         inputId={name}
         instanceId={name}

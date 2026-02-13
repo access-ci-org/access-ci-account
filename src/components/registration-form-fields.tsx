@@ -22,7 +22,7 @@ const RegistrationFormInputs = withForm({
     institution: 0,
     academicStatus: 0,
     residenceCountry: 0,
-    citizenshipCountry: 0,
+    citizenshipCountryIds: [] as number[],
   },
   render: function Render({ form }) {
     // Fetching countries and academic status via atoms
@@ -74,7 +74,7 @@ const RegistrationFormInputs = withForm({
                 label="Institution"
                 name="institution"
                 value={value}
-                onChange={(v) => field.setValue(v ?? 0)}
+                onChange={(v: number | null) => field.setValue(v ?? 0)}
                 placeholder="Select your institution"
                 options={INSTITUTION_OPTIONS}
                 required
@@ -91,7 +91,7 @@ const RegistrationFormInputs = withForm({
                 label="Academic Status"
                 name="academicStatus"
                 value={value}
-                onChange={(v) => field.setValue(v ?? 0)}
+                onChange={(v: number | null) => field.setValue(v ?? 0)}
                 placeholder="Select your academic status"
                 options={academicStatusOptions}
                 required
@@ -108,7 +108,7 @@ const RegistrationFormInputs = withForm({
                 label="Country of Residence"
                 name="residenceCountry"
                 value={value}
-                onChange={(v) => field.setValue(v ?? 0)}
+                onChange={(v: number | null) => field.setValue(v ?? 0)}
                 placeholder="Select your country of residence"
                 options={countryOptions}
                 required
@@ -117,15 +117,15 @@ const RegistrationFormInputs = withForm({
           }}
         />
         <form.AppField
-          name="citizenshipCountry"
+          name="citizenshipCountryIds"
           children={(field) => {
-            const value = field.state.value; // Ensures that value holds a string
+            const value: number[] = field.state.value;
             return (
-              <field.DropdownSelectField
+              <field.DropdownSelectField<number>
                 label="Country of Citizenship"
-                name="citizenshipCountry"
+                name="citizenshipCountryIds"
                 value={value}
-                onChange={(v) => field.setValue(v ?? 0)}
+                onChange={(v: number[] | null) => field.setValue(v ?? [])}
                 placeholder="Select your country of citizenship"
                 options={countryOptions}
                 required

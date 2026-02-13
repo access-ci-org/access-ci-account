@@ -47,7 +47,7 @@ const ProfileForm = withForm({
     institution: 0,
     academicStatus: 0,
     residenceCountry: 0,
-    citizenshipCountry: 0,
+    citizenshipCountryIds: [] as number[],
 
     // Profile-Form existing fields
     role: [] as string[],
@@ -106,7 +106,7 @@ const ProfileForm = withForm({
                       label="Degree"
                       name="degree"
                       value={value}
-                      onChange={(v) => field.setValue(v ?? "")}
+                      onChange={(v: string | null) => field.setValue(v ?? "")}
                       placeholder="Select degree level"
                       options={degreeOptions}
                     />
@@ -135,7 +135,7 @@ const ProfileForm = withForm({
                       label="Time Zone"
                       name="timeZone"
                       value={value}
-                      onChange={(v) => field.setValue(v ?? "")}
+                      onChange={(v: string | null) => field.setValue(v ?? "")}
                       placeholder="Select Time Zone"
                       options={TIMEZONE_OPTIONS}
                     />

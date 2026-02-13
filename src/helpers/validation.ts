@@ -21,7 +21,9 @@ export const profileFormSchema = z.object({
   institution: requiredNumber("Institution"),
   academicStatus: requiredNumber("Academic status"),
   residenceCountry: requiredNumber("Country of residence"),
-  citizenshipCountry: requiredNumber("Country of citizenship"),
+  citizenshipCountryIds: z
+    .array(z.number())
+    .min(1, { message: "At least one country of citizenship is required." }),
 });
 
 export type ProfileFormValues = z.infer<typeof profileFormSchema>;

@@ -20,19 +20,17 @@ function Profile() {
   const account = Route.useLoaderData();
   const form = useAppForm({
     defaultValues: {
-      email: account.email,
+      firstName: account.firstName as string,
+      lastName: account.lastName as string,
+      email: account.email as string,
+      institution: account.organizationId as number,
+      academicStatus: account.academicStatusId as number,
+      residenceCountry: account.residenceCountryId as number,
+      citizenshipCountryIds: account.citizenshipCountryIds as number[],
       role: [] as string[],
       degree: "",
       degreeField: "",
-      timeZone: account.timeZone,
-      firstName: account.firstName,
-      lastName: account.lastName,
-      institution: account.organizationId,
-      academicStatus: account.academicStatusId,
-      residenceCountry: account.residenceCountryId,
-      citizenshipCountry: account.citizenshipCountryIds?.length
-        ? account.citizenshipCountryIds[0]
-        : "",
+      timeZone: account.timeZone as string,
     },
     validators: {
       onSubmit: profileFormSchema,
