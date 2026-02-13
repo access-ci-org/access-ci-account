@@ -27,10 +27,12 @@ function Profile() {
       timeZone: account.timeZone,
       firstName: account.firstName,
       lastName: account.lastName,
-      institution: "",
-      academicStatus: "",
-      residenceCountry: "",
-      citizenshipCountry: "",
+      institution: account.organizationId,
+      academicStatus: account.academicStatusId,
+      residenceCountry: account.residenceCountryId,
+      citizenshipCountry: account.citizenshipCountryIds?.length
+        ? account.citizenshipCountryIds[0]
+        : "",
     },
     validators: {
       onSubmit: profileFormSchema,

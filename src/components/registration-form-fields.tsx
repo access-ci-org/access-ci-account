@@ -5,10 +5,10 @@ import { useAtomValue } from "jotai";
 import { countriesAtom, academicStatusesAtom } from "@/helpers/state";
 
 // Option type defines selectable options for form fields
-type Option = { label: string; value: string };
+type Option<T> = { label: string; value: T };
 
 // ROLE_OPTIONS defines selectable user roles
-const INSTITUTION_OPTIONS: Option[] = [
+const INSTITUTION_OPTIONS: Option<string>[] = [
   { value: "university_of_michigan", label: "University of Michigan" },
   { value: "university_of_slip_rock", label: "Slippery Rock University" },
   { value: "university_of_indiana", label: "IUP" },
@@ -30,15 +30,17 @@ const RegistrationFormInputs = withForm({
     const countries = useAtomValue(countriesAtom);
 
     // Mapping API response to Option
-    const countryOptions: Option[] = countries.map((country) => ({
-      value: country.countryId.toString(),
+    const countryOptions: Option<number>[] = countries.map((country) => ({
+      value: country.countryId,
       label: country.name,
     }));
 
-    const academicStatusOptions: Option[] = academicStatuses.map((status) => ({
-      value: status.academicStatusId.toString(),
-      label: status.name,
-    }));
+    const academicStatusOptions: Option<number>[] = academicStatuses.map(
+      (status) => ({
+        value: status.academicStatusId,
+        label: status.name,
+      }),
+    );
 
     return (
       <FieldGroup>
