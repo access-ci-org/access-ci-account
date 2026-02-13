@@ -21,7 +21,7 @@ const router = createRouter({
     ...TanStackQueryProviderContext,
   },
   defaultPendingComponent: () => <LoaderCircle className="animate-spin" />,
-  defaultPreload: "intent",
+  defaultPreload: false,
   scrollRestoration: true,
   defaultStructuralSharing: true,
   defaultPreloadStaleTime: 0,

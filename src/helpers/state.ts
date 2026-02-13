@@ -8,7 +8,7 @@ import {
   ssoCookiePath,
 } from "@/config";
 import { atom, createStore } from "jotai";
-import { atomWithStorage } from "jotai/utils";
+import { atomWithRefresh, atomWithStorage } from "jotai/utils";
 
 export const store = createStore();
 
@@ -133,7 +133,7 @@ export const verifyOtpAtom = atom(
   },
 );
 
-export const accountAtom = atom(async (get) => {
+export const accountAtom = atomWithRefresh(async (get) => {
   return await fetchApiJson(`/account/${get(usernameAtom)}`);
 });
 
