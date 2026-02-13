@@ -1,4 +1,4 @@
-import { withForm} from "@/hooks/form";
+import { withForm } from "@/hooks/form";
 
 import {
   Card,
@@ -10,8 +10,10 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldGroup } from "@/components/ui/field";
 
-// Import Registration Form to include in Profile Form Edit/View 
+// Import Registration Form to include in Profile Form Edit/View
 import RegistrationFormInputs from "./registration-form-fields";
+import { useAtomValue } from "jotai";
+import { degreesAtom } from "@/helpers/state";
 
 // Option type defines selectable options for form fields
 type Option = { label: string; value: string };
@@ -25,14 +27,6 @@ const ROLE_OPTIONS: Option[] = [
   { label: "Cyberinfrastructure (CI) Community Member", value: "ci_member" },
 ];
 
-// DEGREE_OPTIONS defines selectable degree levels
-const DEGREE_OPTIONS: Option[] = [
-  { label: "Bachelors", value: "bachelors" },
-  { label: "Masters", value: "masters" },
-  { label: "Ph.D.", value: "phd" },
-  { label: "Graduate Certificate", value: "grad_certificate" },
-];
-
 // TIMEZONE_OPTIONS defines selectable time zones
 const TIMEZONE_OPTIONS: Option[] = [
   { label: "Eastern Daylight Time (GMT-4) – Washington", value: "EDT" },
@@ -43,7 +37,6 @@ const TIMEZONE_OPTIONS: Option[] = [
   { label: "Alaska Daylight Time (GMT-8) – Anchorage", value: "AKDT" },
   { label: "Hawaii–Aleutian Standard Time (GMT-10) – Honolulu", value: "HST" },
 ];
-
 
 const ProfileForm = withForm({
   defaultValues: {
@@ -63,6 +56,13 @@ const ProfileForm = withForm({
     timeZone: "",
   },
   render: function Render({ form }) {
+    const degrees = useAtomValue(degreesAtom);
+    // Mapping API response to Option
+    const degreeOptions: Option[] = degrees.map((degree) => ({
+      value: degree.degreeId.toString(),
+      label: degree.name,
+    }));
+
     return (
       <form
         onSubmit={(e) => {
@@ -79,7 +79,7 @@ const ProfileForm = withForm({
             <FieldGroup>
               {/* Importing Complete Registration Form fields */}
               <RegistrationFormInputs form={form as any} />
- 
+
               {/* Role field captures the user's role with a single-select checkbox */}
               <form.AppField
                 name="role"
@@ -96,7 +96,6 @@ const ProfileForm = withForm({
                 }}
               />
 
-
               {/* Degree field captures the user's degree level with a dropdown select */}
               <form.AppField
                 name="degree"
@@ -109,7 +108,7 @@ const ProfileForm = withForm({
                       value={value}
                       onChange={(v) => field.setValue(v ?? "")}
                       placeholder="Select degree level"
-                      options={DEGREE_OPTIONS}
+                      options={degreeOptions}
                     />
                   );
                 }}
@@ -148,7 +147,7 @@ const ProfileForm = withForm({
           <CardFooter>
             <Field orientation="horizontal">
               <form.AppForm>
-                <form.SubmitButton label="Continue"/>
+                <form.SubmitButton label="Continue" />
               </form.AppForm>
             </Field>
           </CardFooter>

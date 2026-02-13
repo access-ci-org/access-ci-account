@@ -157,7 +157,8 @@ export const updateAccountAtom = atom(
 );
 
 // API Type fields
-export type CountryApi = { countryId: number; countryName: string };
+export type CountryApi = { countryId: number; name: string };
+export type DegreeApi = { degreeId: number; name: string };
 export type AcademicStatusApi = { academicStatusId: number; name: string };
 export type TermsAndConditionsApi = {
   id: string | number;
@@ -170,6 +171,10 @@ type CountriesResponse = {
   countries: CountryApi[];
 };
 
+type DegreesResponse = {
+  degrees: DegreeApi[];
+};
+
 type AcademicStatusesResponse = {
   academicStatuses: AcademicStatusApi[];
 };
@@ -178,8 +183,13 @@ type AcademicStatusesResponse = {
 export const countriesAtom = atom(async (get) => {
   if (!get(tokenAtom)) return [];
   const response = (await fetchApiJson("/country")) as CountriesResponse;
-
   return response.countries || [];
+});
+
+export const degreesAtom = atom(async (get) => {
+  if (!get(tokenAtom)) return [];
+  const response = (await fetchApiJson("/degree")) as DegreesResponse;
+  return response.degrees || [];
 });
 
 export const academicStatusesAtom = atom(async (get) => {
@@ -187,7 +197,6 @@ export const academicStatusesAtom = atom(async (get) => {
   const response = (await fetchApiJson(
     "/academic-status",
   )) as AcademicStatusesResponse;
-
   return response.academicStatuses || [];
 });
 
