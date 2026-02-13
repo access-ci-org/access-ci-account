@@ -8,10 +8,10 @@ import { countriesAtom, academicStatusesAtom } from "@/helpers/state";
 type Option<T> = { label: string; value: T };
 
 // ROLE_OPTIONS defines selectable user roles
-const INSTITUTION_OPTIONS: Option<string>[] = [
-  { value: "university_of_michigan", label: "University of Michigan" },
-  { value: "university_of_slip_rock", label: "Slippery Rock University" },
-  { value: "university_of_indiana", label: "IUP" },
+const INSTITUTION_OPTIONS: Option<number>[] = [
+  { value: 1, label: "University of Michigan" },
+  { value: 2, label: "Slippery Rock University" },
+  { value: 3, label: "IUP" },
 ];
 
 const RegistrationFormInputs = withForm({
@@ -19,10 +19,10 @@ const RegistrationFormInputs = withForm({
     firstName: "",
     lastName: "",
     email: "",
-    institution: "",
-    academicStatus: "",
-    residenceCountry: "",
-    citizenshipCountry: "",
+    institution: 0,
+    academicStatus: 0,
+    residenceCountry: 0,
+    citizenshipCountry: 0,
   },
   render: function Render({ form }) {
     // Fetching countries and academic status via atoms
@@ -74,7 +74,7 @@ const RegistrationFormInputs = withForm({
                 label="Institution"
                 name="institution"
                 value={value}
-                onChange={(v) => field.setValue(v ?? "")}
+                onChange={(v) => field.setValue(v ?? 0)}
                 placeholder="Select your institution"
                 options={INSTITUTION_OPTIONS}
                 required
@@ -91,7 +91,7 @@ const RegistrationFormInputs = withForm({
                 label="Academic Status"
                 name="academicStatus"
                 value={value}
-                onChange={(v) => field.setValue(v ?? "")}
+                onChange={(v) => field.setValue(v ?? 0)}
                 placeholder="Select your academic status"
                 options={academicStatusOptions}
                 required
@@ -108,7 +108,7 @@ const RegistrationFormInputs = withForm({
                 label="Country of Residence"
                 name="residenceCountry"
                 value={value}
-                onChange={(v) => field.setValue(v ?? "")}
+                onChange={(v) => field.setValue(v ?? 0)}
                 placeholder="Select your country of residence"
                 options={countryOptions}
                 required
@@ -125,7 +125,7 @@ const RegistrationFormInputs = withForm({
                 label="Country of Citizenship"
                 name="citizenshipCountry"
                 value={value}
-                onChange={(v) => field.setValue(v ?? "")}
+                onChange={(v) => field.setValue(v ?? 0)}
                 placeholder="Select your country of citizenship"
                 options={countryOptions}
                 required

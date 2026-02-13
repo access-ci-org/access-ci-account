@@ -1,10 +1,6 @@
 import { withForm } from "@/hooks/form";
 
-import {
-  Card,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Field, FieldGroup } from "@/components/ui/field";
 
 // Importing form input field for Registration Form
@@ -15,10 +11,10 @@ const CompleteRegistrationForm = withForm({
     firstName: "",
     lastName: "",
     email: "",
-    institution: "",
-    academicStatus: "",
-    residenceCountry: "",
-    citizenshipCountry: "",
+    institution: 0,
+    academicStatus: 0,
+    residenceCountry: 0,
+    citizenshipCountry: 0,
   },
   render: function Render({ form }) {
     return (
@@ -28,7 +24,7 @@ const CompleteRegistrationForm = withForm({
           form.handleSubmit();
         }}
       >
-        <Card className="w-full my-5 border-none rounded-none shadow-none bg-transparent bg-[var(--teal-050)]">
+        <Card className="w-full my-5 border-none rounded-none shadow-none bg-(--teal-050)]">
           <CardContent>
             <FieldGroup>
               <RegistrationFormInputs form={form as any} />

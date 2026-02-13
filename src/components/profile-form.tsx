@@ -44,10 +44,10 @@ const ProfileForm = withForm({
     firstName: "",
     lastName: "",
     email: "",
-    institution: "",
-    academicStatus: "",
-    residenceCountry: "",
-    citizenshipCountry: "",
+    institution: 0,
+    academicStatus: 0,
+    residenceCountry: 0,
+    citizenshipCountry: 0,
 
     // Profile-Form existing fields
     role: [] as string[],

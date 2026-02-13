@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate} from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useAppForm } from "@/hooks/form";
 import { siteTitle } from "@/config";
 import CompleteRegistrationForm from "@/components/complete-registration-form";
@@ -11,7 +11,6 @@ export const Route = createFileRoute("/register/complete")({
   head: () => ({ meta: [{ title: `Register | ${siteTitle}` }] }),
 });
 
-
 function RegisterComplete() {
   const navigate = useNavigate();
   const form = useAppForm({
@@ -19,10 +18,10 @@ function RegisterComplete() {
       firstName: "",
       lastName: "",
       email: "",
-      institution: "",
-      academicStatus: "",
-      residenceCountry: "",
-      citizenshipCountry: "",
+      institution: 0,
+      academicStatus: 0,
+      residenceCountry: 0,
+      citizenshipCountry: 0,
     },
     validators: {
       onSubmit: profileFormSchema,
@@ -31,15 +30,14 @@ function RegisterComplete() {
       console.log(value);
       navigate({ to: "/register/aup" });
     },
-    
   });
-  
+
   return (
     <>
       <h1>ACCESS Required Registration Information</h1>
       <RegistrationLayout
-      left={<CompleteRegistrationForm form= {form} />}
-      right={<ProgressBar />}
+        left={<CompleteRegistrationForm form={form} />}
+        right={<ProgressBar />}
       />
     </>
   );

@@ -4,6 +4,9 @@ import * as z from "zod";
 const requiredString = (label: string) =>
   z.string().min(1, { message: `${label} is required.` });
 
+const requiredNumber = (label: string) =>
+  z.number().min(0, { message: `${label} is required.` });
+
 export const profileFormSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
 
@@ -15,10 +18,10 @@ export const profileFormSchema = z.object({
 
   firstName: requiredString("First name"),
   lastName: requiredString("Last name"),
-  institution: requiredString("Institution"),
-  academicStatus: requiredString("Academic status"),
-  residenceCountry: requiredString("Country of residence"),
-  citizenshipCountry: requiredString("Country of citizenship"),
+  institution: requiredNumber("Institution"),
+  academicStatus: requiredNumber("Academic status"),
+  residenceCountry: requiredNumber("Country of residence"),
+  citizenshipCountry: requiredNumber("Country of citizenship"),
 });
 
 export type ProfileFormValues = z.infer<typeof profileFormSchema>;
