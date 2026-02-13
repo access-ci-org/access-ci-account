@@ -5,6 +5,7 @@ import ProgressBar from "@/components/progress-bar";
 import AcceptAupForm from "@/components/accept-aup-form";
 import { useAppForm } from "@/hooks/form";
 import * as z from "zod";
+import { useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/register/aup")({
   component: AcceptableUsePolicy,
@@ -20,6 +21,7 @@ const formSchema = z.object({
 });
 
 function AcceptableUsePolicy() {
+  const navigate = useNavigate();
   const form = useAppForm({
       defaultValues: {
         accepted: false,
@@ -27,8 +29,8 @@ function AcceptableUsePolicy() {
       validators: {
         onSubmit: formSchema,
       },
-      onSubmit: async ({ value }) => {
-        console.log(value);
+      onSubmit: async () => {
+        navigate({ to: "/success" });
       },
       
     });
@@ -41,5 +43,3 @@ function AcceptableUsePolicy() {
     </>
   );
 }
-
-export default AcceptableUsePolicy;
