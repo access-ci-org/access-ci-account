@@ -30,7 +30,7 @@ function AcceptableUsePolicy() {
         onSubmit: formSchema,
       },
       onSubmit: async () => {
-        navigate({ to: "/success" });
+        navigate({ to: "/register/success" });
       },
       
     });

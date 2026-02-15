@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SuccessRouteImport } from './routes/success'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PasswordRouteImport } from './routes/password'
 import { Route as LogoutRouteImport } from './routes/logout'
@@ -19,14 +18,10 @@ import { Route as AuthTokenRouteImport } from './routes/auth-token'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RegisterIndexRouteImport } from './routes/register/index'
 import { Route as RegisterVerifyRouteImport } from './routes/register/verify'
+import { Route as RegisterSuccessRouteImport } from './routes/register/success'
 import { Route as RegisterCompleteRouteImport } from './routes/register/complete'
 import { Route as RegisterAupRouteImport } from './routes/register/aup'
 
-const SuccessRoute = SuccessRouteImport.update({
-  id: '/success',
-  path: '/success',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -72,6 +67,11 @@ const RegisterVerifyRoute = RegisterVerifyRouteImport.update({
   path: '/register/verify',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RegisterSuccessRoute = RegisterSuccessRouteImport.update({
+  id: '/register/success',
+  path: '/register/success',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RegisterCompleteRoute = RegisterCompleteRouteImport.update({
   id: '/register/complete',
   path: '/register/complete',
@@ -91,9 +91,9 @@ export interface FileRoutesByFullPath {
   '/logout': typeof LogoutRoute
   '/password': typeof PasswordRoute
   '/profile': typeof ProfileRoute
-  '/success': typeof SuccessRoute
   '/register/aup': typeof RegisterAupRoute
   '/register/complete': typeof RegisterCompleteRoute
+  '/register/success': typeof RegisterSuccessRoute
   '/register/verify': typeof RegisterVerifyRoute
   '/register': typeof RegisterIndexRoute
 }
@@ -105,9 +105,9 @@ export interface FileRoutesByTo {
   '/logout': typeof LogoutRoute
   '/password': typeof PasswordRoute
   '/profile': typeof ProfileRoute
-  '/success': typeof SuccessRoute
   '/register/aup': typeof RegisterAupRoute
   '/register/complete': typeof RegisterCompleteRoute
+  '/register/success': typeof RegisterSuccessRoute
   '/register/verify': typeof RegisterVerifyRoute
   '/register': typeof RegisterIndexRoute
 }
@@ -120,9 +120,9 @@ export interface FileRoutesById {
   '/logout': typeof LogoutRoute
   '/password': typeof PasswordRoute
   '/profile': typeof ProfileRoute
-  '/success': typeof SuccessRoute
   '/register/aup': typeof RegisterAupRoute
   '/register/complete': typeof RegisterCompleteRoute
+  '/register/success': typeof RegisterSuccessRoute
   '/register/verify': typeof RegisterVerifyRoute
   '/register/': typeof RegisterIndexRoute
 }
@@ -136,9 +136,9 @@ export interface FileRouteTypes {
     | '/logout'
     | '/password'
     | '/profile'
-    | '/success'
     | '/register/aup'
     | '/register/complete'
+    | '/register/success'
     | '/register/verify'
     | '/register'
   fileRoutesByTo: FileRoutesByTo
@@ -150,9 +150,9 @@ export interface FileRouteTypes {
     | '/logout'
     | '/password'
     | '/profile'
-    | '/success'
     | '/register/aup'
     | '/register/complete'
+    | '/register/success'
     | '/register/verify'
     | '/register'
   id:
@@ -164,9 +164,9 @@ export interface FileRouteTypes {
     | '/logout'
     | '/password'
     | '/profile'
-    | '/success'
     | '/register/aup'
     | '/register/complete'
+    | '/register/success'
     | '/register/verify'
     | '/register/'
   fileRoutesById: FileRoutesById
@@ -179,22 +179,15 @@ export interface RootRouteChildren {
   LogoutRoute: typeof LogoutRoute
   PasswordRoute: typeof PasswordRoute
   ProfileRoute: typeof ProfileRoute
-  SuccessRoute: typeof SuccessRoute
   RegisterAupRoute: typeof RegisterAupRoute
   RegisterCompleteRoute: typeof RegisterCompleteRoute
+  RegisterSuccessRoute: typeof RegisterSuccessRoute
   RegisterVerifyRoute: typeof RegisterVerifyRoute
   RegisterIndexRoute: typeof RegisterIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/success': {
-      id: '/success'
-      path: '/success'
-      fullPath: '/success'
-      preLoaderRoute: typeof SuccessRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/profile': {
       id: '/profile'
       path: '/profile'
@@ -258,6 +251,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterVerifyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/register/success': {
+      id: '/register/success'
+      path: '/register/success'
+      fullPath: '/register/success'
+      preLoaderRoute: typeof RegisterSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/register/complete': {
       id: '/register/complete'
       path: '/register/complete'
@@ -283,9 +283,9 @@ const rootRouteChildren: RootRouteChildren = {
   LogoutRoute: LogoutRoute,
   PasswordRoute: PasswordRoute,
   ProfileRoute: ProfileRoute,
-  SuccessRoute: SuccessRoute,
   RegisterAupRoute: RegisterAupRoute,
   RegisterCompleteRoute: RegisterCompleteRoute,
+  RegisterSuccessRoute: RegisterSuccessRoute,
   RegisterVerifyRoute: RegisterVerifyRoute,
   RegisterIndexRoute: RegisterIndexRoute,
 }
