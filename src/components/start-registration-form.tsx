@@ -12,45 +12,11 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldGroup } from "@/components/ui/field";
 
-import { notificationsAtom } from "@/helpers/notification";
-import { useSetAtom } from "jotai";
-
 const StartRegistrationForm = withForm({
   defaultValues: {
     email: "",
   },
   render: function Render({ form }) {
-    const setNotifications = useSetAtom(notificationsAtom);
-
-    React.useEffect(() => {
-      const params = new URLSearchParams(window.location.search);
-
-      if (params.get("error") === "ineligible_domain") {
-        setNotifications((prev) => [
-          ...prev,
-          {
-            id: crypto.randomUUID(),
-            variant: "error",
-            title: "Ineligible Email Domain",
-            message: (
-              <p className="!text-sm text-muted-foreground">
-                We couldn’t find any organizations matching your email domain. Please open a help ticket{" "}
-                <a
-                  href="https://support.access-ci.org/"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="underline"
-                >
-                  here
-                </a>{" "}
-                to request that your organization be added.
-              </p>
-            ),
-          },
-        ]);
-      }
-    }, [setNotifications]);
-
     return (
       <form
         onSubmit={(e) => {

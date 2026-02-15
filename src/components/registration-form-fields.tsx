@@ -1,12 +1,18 @@
 import { withForm } from "@/hooks/form";
 import { FieldGroup } from "@/components/ui/field";
+import React from "react";
+
 // Imports for API interaction
-import { useAtom } from "jotai";
-import { countriesAtom, academicStatusesAtom, domainAtom } from "@/helpers/state";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import {
+    dismissNotificationAtom,
+    notificationsAtom,
+    pushNotificationAtom,
+} from "@/helpers/notification";
+import { countriesAtom, academicStatusesAtom, domainAtom, emailAtom } from "@/helpers/state";
 
 // Navigation Imports
 import { useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
 
 
 // Option type defines selectable options for form fields
@@ -31,19 +37,9 @@ const RegistrationFormInputs = withForm({
         const [academicStatuses] = useAtom(academicStatusesAtom);
 
         const [domain] = useAtom(domainAtom);
-        const noKnownOrgs = Array.isArray(domain) && domain.length === 0;
+        const pushNotification = useSetAtom(pushNotificationAtom);
 
-        useEffect(() => {
-            if (domain === null) {
-                navigate({
-                    to: "/register",
-                    search: {
-                        error: "ineligible_domain",
-                    },
-                    replace: true,
-                });
-            }
-        }, [domain, navigate]);
+        const notifications = useAtomValue(notificationsAtom);
 
         // Mapping API response to Option
         const countryOptions: Option[] =
@@ -66,6 +62,66 @@ const RegistrationFormInputs = withForm({
                     org.organizationAbbrev ??
                     `Organization ${org.organizationId}`,
             })) ?? [];
+
+        const email = useAtomValue(emailAtom);
+        const emailDomain = email?.split("@")[1]?.toLowerCase() ?? null;
+
+        React.useEffect(() => {
+            // Ineligible
+            if (domain === null) {
+                const id = "ineligible-email-domain";
+                const alreadyShown = notifications.some((n) => n.id === id);
+
+                if (!alreadyShown) {
+                    pushNotification({
+                        id,
+                        variant: "error",
+                        title: "Ineligible Email Domain",
+                        message: (
+                            <>
+                                The email domain {emailDomain} is not eligible for ACCESS. Please try again
+                                with your university or work email address.
+                            </>
+                        ),
+                    });
+                }
+
+                navigate({ to: "/register", replace: true });
+                return;
+            }
+
+            // Unknown (no matching orgs)
+            else if (Array.isArray(domain) && domain.length === 0) {
+                const id = "unknown-email-domain";
+                const alreadyShown = notifications.some((n) => n.id === id);
+
+                if (!alreadyShown) {
+                    pushNotification({
+                        id,
+                        variant: "error",
+                        title: "Unknown Email Domain",
+                        message: (
+                            <>
+                                The email domain {emailDomain} is not yet registered with ACCESS. Please open a{" "}
+                                <a
+                                    href="https://support.access-ci.org/help-ticket"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="underline"
+                                >
+                                    help ticket
+                                </a>{" "}
+                                and ask to have your organization added to the ACCESS database.
+                            </>
+                        ),
+                    });
+                }
+
+                navigate({ to: "/register", replace: true });
+                return;
+            }
+        }, [domain, pushNotification, navigate, emailDomain]);
+
 
         return (
 
@@ -101,20 +157,7 @@ const RegistrationFormInputs = withForm({
                         />
                     )}
                 />
-                {noKnownOrgs && (
-                    <p className="!text-sm text-muted-foreground">
-                        We couldn’t find any organizations matching your email domain. Please open a help ticket{" "}
-                        <a
-                            href="https://support.access-ci.org/"
-                            target="_blank"
-                            rel="noreferrer"
-                            className="underline"
-                        >
-                            here
-                        </a>{" "}
-                        to request that your organization be added.
-                    </p>
-                )}
+
                 <form.AppField
                     name="institution"
                     children={(field) => {
