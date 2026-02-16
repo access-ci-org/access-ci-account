@@ -43,7 +43,7 @@ export function NotificationsBar() {
     if (notifications.length === 0) {
         return null;
     }
-
+    
     return (
         <div className="w-full">
             <div className="space-y-2">
@@ -76,7 +76,7 @@ export function NotificationsBar() {
                         ) : null}
                     </div>
                 ))}
-            </div>   
+            </div>
         </div>
     );
 }

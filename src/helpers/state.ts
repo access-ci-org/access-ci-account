@@ -255,8 +255,8 @@ export type DomainResponse = {
   domain: string;
   organizations: Organization[];
   idps: Idp[];
+  isEligible?: boolean;
 };
-
 
 export const domainAtom = atom(async (get) => {
   if (!get(tokenAtom)) return null;
@@ -297,7 +297,7 @@ export const domainAtom = atom(async (get) => {
 
   return {
     domain: data.domain,
-    organizations: filteredOrgs,
+    organizations: filteredOrgs || [],
     idps: data.idps || [],
     isEligible,
   };

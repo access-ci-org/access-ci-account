@@ -37,8 +37,8 @@ const RegistrationFormInputs = withForm({
         const [academicStatuses] = useAtom(academicStatusesAtom);
 
         const [domain] = useAtom(domainAtom);
+        
         const pushNotification = useSetAtom(pushNotificationAtom);
-
         const notifications = useAtomValue(notificationsAtom);
 
         // Mapping API response to Option
@@ -91,7 +91,7 @@ const RegistrationFormInputs = withForm({
             }
 
             // Unknown (no matching orgs)
-            else if (Array.isArray(domain) && domain.length === 0) {
+            else if (domain?.isEligible === true && (domain.organizations?.length ?? 0) === 0) {
                 const id = "unknown-email-domain";
                 const alreadyShown = notifications.some((n) => n.id === id);
 
