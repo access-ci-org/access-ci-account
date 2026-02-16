@@ -19,7 +19,7 @@ function Success() {
                     <>
                         <div className="p-8">
                             <ProgressBar />
-                            <Button asChild className="bg-secondary border-none text-black mt-4">
+                            <Button asChild className="bg-secondary border-none text-black mt-4 w-full">
                                 <a
                                     href="https://support.access-ci.org/help-ticket"
                                     target="_blank"
