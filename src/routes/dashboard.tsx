@@ -106,7 +106,7 @@ function Dashboard() {
             <DashboardCard
               icon={LifeBuoy}
               title="Help Tickets"
-              description="Find Help Tickts associated with your account."
+              description="Find help tickets associated with your account."
               to="https://access-ci.atlassian.net/servicedesk/customer/user/requests"
             />
           </div>
