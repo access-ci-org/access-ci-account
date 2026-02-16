@@ -9,6 +9,7 @@ import {
 } from "@/config";
 import { atom, createStore } from "jotai";
 import { atomWithRefresh, atomWithStorage } from "jotai/utils";
+import { parseJwt } from "./jwt";
 
 export const store = createStore();
 
@@ -109,6 +110,7 @@ export const verifyOtpAtom = atom(
     let status = {
       error: "Email address or verification code are not set.",
       verified: false,
+      username: null,
     };
     if (email && otp) {
       const response = await fetchApiJson("/auth/verify-otp", {
@@ -122,9 +124,11 @@ export const verifyOtpAtom = atom(
               ? "Verification code could not be checked. Please try again later."
               : response.error,
           verified: false,
+          username: null,
         };
       } else {
-        status = { error: "", verified: true }; // Check to make sure it has jwt
+        const jwt = parseJwt(response.jwt);
+        status = { error: "", verified: true, username: jwt?.uid || null };
         set(tokenAtom, response.jwt);
       }
     }

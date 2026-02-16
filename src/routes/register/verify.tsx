@@ -3,7 +3,7 @@ import { siteTitle } from "@/config";
 import { useAppForm } from "@/hooks/form";
 import * as z from "zod";
 import VerifyEmailForm from "@/components/email-verification-form";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import {
   emailAtom,
   otpAtom,
@@ -12,10 +12,13 @@ import {
   verifyOtpAtom,
 } from "@/helpers/state";
 
+import { Link } from "@tanstack/react-router";
+
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { TriangleAlert } from "lucide-react";
 import ProgressBar from "@/components/progress-bar";
 import RegistrationLayout from "@/components/registration-layout";
+import { pushNotificationAtom } from "@/helpers/notification";
 
 export const Route = createFileRoute("/register/verify")({
   component: RegisterVerify,
@@ -27,13 +30,16 @@ export const Route = createFileRoute("/register/verify")({
 });
 
 const formSchema = z.object({
-  otp: z.string().length(6, { message: "OTP code must be 6 digits and letters." }), // Only error is must be 6 digits due to only allowing numeric input
+  otp: z
+    .string()
+    .length(6, { message: "OTP code must be 6 digits and letters." }), // Only error is must be 6 digits due to only allowing numeric input
 });
 
 function RegisterVerify() {
-  const email = useAtomValue(emailAtom);
+  const [email, setEmail] = useAtom(emailAtom);
   const [otp, setOtp] = useAtom(otpAtom);
   const [verifyStatus, verifyOtp] = useAtom(verifyOtpAtom);
+  const pushNotification = useSetAtom(pushNotificationAtom);
   const navigate = useNavigate();
 
   const form = useAppForm({
@@ -46,8 +52,36 @@ function RegisterVerify() {
     onSubmit: async ({ value }) => {
       setOtp(value.otp);
       const status = await verifyOtp();
-      if (status.verified) {
-        setOtp("");
+      setOtp("");
+      if (!status.verified) {
+        pushNotification({
+          title: "Incorrect Code",
+          message:
+            "The verification code you entered did not match. Please try again.",
+          variant: "error",
+        });
+        setEmail("");
+        navigate({ to: "/register" });
+      } else if (status.username) {
+        setEmail("");
+        pushNotification({
+          title: "Existing Account",
+          message: (
+            <>
+              You already have an ACCESS account. Your ACCESS ID is{" "}
+              <strong>{status.username}</strong>. You can{" "}
+              <Link to="/login">login</Link> or
+              <a href="https://identity.access-ci.org/password-reset">
+                {" "}
+                reset your password
+              </a>
+              .
+            </>
+          ),
+          variant: "error",
+        });
+        navigate({ to: "/" });
+      } else {
         navigate({ to: "/register/complete" });
       }
     },
@@ -67,8 +101,8 @@ function RegisterVerify() {
         </Alert>
       )}
       <RegistrationLayout
-      left= {<VerifyEmailForm form={form} />}
-      right={<ProgressBar />}
+        left={<VerifyEmailForm form={form} />}
+        right={<ProgressBar />}
       />
     </>
   );
