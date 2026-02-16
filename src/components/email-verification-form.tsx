@@ -49,7 +49,7 @@ const VerifyEmailForm = withForm({
           <CardFooter className="flex justify-center items-center w-full pb-6 sm:pb-8 pt-0">
             <form.AppForm>
               <div className="w-44 sm:w-48 md:w-56 flex justify-center">
-                <form.SubmitButton label="Continue" />
+                <form.SubmitButton label="Continue" submittingLabel="Verifying..." />
               </div>
             </form.AppForm>
           </CardFooter>

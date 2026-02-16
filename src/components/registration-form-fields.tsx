@@ -45,11 +45,10 @@ const RegistrationFormInputs = withForm({
         }, [domain, navigate]);
     
         // Mapping API response to Option
-        const countryOptions: Option[] =
-          countries.map((country) => ({
-            value: country.countryId.toString(),
-            label: country.countryName,
-          }));
+        const countryOptions: Option[] = countries.map((country) => ({
+          value: country.countryId.toString(),
+          label: country.name,
+        }));
     
         const academicStatusOptions: Option[] =
           academicStatuses.map((status) => ({

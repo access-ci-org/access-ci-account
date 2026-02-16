@@ -85,7 +85,7 @@ const ProfileForm = withForm({
           <CardFooter>
             <Field orientation="horizontal">
               <form.AppForm>
-                <form.SubmitButton label="Continue"/>
+                <form.SubmitButton label="Continue" submittingLabel="Saving..." />
               </form.AppForm>
             </Field>
           </CardFooter>

@@ -11,6 +11,8 @@ import "./styles.css";
 import reportWebVitals from "./reportWebVitals.ts";
 import { LoaderCircle } from "lucide-react";
 
+import { store } from "@/helpers/state";
+import { Provider as JotaiProvider } from "jotai";
 // Create a new router instance
 
 const TanStackQueryProviderContext = TanStackQueryProvider.getContext();
@@ -40,9 +42,11 @@ if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-      <TanStackQueryProvider.Provider {...TanStackQueryProviderContext}>
-        <RouterProvider router={router} />
-      </TanStackQueryProvider.Provider>
+      <JotaiProvider store={store}>
+        <TanStackQueryProvider.Provider {...TanStackQueryProviderContext}>
+          <RouterProvider router={router} />
+        </TanStackQueryProvider.Provider>
+      </JotaiProvider>
     </StrictMode>,
   );
 }

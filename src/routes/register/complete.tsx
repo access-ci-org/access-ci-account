@@ -33,8 +33,7 @@ function RegisterComplete() {
       onSubmit: profileFormSchema,
     },
     onSubmit: async ({ value }) => {
-      // save form data to atom before redirecting to AUP path
-      setRegistrationData({
+      const payload = {
         first_name: value.firstName,
         last_name: value.lastName,
         email: value.email,
@@ -42,9 +41,10 @@ function RegisterComplete() {
         academic_status: value.academicStatus,
         residence_country: value.residenceCountry,
         citizenship_country: value.citizenshipCountry,
-      });
-      
-      navigate({ to: "/register/aup" });
+      }
+      setRegistrationData(payload)
+      await Promise.resolve() // Ensure state is set before navigating
+      navigate({ to: "/register/aup" })
     },
     
   });

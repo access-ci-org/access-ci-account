@@ -133,6 +133,46 @@ export const verifyOtpAtom = atom(
   },
 );
 
+const accountCreateStatusAtom = atom({
+  error: "",
+  created: false,
+  access_id: "",
+})
+
+export const createAccountAtom = atom(
+  (get) => get(accountCreateStatusAtom),
+  async (get, set, payload: any) => {
+    const resp = await fetchApiJson("/account", {
+      method: "POST",
+      body: payload,
+    })
+
+    if ((resp as any)?.error) {
+      const status = {
+        error:
+          typeof (resp as any).error === "number"
+            ? "Account could not be created. Please try again later."
+            : (resp as any).error?.message || "Account could not be created.",
+        created: false,
+        access_id: "",
+      }
+      set(accountCreateStatusAtom, status)
+      return status
+    }
+
+    const access_id = (resp as any).access_id || ""
+    const status = {
+      error: "",
+      created: true,
+      access_id,
+    }
+
+    set(accountCreateStatusAtom, status)
+    if (access_id) set(usernameAtom, access_id) // Populate usernameAtom here (centralized)
+    return status
+  },
+)
+
 export const accountAtom = atom(async (get) => {
   return await fetchApiJson(`/account/${get(usernameAtom)}`);
 });
@@ -157,7 +197,7 @@ export const updateAccountAtom = atom(
 );
 
 // API Type fields
-export type CountryApi = { countryId: number; countryName: string };
+export type CountryApi = { countryId: number; name: string };
 export type AcademicStatusApi = { academicStatusId: number; name: string };
 export type TermsAndConditionsApi = {
   id: string | number;
