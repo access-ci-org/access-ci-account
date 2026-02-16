@@ -7,18 +7,18 @@ import { useAtomValue } from "jotai";
 import { domainAtom } from "@/helpers/state";
 
 
-export default function SuccessMessage() {
+export default function RegistrationSuccessMethod() {
     const domain = useAtomValue(domainAtom);
     const idpName =
         domain?.idps && domain.idps.length > 0
             ? domain.idps[0].displayName
-            : "your institution";
+            : "ACCESS CI (XSEDE)";
 
     return (
         <div>
             <h1 className="mb-4">ACCESS Registration</h1>
             <div className="mb-4 flex">
-                <Card className="w-full" style={{ backgroundColor: "#ecf9f8" }}>
+                <Card>
                     <div className="p-6">
                         <p className="font-semibold">  Your new ACCESS ID is <span className="text-primary font-bold"> {/* ACCESS ID HERE */} </span> </p>
                         <p> To log in to ACCESS: </p>
