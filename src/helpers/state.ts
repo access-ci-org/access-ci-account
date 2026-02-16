@@ -249,10 +249,6 @@ const getDomainFromEmail = (email: string) => {
   if (email_parts.length !== 2 || !email_parts[1]) return null;
   return email_parts[1];
 };
-// Checks eligibility of the domain
-const isOrgActiveAndEligible = (org: Organization) => {
-  return org.isActive === true && org.isEligible === true;
-};
 
 // Domain lookup response
 export type DomainResponse = {
@@ -261,8 +257,6 @@ export type DomainResponse = {
   idps: Idp[];
 };
 
-// Domain look up result
-export type DomainOrganizations = Organization[] | null;
 
 export const domainAtom = atom(async (get) => {
   if (!get(tokenAtom)) return null;
@@ -274,18 +268,37 @@ export const domainAtom = atom(async (get) => {
     | DomainResponse
     | { error: { status: number; message: string } };
   // Handle backend errors
-  if ((response as any)?.error) {
-    return null;
+  if ((response as any).error) {
+    const err = (response as any).error as {
+      status?: number;
+      message?: string;
+    };
+    const msg = (err?.message || "").toString();
+
+    // Handle ineligible domain case - sends 400 error
+    if (err?.status === 400 && msg.includes("Ineligible domain")) {
+      return {
+        domain,
+        organizations: [],
+        idps: [],
+        isEligible: false,
+      } as DomainResponse;
+    }
+    return null; // For all other errors return null
   }
 
-  // Success path: eligible
+  // Success path: non-400 response
   const data = response as DomainResponse;
+  const rawOrgs = data.organizations || [];
+  const filteredOrgs = rawOrgs.filter((o) => o.isActive && o.isEligible === true);
 
-  const rawOrgs = data.organizations ?? [];
-  const filteredOrgs = rawOrgs.filter(isOrgActiveAndEligible);
-  
-  if (rawOrgs.length === 0) return [];      // unknown domain / no org matches
-  if (filteredOrgs.length === 0) return null; // known but ineligible
+  // Domain is considered eligible if... 
+  const isEligible = rawOrgs.length === 0 || filteredOrgs.length > 0;
 
-  return filteredOrgs; // eligible orgs
+  return {
+    domain: data.domain,
+    organizations: filteredOrgs,
+    idps: data.idps || [],
+    isEligible,
+  };
 });

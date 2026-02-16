@@ -55,7 +55,7 @@ const RegistrationFormInputs = withForm({
             }));
 
         const domainOptions: Option[] =
-            domain?.map((org) => ({
+            domain?.organizations?.map((org) => ({
                 value: org.organizationId.toString(),
                 label:
                     org.organizationName ??
