@@ -54,7 +54,7 @@ function Profile() {
         lastName: value.lastName,
         email: value.email,
         organizationId: value.institution,
-        academicStatus: value.academicStatus,
+        academicStatusId: value.academicStatus,
         residenceCountryId: value.residenceCountry,
         citizenshipCountryIds: value.citizenshipCountryIds,
         timeZone: value.timeZone,
