@@ -302,23 +302,3 @@ export const domainAtom = atom(async (get) => {
     isEligible: true,
   };
 });
-
-// Domain IdP lookup result
-export type DomainIdps = Idp[] | null;
-
-export const idpsAtom = atom(async (get) => {
-  if (!get(tokenAtom)) return null;
-  const email = get(emailAtom);
-  const domain = getDomainFromEmail(email);
-  if (!domain) return null;
-
-  const response = (await fetchApiJson(`/domain/${domain}`)) as
-    | DomainResponse
-    | { error: { status: number; message: string } };
-
-  // Handle backend errors (including ineligible domain)
-  if ((response as any)?.error) return null;
-
-  const data = response as DomainResponse;
-  return data.idps ?? [];
-});
