@@ -22,7 +22,7 @@ const StartRegistrationForm = withForm({
           form.handleSubmit();
         }}
       >
-        <Card className="w-full max-w-lg my-5">
+        <Card>
           <CardHeader>
             <CardTitle>Start Registration</CardTitle>
             <CardDescription>
@@ -38,6 +38,7 @@ const StartRegistrationForm = withForm({
                   <field.TextField
                     label="Email Address"
                     placeholder="University or work email address"
+                    className="max-w-lg"
                   />
                 )}
               />

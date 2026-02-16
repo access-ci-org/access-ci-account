@@ -21,21 +21,21 @@ const formSchema = z.object({
 
 function AcceptableUsePolicy() {
   const form = useAppForm({
-      defaultValues: {
-        accepted: false,
-      },
-      validators: {
-        onSubmit: formSchema,
-      },
-      onSubmit: async ({ value }) => {
-        console.log(value);
-      },
-      
-    });
+    defaultValues: {
+      accepted: false,
+    },
+    validators: {
+      onSubmit: formSchema,
+    },
+    onSubmit: async ({ value }) => {
+      console.log(value);
+    },
+  });
   return (
     <>
+      <h1>Acceptable Use Policy</h1>
       <RegistrationLayout
-        left={<AcceptAupForm form={form}/>}
+        left={<AcceptAupForm form={form} />}
         right={<ProgressBar />}
       />
     </>

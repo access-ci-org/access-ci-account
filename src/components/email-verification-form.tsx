@@ -15,14 +15,7 @@ const VerifyEmailForm = withForm({
         }}
         className="w-full flex justify-start px-3 sm:px-0"
       >
-        <Card
-          className="
-            w-full
-            max-w-[90%] sm:max-w-[26rem] md:max-w-[30rem] lg:max-w-[32rem]
-            rounded-2xl border border-gray-100 shadow-lg shadow-gray-200/50
-            mt-4 sm:mt-6
-          "
-        >
+        <Card>
           <CardContent
             className="
               flex flex-col items-center text-center
@@ -39,7 +32,7 @@ const VerifyEmailForm = withForm({
                     name="otp"
                     label="Enter the 6-digit code"
                     length={6}
-                    placeholder="Check your email for the verification code"
+                    placeholder="Check your email for the verification code."
                   />
                 )}
               />

@@ -24,7 +24,7 @@ const CompleteRegistrationForm = withForm({
           form.handleSubmit();
         }}
       >
-        <Card className="w-full my-5 border-none rounded-none shadow-none bg-(--teal-050)]">
+        <Card className="w-full">
           <CardContent>
             <FieldGroup>
               <RegistrationFormInputs

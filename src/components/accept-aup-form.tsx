@@ -1,7 +1,13 @@
-import { withForm } from "@/hooks/form"
-import { Card, CardHeader, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
-import * as React from "react"
-import TermsAndConditionsBox from "@/components/terms-and-conditions-box"
+import { withForm } from "@/hooks/form";
+import {
+  Card,
+  CardHeader,
+  CardDescription,
+  CardContent,
+  CardFooter,
+  CardTitle,
+} from "@/components/ui/card";
+import TermsAndConditionsBox from "@/components/terms-and-conditions-box";
 
 const AcceptAupForm = withForm({
   defaultValues: { accepted: false },
@@ -10,27 +16,26 @@ const AcceptAupForm = withForm({
     return (
       <form
         onSubmit={(e) => {
-          e.preventDefault()
-          form.handleSubmit()
+          e.preventDefault();
+          form.handleSubmit();
         }}
       >
-        <Card className="w-full my-5 border-none rounded-none shadow-none bg-transparent bg-[var(--teal-050)]">
-          <CardHeader className="text-lg font-bold font-archivo text-[24px]">
-            Acceptable Use Policy
-            <CardDescription className="font-normal">
-              Please review and accept the ACCESS terms of service to continue.
+        <Card>
+          <CardHeader>
+            <CardTitle>Review Acceptable Use Profile</CardTitle>
+            <CardDescription>
+              Please review and accept the ACCESS acceptable use policy to
+              continue.
             </CardDescription>
           </CardHeader>
 
           <CardContent className="space-y-4">
-            <React.Suspense fallback={<p>Loading terms and conditions...</p>}>
-              <TermsAndConditionsBox />
-            </React.Suspense>
+            <TermsAndConditionsBox />
 
             <form.AppField name="accepted">
               {(field) => (
                 <field.CheckboxField
-                  label="I agree to abide by the ACCESS terms of service."
+                  label="I agree to abide by the ACCESS acceptable use policy."
                   required
                 />
               )}
@@ -46,9 +51,8 @@ const AcceptAupForm = withForm({
           </CardFooter>
         </Card>
       </form>
-    )
+    );
   },
-})
+});
 
-export default AcceptAupForm
-
+export default AcceptAupForm;

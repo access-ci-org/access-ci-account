@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { siteTitle } from "@/config";
 
-
 import {
   User,
   Folder,
@@ -13,11 +12,7 @@ import {
   CheckCircle2Icon,
 } from "lucide-react";
 
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@/components/ui/alert"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { DashboardCard } from "@/components/dashboard-card";
 
 export const Route = createFileRoute("/dashboard")({
@@ -31,16 +26,26 @@ function Dashboard() {
       <h1>My ACCESS Account</h1>
       <div className="min-h-full pt-3">
         <div>
-          <Alert className= "border-none rounded-none shadow-none bg-transparent bg-[var(--teal-050)] p-4">
+          <Alert className="border-none rounded-none shadow-none bg-transparent bg-[var(--teal-050)] p-4">
             <CheckCircle2Icon />
-            <AlertTitle className="text-lg font-medium">Congratulations! You've successfully created your ACCESS Account </AlertTitle>
+            <AlertTitle className="text-lg font-medium">
+              Congratulations! You've successfully created your ACCESS
+              Account{" "}
+            </AlertTitle>
             <AlertDescription>
               <h3 className="text-base"> Next steps: </h3>
               <ol className="list-decimal pl-5">
                 <div className="text-base">
-                  <li> Review and edit your profile. Share your account with ORCID.</li>
+                  <li>
+                    {" "}
+                    Review and edit your profile. Share your account with ORCID.
+                  </li>
                   <li> Start a project and get an allocation.</li>
-                  <li> Add information to your Community Personas and participate in the ACCESS community.</li>
+                  <li>
+                    {" "}
+                    Add information to your Community Personas and participate
+                    in the ACCESS community.
+                  </li>
                 </div>
               </ol>
             </AlertDescription>
@@ -101,7 +106,7 @@ function Dashboard() {
             <DashboardCard
               icon={LifeBuoy}
               title="Help Tickets"
-              description="Find Help Tickts assocaited with your account."
+              description="Find Help Tickts associated with your account."
               to="https://access-ci.atlassian.net/servicedesk/customer/user/requests"
             />
           </div>
