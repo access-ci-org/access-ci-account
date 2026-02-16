@@ -14,6 +14,10 @@ const INSTITUTION_OPTIONS: Option<number>[] = [
   { value: 3, label: "IUP" },
 ];
 
+type RegistrationFormInputsProps = {
+  isRegistration?: boolean;
+};
+
 const RegistrationFormInputs = withForm({
   defaultValues: {
     firstName: "",
@@ -24,7 +28,10 @@ const RegistrationFormInputs = withForm({
     residenceCountry: 0,
     citizenshipCountryIds: [] as number[],
   },
-  render: function Render({ form }) {
+  props: {
+    isRegistration: false,
+  } as RegistrationFormInputsProps,
+  render: function Render({ form, isRegistration }) {
     // Fetching countries and academic status via atoms
     const academicStatuses = useAtomValue(academicStatusesAtom);
     const countries = useAtomValue(countriesAtom);
@@ -62,6 +69,7 @@ const RegistrationFormInputs = withForm({
               label="Email Address"
               placeholder="University or work email address"
               required
+              disabled={isRegistration}
             />
           )}
         />

@@ -27,7 +27,10 @@ const CompleteRegistrationForm = withForm({
         <Card className="w-full my-5 border-none rounded-none shadow-none bg-(--teal-050)]">
           <CardContent>
             <FieldGroup>
-              <RegistrationFormInputs form={form as any} />
+              <RegistrationFormInputs
+                form={form as any}
+                isRegistration={true}
+              />
             </FieldGroup>
           </CardContent>
           <CardFooter>

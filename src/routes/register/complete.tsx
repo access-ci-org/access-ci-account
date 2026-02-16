@@ -5,6 +5,8 @@ import CompleteRegistrationForm from "@/components/complete-registration-form";
 import ProgressBar from "@/components/progress-bar";
 import RegistrationLayout from "@/components/registration-layout";
 import { profileFormSchema } from "@/helpers/validation";
+import { useAtomValue } from "jotai";
+import { emailAtom } from "@/helpers/state";
 
 export const Route = createFileRoute("/register/complete")({
   component: RegisterComplete,
@@ -13,11 +15,13 @@ export const Route = createFileRoute("/register/complete")({
 
 function RegisterComplete() {
   const navigate = useNavigate();
+  const email = useAtomValue(emailAtom);
+
   const form = useAppForm({
     defaultValues: {
       firstName: "",
       lastName: "",
-      email: "",
+      email,
       institution: 0,
       academicStatus: 0,
       residenceCountry: 0,
