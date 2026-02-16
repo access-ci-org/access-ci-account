@@ -4,12 +4,15 @@ import { Link } from "@tanstack/react-router";
 
 // Pulling API data
 import { useAtomValue } from "jotai";
-import { domainAtom } from "@/helpers/state";
+import { idpsAtom } from "@/helpers/state";
 
 
 export default function SuccessMessage() {
-    const domain = useAtomValue(domainAtom);
-    const idpName = domain?.idps?.[0]?.displayName;
+    const idps = useAtomValue(idpsAtom);
+    const idpName =
+        idps?.[0]?.displayName ??
+        idps?.[0]?.entityId ??
+        "your identity provider";
 
     return (
         <div>
