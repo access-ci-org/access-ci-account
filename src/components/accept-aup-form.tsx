@@ -24,7 +24,7 @@ const AcceptAupForm = withForm({
         <form
           onSubmit={(e) => {
             e.preventDefault()
-            form.handleSubmit() // ✅ this triggers the route's useAppForm onSubmit
+            form.handleSubmit() //this triggers the route's useAppForm onSubmit
           }}
         >
           <Card className="w-full my-5 border-none rounded-none shadow-none bg-transparent bg-[var(--teal-050)]">
