@@ -5,7 +5,6 @@ import React from "react";
 // Imports for API interaction
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
-    dismissNotificationAtom,
     notificationsAtom,
     pushNotificationAtom,
 } from "@/helpers/notification";
