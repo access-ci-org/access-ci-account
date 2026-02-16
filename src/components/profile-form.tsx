@@ -78,7 +78,7 @@ const ProfileForm = withForm({
           <CardContent>
             <FieldGroup>
               {/* Importing Complete Registration Form fields */}
-              <RegistrationFormInputs form={form as any} />
+              <RegistrationFormInputs form={form as any} isRegistration={false} />
 
               {/* Role field captures the user's role with a single-select checkbox */}
               <form.AppField

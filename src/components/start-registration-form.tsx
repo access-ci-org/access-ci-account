@@ -1,3 +1,5 @@
+"use client";
+import React from "react";
 import { withForm } from "@/hooks/form";
 
 import {
@@ -26,8 +28,7 @@ const StartRegistrationForm = withForm({
           <CardHeader>
             <CardTitle>Start Registration</CardTitle>
             <CardDescription>
-              Enter your university or work email address to start the
-              registration process.
+              Enter your university or work email address to start the registration process.
             </CardDescription>
           </CardHeader>
           <CardContent>

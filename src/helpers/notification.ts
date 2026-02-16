@@ -19,6 +19,11 @@ export const pushNotificationAtom = atom(
   null,
   (get, set, n: Omit<AppNotification, "id"> & { id?: string }) => {
     const id = n.id ?? crypto.randomUUID();
+
+    // Only show one notification with unique id 
+    const current = get(notificationsAtom);
+    if (current.some((x) => x.id === id)) return;
+
     const next: AppNotification = {
       id,
       variant: n.variant ?? "info",

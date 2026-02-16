@@ -151,9 +151,9 @@ export const updateAccountAtom = atom(
 
     const status = response?.error
       ? {
-          error: response.error,
-          saved: false,
-        }
+        error: response.error,
+        saved: false,
+      }
       : { error: "", saved: true };
     set(accountUpdateStatusAtom, status);
     return status;
@@ -214,6 +214,7 @@ export const termsAndConditionsAtom = atom(async (get) => {
 
   return response as TermsAndConditionsApi;
 });
+
 // Retrieving Domain information based on email address
 export type Idp = {
   displayName: string;
@@ -245,6 +246,7 @@ export type Organization = {
   longitude: string | null;
   isMsi: boolean | null;
   isActive: boolean;
+  isEligible: boolean | null;
 
   carnegieCategories: CarnegieCategory[];
   state: string | null;
@@ -252,6 +254,7 @@ export type Organization = {
   orgType: string | null;
 };
 
+// --------- Helper functions for Domain Atom ---------
 // Pulls domain from email address
 const getDomainFromEmail = (email: string) => {
   if (!email) return null;
@@ -265,7 +268,7 @@ export type DomainResponse = {
   domain: string;
   organizations: Organization[];
   idps: Idp[];
-  isEligible: boolean;
+  isEligible?: boolean;
 };
 
 export const domainAtom = atom(async (get) => {
@@ -297,12 +300,18 @@ export const domainAtom = atom(async (get) => {
     return null; // For all other errors return null
   }
 
-  // Success path: eligible
+  // Success path: non-400 response
   const data = response as DomainResponse;
+  const rawOrgs = data.organizations || [];
+  const filteredOrgs = rawOrgs.filter((o) => o.isActive && o.isEligible === true);
+
+  // Domain is considered eligible if... 
+  const isEligible = rawOrgs.length === 0 || filteredOrgs.length > 0;
+
   return {
     domain: data.domain,
-    organizations: data.organizations || [],
+    organizations: filteredOrgs || [],
     idps: data.idps || [],
-    isEligible: true,
+    isEligible,
   };
 });
