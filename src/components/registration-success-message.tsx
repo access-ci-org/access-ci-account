@@ -4,7 +4,7 @@ import { Link } from "@tanstack/react-router";
 
 // Pulling API data
 import { useAtomValue } from "jotai";
-import { domainAtom } from "@/helpers/state";
+import { domainAtom, usernameAtom } from "@/helpers/state";
 
 
 export default function RegistrationSuccessMethod() {
@@ -13,6 +13,8 @@ export default function RegistrationSuccessMethod() {
         domain?.idps && domain.idps.length > 0
             ? domain.idps[0].displayName
             : "ACCESS CI (XSEDE)";
+    const username = useAtomValue(usernameAtom);
+    console.log(idpName);
 
     return (
         <div>
@@ -20,7 +22,7 @@ export default function RegistrationSuccessMethod() {
             <div className="mb-4 flex">
                 <Card>
                     <div className="p-6">
-                        <p className="font-semibold">  Your new ACCESS ID is <span className="text-primary font-bold"> {/* ACCESS ID HERE */} </span> </p>
+                        <p className="font-semibold">  Your new ACCESS ID is <span className="text-primary font-bold"> {username} </span> </p>
                         <p> To log in to ACCESS: </p>
                         <ul className="list-disc pl-6">
                             <li> Select <span className="text-primary"> {idpName} </span> as your identity provider </li>
