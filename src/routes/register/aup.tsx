@@ -5,6 +5,7 @@ import ProgressBar from "@/components/progress-bar"
 import AcceptAupForm from "@/components/accept-aup-form"
 import { useAppForm } from "@/hooks/form"
 import * as z from "zod"
+import { useNavigate } from "@tanstack/react-router";
 
 import { store, createAccountAtom } from "@/helpers/state"
 import { registrationDataAtom } from "@/helpers/registration-data"
@@ -19,6 +20,7 @@ const formSchema = z.object({
 })
 
 function AcceptableUsePolicy() {
+  const navigate = useNavigate();
   const form = useAppForm({
     defaultValues: { accepted: false },
     validators: { onSubmit: formSchema },
@@ -47,6 +49,7 @@ function AcceptableUsePolicy() {
       if (status?.created) {
         store.set(registrationDataAtom, null)
         // navigate to next step here
+        navigate({ to: "/register/success" });
       }
     },
   })
