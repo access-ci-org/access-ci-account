@@ -28,15 +28,9 @@ const ROLE_OPTIONS: Option[] = [
 ];
 
 // TIMEZONE_OPTIONS defines selectable time zones
-const TIMEZONE_OPTIONS: Option[] = [
-  { label: "Eastern Daylight Time (GMT-4) – Washington", value: "EDT" },
-  { label: "Central Daylight Time (GMT-5) – Chicago", value: "CDT" },
-  { label: "Mountain Daylight Time (GMT-6) – Denver", value: "MDT" },
-  { label: "Mountain Standard Time (GMT-7) – Phoenix", value: "MST" },
-  { label: "Pacific Daylight Time (GMT-7) – Los Angeles", value: "PDT" },
-  { label: "Alaska Daylight Time (GMT-8) – Anchorage", value: "AKDT" },
-  { label: "Hawaii–Aleutian Standard Time (GMT-10) – Honolulu", value: "HST" },
-];
+const TIMEZONE_OPTIONS: Option[] = Intl.supportedValuesOf("timeZone").map(
+  (tz) => ({ label: tz, value: tz }),
+);
 
 const ProfileForm = withForm({
   defaultValues: {
