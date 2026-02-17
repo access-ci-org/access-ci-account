@@ -5,6 +5,9 @@ import CompleteRegistrationForm from "@/components/complete-registration-form";
 import ProgressBar from "@/components/progress-bar";
 import RegistrationLayout from "@/components/registration-layout";
 import { profileFormSchema } from "@/helpers/validation";
+
+import { useSetAtom } from "jotai";
+import { registrationDataAtom } from "@/helpers/registration-data";
 import { useAtomValue } from "jotai";
 import { emailAtom } from "@/helpers/state";
 
@@ -15,6 +18,8 @@ export const Route = createFileRoute("/register/complete")({
 
 function RegisterComplete() {
   const navigate = useNavigate();
+  const setRegistrationData = useSetAtom(registrationDataAtom);
+
   const email = useAtomValue(emailAtom);
 
   const form = useAppForm({
@@ -31,8 +36,18 @@ function RegisterComplete() {
       onSubmit: profileFormSchema,
     },
     onSubmit: async ({ value }) => {
-      console.log(value);
-      navigate({ to: "/register/aup" });
+      const payload = {
+        first_name: value.firstName,
+        last_name: value.lastName,
+        email: value.email,
+        institution: value.institution,
+        academic_status: value.academicStatus,
+        residence_country: value.residenceCountry,
+        citizenship_country: value.citizenshipCountryIds,
+      }
+      setRegistrationData(payload)
+      await Promise.resolve() // Ensure state is set before navigating
+      navigate({ to: "/register/aup" })
     },
   });
 

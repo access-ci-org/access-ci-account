@@ -137,6 +137,46 @@ export const verifyOtpAtom = atom(
   },
 );
 
+const accountCreateStatusAtom = atom({
+  error: "",
+  created: false,
+  username: "",
+})
+
+export const createAccountAtom = atom(
+  (get) => get(accountCreateStatusAtom),
+  async (get, set, payload: any) => {
+    const resp = await fetchApiJson("/account", {
+      method: "POST",
+      body: payload,
+    })
+
+    if ((resp as any)?.error) {
+      const status = {
+        error:
+          typeof (resp as any).error === "number"
+            ? "Account could not be created. Please try again later."
+            : (resp as any).error?.message || "Account could not be created.",
+        created: false,
+        username: "",
+      }
+      set(accountCreateStatusAtom, status)
+      return status
+    }
+
+    const username = (resp as any).username || ""
+    const status = {
+      error: "",
+      created: true,
+      username,
+    }
+
+    set(accountCreateStatusAtom, status)
+    if (username) set(usernameAtom, username) // Populate usernameAtom here (centralized)
+    return status
+  },
+)
+
 export const accountAtom = atomWithRefresh(async (get) => {
   return await fetchApiJson(`/account/${get(usernameAtom)}`);
 });

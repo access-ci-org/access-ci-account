@@ -36,7 +36,7 @@ const CompleteRegistrationForm = withForm({
           <CardFooter>
             <Field orientation="horizontal">
               <form.AppForm>
-                <form.SubmitButton label="Continue" />
+                <form.SubmitButton label="Continue"/>
               </form.AppForm>
             </Field>
           </CardFooter>
