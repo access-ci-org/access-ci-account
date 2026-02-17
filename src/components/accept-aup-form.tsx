@@ -31,19 +31,19 @@ const AcceptAupForm = withForm({
             <CardHeader className="text-lg font-bold font-archivo text-[24px]">
               Acceptable Use Policy
               <CardDescription className="font-normal">
-                Please review and accept the ACCESS terms of service to continue.
+                Please review and accept the ACCESS Acceptable Use Policy to continue.
               </CardDescription>
             </CardHeader>
 
             <CardContent className="space-y-4">
-              <React.Suspense fallback={<p>Loading terms and conditions...</p>}>
+              <React.Suspense fallback={<p>Loading Acceptable Use Policy...</p>}>
                 <TermsAndConditionsBox />
               </React.Suspense>
 
               <form.AppField name="accepted">
                 {(field) => (
                   <field.CheckboxField
-                    label="I agree to abide by the ACCESS terms of service."
+                    label="I agree to abide by the ACCESS Acceptable Use Policy."
                     required
                   />
                 )}

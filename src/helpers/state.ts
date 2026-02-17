@@ -164,7 +164,7 @@ export const createAccountAtom = atom(
       return status
     }
 
-    const username = (resp as any).username || ""
+    const username = (resp as any).access_id || ""
     const status = {
       error: "",
       created: true,
