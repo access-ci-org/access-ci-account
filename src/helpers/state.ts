@@ -54,6 +54,9 @@ if (initToken) localStorage.setItem("token", JSON.stringify(initToken));
 export const emailAtom = atomWithStorage("email", "", undefined, {
   getOnInit: true,
 });
+export const pendingEmailAtom = atomWithStorage("pendingEmailAtom", "", undefined, { // New email via profile form
+  getOnInit: true,
+});
 export const usernameAtom = atomWithStorage("username", "", undefined, {
   getOnInit: true,
 });
@@ -64,6 +67,7 @@ export const logoutAtom = atom(null, (_get, set) => {
   set(emailAtom, "");
   set(usernameAtom, "");
   set(tokenAtom, "");
+  set(pendingEmailAtom, "");
   document.cookie = `${ssoCookieName}=; Max-Age=0; Path=${ssoCookiePath}; Domain=${ssoCookieDomain};`;
 });
 
@@ -74,10 +78,13 @@ const accountUpdateStatusAtom = atom({ error: "", saved: false });
 
 export const registrationFormAtom = atom({});
 
+// if there is an value in pendingEmailAtom -> profile change, else normal registration
+const getOtpEmail = (get: any) => get(pendingEmailAtom) || get(emailAtom);
+
 export const sendOtpAtom = atom(
   (get) => get(otpSendStatusAtom),
   async (get, set) => {
-    const email = get(emailAtom);
+    const email = getOtpEmail(get);
     let status = { error: "Email address is not set.", sent: false };
     if (email) {
       const response = await fetchApiJson("/auth/send-otp", {
@@ -104,7 +111,7 @@ export const sendOtpAtom = atom(
 export const verifyOtpAtom = atom(
   (get) => get(otpVerifyStatusAtom),
   async (get, set) => {
-    const email = get(emailAtom);
+    const email = getOtpEmail(get);
     const otp = get(otpAtom);
 
     let status = {
