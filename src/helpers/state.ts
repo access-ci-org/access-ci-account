@@ -136,7 +136,7 @@ export const verifyOtpAtom = atom(
 const accountCreateStatusAtom = atom({
   error: "",
   created: false,
-  access_id: "",
+  username: "",
 })
 
 export const createAccountAtom = atom(
@@ -154,21 +154,21 @@ export const createAccountAtom = atom(
             ? "Account could not be created. Please try again later."
             : (resp as any).error?.message || "Account could not be created.",
         created: false,
-        access_id: "",
+        username: "",
       }
       set(accountCreateStatusAtom, status)
       return status
     }
 
-    const access_id = (resp as any).access_id || ""
+    const username = (resp as any).username || ""
     const status = {
       error: "",
       created: true,
-      access_id,
+      username,
     }
 
     set(accountCreateStatusAtom, status)
-    if (access_id) set(usernameAtom, access_id) // Populate usernameAtom here (centralized)
+    if (username) set(usernameAtom, username) // Populate usernameAtom here (centralized)
     return status
   },
 )
