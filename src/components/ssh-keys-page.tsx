@@ -31,20 +31,21 @@ export function SSHKeysPage() {
                     </p>
                 )}
                 {sshKeyDetails?.map((key) => (
-                    <div key={key.keyId}
-                        className="rounded-sm border border-muted"
+                    <div
+                        key={key.keyId}
+                        className="rounded-sm border border-muted overflow-hidden"
                     >
-                        <div className="grid grid-cols-[auto_1fr_auto] items-center gap-3 p-3 m-4">
+                        <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2 p-2 m-2">
                             {/* LEFT ICON */}
                             <div className="flex flex-col items-start gap-1">
-                                <FaKey className="text-3xl mb-1 self-center" style={{ color: "#1a5b6e" }} />
-                                <p className="rounded-sm border !text-sm p-1 text-center">
+                                <FaKey className="text-2xl mb-1 self-center" style={{ color: "#1a5b6e" }} />
+                                <p className="rounded-sm border text-xs px-2 py-0.5 text-center">
                                     SSH
                                 </p>
                             </div>
 
                             {/* DETAILS */}
-                            <div className="flex flex-col items-start ml-2 text-sm">
+                            <div className="flex flex-col items-start ml-2 text-xs">
                                 <p> {key.keyId} </p>
                                 <p> SHA256: {key.hash} </p>
                                 <p> Added on {key.created} </p>
@@ -52,7 +53,7 @@ export function SSHKeysPage() {
 
                             {/* ACTION */}
                             <div className="flex items-center justify-end">
-                                <Button variant={"destructive"}> Delete </Button>
+                                <Button variant={"destructive"} size="sm">Delete</Button>
                             </div>
                         </div>
                     </div>
