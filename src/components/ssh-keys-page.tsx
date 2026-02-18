@@ -53,7 +53,7 @@ export function SSHKeysPage() {
 
                             {/* ACTION */}
                             <div className="flex items-center justify-end">
-                                <Button variant={"destructive"} size="sm">Delete</Button>
+                                <Button variant={"destructive"} size="lg">Delete</Button>
                             </div>
                         </div>
                     </div>
