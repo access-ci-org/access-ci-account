@@ -226,9 +226,6 @@ type AcademicStatusesResponse = {
   academicStatuses: AcademicStatusApi[];
 };
 
-type SSHKeysResponse = {
-  sshKeys: sshKeyApi[];
-}
 
 // Read-only Atoms for fetching data from the API
 export const countriesAtom = atom(async (get) => {
@@ -261,6 +258,24 @@ export const termsAndConditionsAtom = atom(async (get) => {
 
   return response as TermsAndConditionsApi;
 });
+
+export const sshKeysAtom = atom(async (get) => {
+  const token = get(tokenAtom);
+  const username = get(usernameAtom);
+
+  if (!token || !username) return [];
+
+  const response = (await fetchApiJson(`/account/${username}/ssh-key`, {
+    method: "GET",
+    body: null,
+  })) as any;
+
+  if (response?.error) return [];
+  const keys = (response?.sshKeys || response?.ssh_keys) as sshKeyApi[] | undefined;
+
+  return Array.isArray(keys) ? keys : [];
+});
+
 
 // Retrieving Domain information based on email address
 export type Idp = {
@@ -361,18 +376,4 @@ export const domainAtom = atom(async (get) => {
     idps: data.idps || [],
     isEligible,
   };
-});
-
-export const sshKeysAtom = atom(async (get) => {
-  const token = get(tokenAtom);
-  const username = get(usernameAtom);
-
-  if (!token || !username) return [];
-
-  const response = (await fetchApiJson(`/account/${username}/ssh-key`, {
-    method: "GET",
-    body: null,
-  })) as { ssh_keys?: sshKeyApi[] };
-
-  return response.ssh_keys || [];
 });
