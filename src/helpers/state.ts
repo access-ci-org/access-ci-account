@@ -34,6 +34,7 @@ const fetchApiJson = async (
     body: body ? JSON.stringify(body) : null,
     headers,
     method,
+    credentials: "include",
   });
   if (response.status < 200 || response.status > 299) {
     return { error: { status: response.status } };
@@ -210,6 +211,8 @@ export type TermsAndConditionsApi = {
   url: string;
   body: string; // HTML string
 };
+export type sshKeyApi = { keyId: number; hash: string; created: string };
+
 // Backend responses from type fields
 type CountriesResponse = {
   countries: CountryApi[];
@@ -222,6 +225,10 @@ type DegreesResponse = {
 type AcademicStatusesResponse = {
   academicStatuses: AcademicStatusApi[];
 };
+
+type SSHKeysResponse = {
+  sshKeys: sshKeyApi[];
+}
 
 // Read-only Atoms for fetching data from the API
 export const countriesAtom = atom(async (get) => {
@@ -354,4 +361,18 @@ export const domainAtom = atom(async (get) => {
     idps: data.idps || [],
     isEligible,
   };
+});
+
+export const sshKeysAtom = atom(async (get) => {
+  const token = get(tokenAtom);
+  const username = get(usernameAtom);
+
+  if (!token || !username) return [];
+
+  const response = (await fetchApiJson(`/account/${username}/ssh-key`, {
+    method: "GET",
+    body: null,
+  })) as { ssh_keys?: sshKeyApi[] };
+
+  return response.ssh_keys || [];
 });
