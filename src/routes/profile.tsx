@@ -2,7 +2,7 @@ import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useAppForm } from "@/hooks/form";
 import { siteTitle } from "@/config";
 import ProfileForm from "@/components/profile-form";
-import { accountAtom, updateAccountAtom, store } from "@/helpers/state";
+import { accountAtom, updateAccountAtom, store, pendingEmailAtom } from "@/helpers/state";
 import {
   dismissNotificationAtom,
   pushNotificationAtom,
@@ -10,6 +10,7 @@ import {
 
 import { profileFormSchema } from "@/helpers/validation";
 import { useSetAtom } from "jotai";
+import { sendOtpAtom } from "@/helpers/state";
 
 export const Route = createFileRoute("/profile")({
   component: Profile,
@@ -24,12 +25,18 @@ export const Route = createFileRoute("/profile")({
   },
 });
 
+
 function Profile() {
   const account = Route.useLoaderData();
   const refreshAccount = useSetAtom(accountAtom);
   const updateAccount = useSetAtom(updateAccountAtom);
   const pushNotification = useSetAtom(pushNotificationAtom);
   const navigate = useNavigate();
+
+  
+  // Updating email address
+  const setPendingEmail = useSetAtom(pendingEmailAtom);
+  const sendOtp = useSetAtom(sendOtpAtom);
 
   const form = useAppForm({
     defaultValues: {
@@ -49,6 +56,20 @@ function Profile() {
       onSubmit: profileFormSchema,
     },
     onSubmit: async ({ value }) => {
+      const currentEmail = (account.email ?? "").trim().toLowerCase();
+      const newEmail = (value.email ?? "").trim().toLowerCase();
+
+      // Detecting a new email input
+      if (newEmail && newEmail !== currentEmail){
+        // storing new email temp
+        setPendingEmail(newEmail)
+        // send OTP
+        const status = await sendOtp();
+        // if sent go to verify
+        if (status.sent) navigate({ to: "/register/verify" });
+        return
+      }
+
       const { saved } = await updateAccount({
         firstName: value.firstName,
         lastName: value.lastName,
