@@ -36,10 +36,16 @@ function RouteComponent() {
           if (result.success) {
             setNotification({ variant: "success", message: "SSH key added successfully." })
             navigate({ to: "/ssh-keys" })
-          } else {
-            setNotification({ variant: "error", message: (result as any)?.error || "Failed to add SSH key."})
-          }
-          return navigate({ to: "/ssh-keys" })
+          } 
+
+          // Stay on page for error and show message
+          const errorMessage =
+          typeof result.error === "string"
+            ? result.error
+            : result.error?.detail || result.error?.message || "Failed to add SSH key."
+            setNotification({ variant: "error", message: errorMessage })
+
+
         }}
       >
         <div className="mb-4">

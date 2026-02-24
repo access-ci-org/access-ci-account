@@ -2,7 +2,6 @@ import { Button } from "./ui/button";
 import { FieldSeparator } from "./ui/field";
 import { FaKey } from "react-icons/fa";
 import { Link } from "@tanstack/react-router"
-import { NotificationsBar } from "./notifications";
 import { pushNotificationAtom } from "@/helpers/notification"
 
 // Imports for API Interaction
