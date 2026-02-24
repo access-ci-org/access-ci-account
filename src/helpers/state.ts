@@ -259,7 +259,7 @@ export const termsAndConditionsAtom = atom(async (get) => {
   return response as TermsAndConditionsApi;
 });
 
-export const sshKeysAtom = atom(async (get) => {
+export const sshKeysAtom = atomWithRefresh(async (get) => {
   const token = get(tokenAtom);
   const username = get(usernameAtom);
 
@@ -276,6 +276,46 @@ export const sshKeysAtom = atom(async (get) => {
   return Array.isArray(keys) ? keys : [];
 });
 
+export const sshKeysDeleteAtom = atom(null, async (get, set, keyId: number) => {
+  const token = get(tokenAtom);
+  const username = get(usernameAtom);
+
+  if (!token || !username) return [];
+
+  const response = (await fetchApiJson(`/account/${username}/ssh-key/${keyId}`, {
+    method: "DELETE",
+    body: null,
+  })) as any;
+
+  if (response?.error) return { response };
+
+  // Refresh SSH Key list after deletion 
+  set(sshKeysAtom);
+
+  return response;
+
+});
+
+export const sskKeysAddAtom = atom(null, async (get, set, publicKey: string) => {
+  const token = get(tokenAtom);
+  const username = get(usernameAtom);
+
+  if (!token || !username) return [];
+
+  const trimmed = publicKey.trim()
+  if (!trimmed) return { error: true }
+
+  const response = (await fetchApiJson(`/account/${username}/ssh-key`, {
+    method: "POST",
+    body: { public_key: trimmed },
+  })) as any;
+
+  // Refresh SSH Key list after addition 
+  set(sshKeysAtom);
+
+  return response;
+
+});
 
 // Retrieving Domain information based on email address
 export type Idp = {

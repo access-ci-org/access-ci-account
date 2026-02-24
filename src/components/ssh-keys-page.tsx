@@ -1,20 +1,25 @@
 import { Button } from "./ui/button";
 import { FieldSeparator } from "./ui/field";
 import { FaKey } from "react-icons/fa";
+import { Link } from "@tanstack/react-router"
+
 
 // Imports for API Interaction
-import { useAtom } from "jotai";
-import { sshKeysAtom } from "@/helpers/state";
+import { useAtom, useSetAtom } from "jotai";
+import { sshKeysAtom, sshKeysDeleteAtom } from "@/helpers/state";
 
 export function SSHKeysPage() {
     // Fetching SSH keys details via atoms
-    const [sshKeyDetails] = useAtom(sshKeysAtom);
+    const [sshKeyDetails] = useAtom(sshKeysAtom)
+    const deleteSshKey = useSetAtom(sshKeysDeleteAtom)
 
     return (
         <div className="w-full">
             <div className="flex w-full items-center justify-between gap-4 mb-2">
-                <h1> SSH keys </h1>
-                <Button>New SSH Key</Button>
+                <h1> SSH Keys </h1>
+                <Button asChild>
+                    <Link to="/add">New SSH Key</Link>
+                </Button>
             </div>
 
             <FieldSeparator />
@@ -46,19 +51,25 @@ export function SSHKeysPage() {
 
                             {/* DETAILS */}
                             <div className="flex flex-col items-start ml-2 text-xs">
-                                <p> {key.keyId} </p>
                                 <p> SHA256: {key.hash} </p>
                                 <p> Added on {key.created} </p>
                             </div>
 
                             {/* ACTION */}
                             <div className="flex items-center justify-end">
-                                <Button variant={"destructive"} size="lg">Delete</Button>
+                                <Button
+                                    variant="destructive"
+                                    size="lg"
+                                    onClick={async () => {
+                                        await deleteSshKey(key.keyId)
+                                    }}
+                                >
+                                    Delete
+                                </Button>
                             </div>
                         </div>
                     </div>
                 ))}
-                <p className="mt-4"> Check out our guide to connecting to GitHub using SSH keys or troubleshoot common SSH problems.</p>
             </div>
         </div>
     );
