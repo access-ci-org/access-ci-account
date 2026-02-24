@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/field"
 import { Button } from "@/components/ui/button"
 import { sskKeysAddAtom } from "@/helpers/state"
+import { pushNotificationAtom } from "@/helpers/notification"
 
 export const Route = createFileRoute("/add")({
   component: RouteComponent,
@@ -16,6 +17,8 @@ export const Route = createFileRoute("/add")({
 function RouteComponent() {
   const navigate = useNavigate()
   const addSshKey = useSetAtom(sskKeysAddAtom)
+  const setNotification = useSetAtom(pushNotificationAtom)
+
 
   const [publicKey, setPublicKey] = React.useState("")
 
@@ -30,9 +33,13 @@ function RouteComponent() {
           if (!trimmed) return
 
           const result = await addSshKey(trimmed)
-          if ((result as any)?.error) return
-
-          navigate({ to: "/ssh-keys" })
+          if (result.success) {
+            setNotification({ variant: "success", message: "SSH key added successfully." })
+            navigate({ to: "/ssh-keys" })
+          } else {
+            setNotification({ variant: "error", message: (result as any)?.error || "Failed to add SSH key."})
+          }
+          return navigate({ to: "/ssh-keys" })
         }}
       >
         <div className="mb-4">

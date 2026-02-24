@@ -2,7 +2,8 @@ import { Button } from "./ui/button";
 import { FieldSeparator } from "./ui/field";
 import { FaKey } from "react-icons/fa";
 import { Link } from "@tanstack/react-router"
-
+import { NotificationsBar } from "./notifications";
+import { pushNotificationAtom } from "@/helpers/notification"
 
 // Imports for API Interaction
 import { useAtom, useSetAtom } from "jotai";
@@ -13,6 +14,9 @@ export function SSHKeysPage() {
     const [sshKeyDetails] = useAtom(sshKeysAtom)
     const deleteSshKey = useSetAtom(sshKeysDeleteAtom)
 
+    // Notification atom for feedback on actions
+    const setNotification = useSetAtom(pushNotificationAtom)
+
     return (
         <div className="w-full">
             <div className="flex w-full items-center justify-between gap-4 mb-2">
@@ -21,7 +25,7 @@ export function SSHKeysPage() {
                     <Link to="/add">New SSH Key</Link>
                 </Button>
             </div>
-
+            
             <FieldSeparator />
 
             <div className="mt-4">
@@ -61,7 +65,12 @@ export function SSHKeysPage() {
                                     variant="destructive"
                                     size="lg"
                                     onClick={async () => {
-                                        await deleteSshKey(key.keyId)
+                                        const result = await deleteSshKey(key.keyId)
+                                        if (result.success) {
+                                            setNotification({ variant: "success", message: "SSH key deleted." })
+                                        } else {
+                                            setNotification({ variant: "error", message: (result as any)?.error || "Failed to add SSH key."})
+                                        }
                                     }}
                                 >
                                     Delete
