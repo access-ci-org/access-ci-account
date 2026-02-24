@@ -36,6 +36,7 @@ function RouteComponent() {
           if (result.success) {
             setNotification({ variant: "success", message: "SSH key added successfully." })
             navigate({ to: "/ssh-keys" })
+            return
           } 
 
           // Stay on page for error and show message

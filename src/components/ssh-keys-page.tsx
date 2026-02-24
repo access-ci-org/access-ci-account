@@ -17,7 +17,7 @@ export function SSHKeysPage() {
     const setNotification = useSetAtom(pushNotificationAtom)
 
     return (
-        <div className="w-full">
+        <div className="w-full mt-4">
             <div className="flex w-full items-center justify-between gap-4 mb-2">
                 <h1> SSH Keys </h1>
                 <Button asChild>
