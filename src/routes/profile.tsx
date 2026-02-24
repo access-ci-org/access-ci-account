@@ -41,8 +41,9 @@ function Profile() {
       residenceCountry: account.residenceCountryId as number,
       citizenshipCountryIds: account.citizenshipCountryIds as number[],
       role: [] as string[],
-      degree: "",
-      degreeField: "",
+      academicDegrees: [
+        { degreeId: "", degreeField: "" }
+      ],
       timeZone: account.timeZone as string,
     },
     validators: {
@@ -58,7 +59,7 @@ function Profile() {
         residenceCountryId: value.residenceCountry,
         citizenshipCountryIds: value.citizenshipCountryIds,
         timeZone: value.timeZone,
-        // TODO: Add degree
+        academicDegrees: value.academicDegrees,
       });
 
       if (saved) {
