@@ -70,13 +70,18 @@ const RegistrationFormInputs = withForm({
             (state: any) => state.values?.email ?? "",
         ); // current email in text box (can be same as orginal or new pending email), used for if user types to show change. 
         const [emailForLookup, setEmailForLookup] = React.useState(email)
-
         const setPendingEmail = useSetAtom(pendingEmailAtom) // allows update to email in text box
         const pendingEmail = useAtomValue(pendingEmailAtom) // if user supplies a new email, this is the pending email before verification
+        React.useEffect(() => {
+            if (!pendingEmail) {
+              setEmailForLookup(email)
+            }
+          }, [pendingEmail, email])
+
 
         const effectiveEmail = pendingEmail || emailForLookup // if pending email exists use for domain look up
         const emailDomain = effectiveEmail?.split("@")[1]?.toLowerCase() ?? null; // domain from email for domain look up
-        
+
         React.useEffect(() => {
             if (pendingEmail) {
                 (form as any).setFieldValue?.("institution", 0)
@@ -183,9 +188,9 @@ const RegistrationFormInputs = withForm({
                                 // Only run when focus leaves the whole wrapper.
                                 if (next && e.currentTarget.contains(next)) return;
 
-                                setPendingEmail(currentEmail === originalEmail ? "" : currentEmail);
-                                // If you want the lookup to use the blurred value immediately, keep this in sync too.
-                                setEmailForLookup(currentEmail);
+                                const nextPending = currentEmail === originalEmail ? "" : currentEmail
+                                setPendingEmail(nextPending)
+                                setEmailForLookup(nextPending || email)
                             }}
                         >
                             <field.TextField

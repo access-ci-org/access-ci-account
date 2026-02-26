@@ -11,7 +11,6 @@ import {
   store,
   verifyOtpAtom,
   pendingEmailAtom,
-  updateAccountAtom
 } from "@/helpers/state";
 
 import { Link } from "@tanstack/react-router";
@@ -45,7 +44,6 @@ function RegisterVerify() {
   const pushNotification = useSetAtom(pushNotificationAtom);
   const navigate = useNavigate();
   const [pendingEmail, setPendingEmail] = useAtom(pendingEmailAtom);
-  const updateAccount = useSetAtom(updateAccountAtom);
 
   const form = useAppForm({
     defaultValues: {
@@ -56,7 +54,7 @@ function RegisterVerify() {
     },
     onSubmit: async ({ value }) => {
       setOtp(value.otp);
-      const status = pendingEmail ? await verifyOtp( {mode: "profileEmailChange"} ) : await verifyOtp(); // if pendingEmail exists, start email change process, else normal registration
+      const status = pendingEmail ? await verifyOtp({ mode: "profileEmailChange" }) : await verifyOtp(); // if pendingEmail exists, start email change process, else normal registration
       setOtp("");
       if (!status.verified) {
         pushNotification({
@@ -65,38 +63,68 @@ function RegisterVerify() {
             "The verification code you entered did not match. Please try again.",
           variant: "error",
         });
+
+        // Profile email-change mode: rollback to verified email/domain and return to profile.
+        if (pendingEmail) {
+          setPendingEmail("");
+          navigate({ to: "/profile" });
+          return;
+        }
+
+        // Registration mode
         setEmail("");
         navigate({ to: "/register" });
+        return;
       } else if (status.username) {
-        setEmail("");
-        pushNotification({
-          title: "Existing Account",
-          message: (
-            <>
-              You already have an ACCESS account. Your ACCESS ID is{" "}
-              <strong>{status.username}</strong>. You can{" "}
-              <Link to="/login">login</Link> or
-              <a href="https://identity.access-ci.org/password-reset">
-                {" "}
-                reset your password
-              </a>
-              .
-            </>
-          ),
-          variant: "error",
-        });
-        navigate({ to: "/" });
-      } else {
         if (pendingEmail) {
-          if (pendingEmail) {
-            setEmail(pendingEmail);
-            navigate({ to: "/profile" });
-            return;
-          }
+          setPendingEmail("");
+          pushNotification({
+            title: "Existing Account",
+            message: (
+              <>
+                You already have an ACCESS account. Your ACCESS ID is{" "}
+                <strong>{status.username}</strong>. You can{" "}
+                <Link to="/login">login</Link> or
+                <a href="https://identity.access-ci.org/password-reset">
+                  {" "}
+                  reset your password
+                </a>
+                .
+              </>
+            ),
+            variant: "error",
+          });
+          navigate({ to: "/profile" });
           return;
         } else {
-          navigate({ to: "/register/complete" });
+          setEmail("");
+          pushNotification({
+            title: "Existing Account",
+            message: (
+              <>
+                You already have an ACCESS account. Your ACCESS ID is{" "}
+                <strong>{status.username}</strong>. You can{" "}
+                <Link to="/login">login</Link> or
+                <a href="https://identity.access-ci.org/password-reset">
+                  {" "}
+                  reset your password
+                </a>
+                .
+              </>
+            ),
+            variant: "error",
+          });
+          navigate({ to: "/" });
+          return;
         }
+      } else {
+        if (pendingEmail) {
+          setEmail(pendingEmail);
+          navigate({ to: "/profile" });
+          return;
+        }
+        navigate({ to: "/register/complete" });
+        return;
       }
     },
   });
