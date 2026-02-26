@@ -8,10 +8,11 @@ import {
     notificationsAtom,
     pushNotificationAtom,
 } from "@/helpers/notification";
-import { countriesAtom, academicStatusesAtom, domainAtom, emailAtom } from "@/helpers/state";
+import { countriesAtom, academicStatusesAtom, domainAtom, emailAtom, pendingEmailAtom } from "@/helpers/state";
 
 // Navigation Imports
 import { useNavigate } from "@tanstack/react-router";
+import { useStore } from "@tanstack/react-store";
 
 
 // Option type defines selectable options for form fields
@@ -61,6 +62,27 @@ const RegistrationFormInputs = withForm({
         const pushNotification = useSetAtom(pushNotificationAtom);
         const notifications = useAtomValue(notificationsAtom);
 
+        // Fetching email via atom
+        const originalEmail = useAtomValue(emailAtom) // orginal email in text box before change
+        const email = useAtomValue(emailAtom); // current email on record (can be same as orginal)
+        const currentEmail = useStore(
+            (form as any).store,
+            (state: any) => state.values?.email ?? "",
+        ); // current email in text box (can be same as orginal or new pending email), used for if user types to show change. 
+        const [emailForLookup, setEmailForLookup] = React.useState(email)
+
+        const setPendingEmail = useSetAtom(pendingEmailAtom) // allows update to email in text box
+        const pendingEmail = useAtomValue(pendingEmailAtom) // if user supplies a new email, this is the pending email before verification
+
+        const effectiveEmail = pendingEmail || emailForLookup // if pending email exists use for domain look up
+        const emailDomain = effectiveEmail?.split("@")[1]?.toLowerCase() ?? null; // domain from email for domain look up
+        
+        React.useEffect(() => {
+            if (pendingEmail) {
+                (form as any).setFieldValue?.("institution", 0)
+            }
+        }, [pendingEmail, form])
+
         // Domain option generating via id 
         const domainOptions: Option<number>[] =
             domain?.organizations?.map((org) => ({
@@ -71,11 +93,13 @@ const RegistrationFormInputs = withForm({
                     `Organization ${org.organizationId}`,
             })) ?? [];
 
-        // Fetching email via atom
-        const email = useAtomValue(emailAtom);
-        const emailDomain = email?.split("@")[1]?.toLowerCase() ?? null;
-
         React.useEffect(() => {
+            // Don't evaluate eligibility/redirect until the user has typed a real domain
+            if (!emailDomain) return;
+
+            // When the domain atom is still loading, avoid firing notifications/redirects
+            if (domain === undefined) return;
+
             // Ineligible
             if (domain === null) {
                 const id = "ineligible-email-domain";
@@ -95,7 +119,9 @@ const RegistrationFormInputs = withForm({
                     });
                 }
 
-                navigate({ to: "/register", replace: true });
+                if (isRegistration) {
+                    navigate({ to: "/register", replace: true });
+                }
                 return;
             }
 
@@ -126,10 +152,12 @@ const RegistrationFormInputs = withForm({
                     });
                 }
 
-                navigate({ to: "/register", replace: true });
+                if (isRegistration) {
+                    navigate({ to: "/register", replace: true });
+                }
                 return;
             }
-        }, [domain, pushNotification, navigate, emailDomain]);
+        }, [domain, pushNotification, navigate, emailDomain, isRegistration, notifications]);
 
 
         return (
@@ -149,12 +177,24 @@ const RegistrationFormInputs = withForm({
                 <form.AppField
                     name="email"
                     children={(field) => (
-                        <field.TextField
-                            label="Email Address"
-                            placeholder="University or work email address"
-                            required
-                            disabled={isRegistration}
-                        />
+                        <div
+                            onBlur={(e) => {
+                                const next = e.relatedTarget as Node | null;
+                                // Only run when focus leaves the whole wrapper.
+                                if (next && e.currentTarget.contains(next)) return;
+
+                                setPendingEmail(currentEmail === originalEmail ? "" : currentEmail);
+                                // If you want the lookup to use the blurred value immediately, keep this in sync too.
+                                setEmailForLookup(currentEmail);
+                            }}
+                        >
+                            <field.TextField
+                                label="Email Address"
+                                placeholder="University or work email address"
+                                required
+                                disabled={isRegistration}
+                            />
+                        </div>
                     )}
                 />
 

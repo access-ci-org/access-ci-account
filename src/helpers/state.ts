@@ -63,11 +63,15 @@ export const usernameAtom = atomWithStorage("username", "", undefined, {
 export const tokenAtom = atomWithStorage("token", "", undefined, {
   getOnInit: true,
 });
+export const otpTokenAtom = atomWithStorage("otpToken", "", undefined, { // Verficiation only token storage
+  getOnInit: true,
+});
 export const logoutAtom = atom(null, (_get, set) => {
   set(emailAtom, "");
   set(usernameAtom, "");
   set(tokenAtom, "");
   set(pendingEmailAtom, "");
+  set(otpTokenAtom, "");
   document.cookie = `${ssoCookieName}=; Max-Age=0; Path=${ssoCookiePath}; Domain=${ssoCookieDomain};`;
 });
 
@@ -110,9 +114,9 @@ export const sendOtpAtom = atom(
 
 export const verifyOtpAtom = atom(
   (get) => get(otpVerifyStatusAtom),
-  async (get, set) => {
-    const email = getOtpEmail(get);
-    const otp = get(otpAtom);
+  async (get, set, opts?: { mode?: "registration" | "profileEmailChange" }) => {
+    const email = getOtpEmail(get); // grabs emails, either pending or current 
+    const otp = get(otpAtom); // gets code
 
     let status = {
       error: "Email address or verification code are not set.",
@@ -136,7 +140,14 @@ export const verifyOtpAtom = atom(
       } else {
         const jwt = parseJwt(response.jwt);
         status = { error: "", verified: true, username: jwt?.uid || null };
-        set(tokenAtom, response.jwt);
+
+        // Registration mode is default, if there are no opts
+        const mode = opts?.mode ?? "registration";
+        if (mode === "profileEmailChange") {
+          set(otpTokenAtom, response.jwt); // Store OTP token for email change 
+        } else {
+          set(tokenAtom, response.jwt);
+        }
       }
     }
     set(otpVerifyStatusAtom, status);
@@ -190,10 +201,13 @@ export const accountAtom = atomWithRefresh(async (get) => {
 
 export const updateAccountAtom = atom(
   (get) => get(accountUpdateStatusAtom),
-  async (get, set, account) => {
+  async (get, set, account: Record<string, any>) => {
+    const otpToken = get(otpTokenAtom);
+    
+    const body = otpToken ? { ...account, email_otp_token: otpToken } : account; // Include OTP token in request if it exists for email changes
     const response = await fetchApiJson(`/account/${get(usernameAtom)}`, {
       method: "POST",
-      body: account,
+      body,
     });
 
     const status = response?.error
@@ -203,6 +217,11 @@ export const updateAccountAtom = atom(
       }
       : { error: "", saved: true };
     set(accountUpdateStatusAtom, status);
+
+    if (!response?.error) { // Clears OTP & pendingEmail tokens after sucessful profile update
+      set(otpTokenAtom, "");
+      set(pendingEmailAtom, "");
+    }
     return status;
   },
 );
@@ -320,7 +339,7 @@ export type DomainResponse = {
 
 export const domainAtom = atom(async (get) => {
   if (!get(tokenAtom)) return null;
-  const email = get(emailAtom);
+  const email = get(pendingEmailAtom) || get(emailAtom);
   const domain = getDomainFromEmail(email);
   if (!domain) return null;
 

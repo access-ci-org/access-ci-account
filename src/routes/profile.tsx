@@ -9,7 +9,7 @@ import {
 } from "@/helpers/notification";
 
 import { profileFormSchema } from "@/helpers/validation";
-import { useSetAtom } from "jotai";
+import { useSetAtom, useAtomValue } from "jotai";
 import { sendOtpAtom } from "@/helpers/state";
 
 export const Route = createFileRoute("/profile")({
@@ -35,14 +35,16 @@ function Profile() {
 
   
   // Updating email address
+  const pendingEmail = useAtomValue(pendingEmailAtom);
   const setPendingEmail = useSetAtom(pendingEmailAtom);
+
   const sendOtp = useSetAtom(sendOtpAtom);
 
   const form = useAppForm({
     defaultValues: {
       firstName: account.firstName as string,
       lastName: account.lastName as string,
-      email: account.email as string,
+      email: (pendingEmail || account.email) as string,
       institution: account.organizationId as number,
       academicStatus: account.academicStatusId as number,
       residenceCountry: account.residenceCountryId as number,
@@ -62,7 +64,7 @@ function Profile() {
       // Detecting a new email input
       if (newEmail && newEmail !== currentEmail){
         // storing new email temp
-        setPendingEmail(newEmail)
+        setPendingEmail(newEmail);
         // send OTP
         const status = await sendOtp();
         // if sent go to verify
@@ -73,7 +75,7 @@ function Profile() {
       const { saved } = await updateAccount({
         firstName: value.firstName,
         lastName: value.lastName,
-        email: value.email,
+        email: (pendingEmail || value.email),
         organizationId: value.institution,
         academicStatusId: value.academicStatus,
         residenceCountryId: value.residenceCountry,

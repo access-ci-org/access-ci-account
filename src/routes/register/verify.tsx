@@ -56,7 +56,7 @@ function RegisterVerify() {
     },
     onSubmit: async ({ value }) => {
       setOtp(value.otp);
-      const status = await verifyOtp();
+      const status = pendingEmail ? await verifyOtp( {mode: "profileEmailChange"} ) : await verifyOtp(); // if pendingEmail exists, start email change process, else normal registration
       setOtp("");
       if (!status.verified) {
         pushNotification({
@@ -88,10 +88,11 @@ function RegisterVerify() {
         navigate({ to: "/" });
       } else {
         if (pendingEmail) {
-          await updateAccount({ email: pendingEmail });
-          setEmail(pendingEmail);
-          setPendingEmail("");
-          navigate({ to: "/profile" });
+          if (pendingEmail) {
+            setEmail(pendingEmail);
+            navigate({ to: "/profile" });
+            return;
+          }
           return;
         } else {
           navigate({ to: "/register/complete" });
