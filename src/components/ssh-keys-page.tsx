@@ -51,23 +51,23 @@ export function SSHKeysPage() {
                             key={key.keyId}
                             className="rounded-sm border border-muted overflow-hidden"
                         >
-                            <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2 p-2 m-2">
+                            <div className="flex flex-col gap-3 p-2 m-2 sm:flex-row sm:items-center sm:justify-between">
                                 {/* LEFT ICON */}
-                                <div className="flex flex-col items-start gap-1">
+                                <div className="flex flex-col items-start gap-1 sm:w-auto">
                                     <FaKey className="text-2xl mb-1 self-center" style={{ color: "#1a5b6e" }} />
-                                    <p className="rounded-sm border text-xs px-2 py-0.5 text-center">
+                                    <p className="rounded-sm border text-xs px-2 py-0.5 text-center self-center bg-muted">
                                         SSH
                                     </p>
                                 </div>
 
                                 {/* DETAILS */}
-                                <div className="flex flex-col items-start ml-2 text-xs">
-                                    <p> SHA256: {key.hash} </p>
+                                <div className="text-xs sm:flex-1 sm:ml-4 min-w-0">
+                                    <p className="break-words"> {key.hash} </p>
                                     <p> Added on {key.created} </p>
                                 </div>
 
                                 {/* ACTION */}
-                                <div className="flex items-center justify-end">
+                                <div className="flex justify-end sm:justify-end">
                                     <Button
                                         variant="destructive"
                                         size="lg"

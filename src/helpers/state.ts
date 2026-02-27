@@ -37,7 +37,20 @@ const fetchApiJson = async (
     credentials: "include",
   });
   if (response.status < 200 || response.status > 299) {
-    return { error: { status: response.status } };
+    // Try to get backend error message from JSON response first 
+    try {
+      const errorJson = await response.json();
+      return { error: { status: response.status, message: errorJson } };
+    } catch {
+      // If it isn't JSON, fall back to raw text
+      try {
+        const errorText = await response.text();
+        return { error: { status: response.status, message: errorText } };
+      } catch (error) {
+        // Generic error 
+        return { error: { status: response.status, message: error } };
+      }
+    }
   } else {
     try {
       return await response.json();
