@@ -27,3 +27,7 @@ export const profileFormSchema = z.object({
 });
 
 export type ProfileFormValues = z.infer<typeof profileFormSchema>;
+
+export const sshKeyFormSchema = z.object({
+  sshKey: z.string().min(1, { message: "SSH Key is required." })
+});

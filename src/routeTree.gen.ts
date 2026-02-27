@@ -16,7 +16,7 @@ import { Route as LogoutRouteImport } from './routes/logout'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthTokenRouteImport } from './routes/auth-token'
-import { Route as AddRouteImport } from './routes/add'
+import { Route as AddSshKeyRouteImport } from './routes/add-ssh-key'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RegisterIndexRouteImport } from './routes/register/index'
 import { Route as RegisterVerifyRouteImport } from './routes/register/verify'
@@ -59,9 +59,9 @@ const AuthTokenRoute = AuthTokenRouteImport.update({
   path: '/auth-token',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AddRoute = AddRouteImport.update({
-  id: '/add',
-  path: '/add',
+const AddSshKeyRoute = AddSshKeyRouteImport.update({
+  id: '/add-ssh-key',
+  path: '/add-ssh-key',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -97,7 +97,7 @@ const RegisterAupRoute = RegisterAupRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/add': typeof AddRoute
+  '/add-ssh-key': typeof AddSshKeyRoute
   '/auth-token': typeof AuthTokenRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
@@ -113,7 +113,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/add': typeof AddRoute
+  '/add-ssh-key': typeof AddSshKeyRoute
   '/auth-token': typeof AuthTokenRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
@@ -130,7 +130,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/add': typeof AddRoute
+  '/add-ssh-key': typeof AddSshKeyRoute
   '/auth-token': typeof AuthTokenRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
@@ -148,7 +148,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/add'
+    | '/add-ssh-key'
     | '/auth-token'
     | '/dashboard'
     | '/login'
@@ -164,7 +164,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/add'
+    | '/add-ssh-key'
     | '/auth-token'
     | '/dashboard'
     | '/login'
@@ -180,7 +180,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/add'
+    | '/add-ssh-key'
     | '/auth-token'
     | '/dashboard'
     | '/login'
@@ -197,7 +197,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AddRoute: typeof AddRoute
+  AddSshKeyRoute: typeof AddSshKeyRoute
   AuthTokenRoute: typeof AuthTokenRoute
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
@@ -263,11 +263,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/add': {
-      id: '/add'
-      path: '/add'
-      fullPath: '/add'
-      preLoaderRoute: typeof AddRouteImport
+    '/add-ssh-key': {
+      id: '/add-ssh-key'
+      path: '/add-ssh-key'
+      fullPath: '/add-ssh-key'
+      preLoaderRoute: typeof AddSshKeyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -317,7 +317,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AddRoute: AddRoute,
+  AddSshKeyRoute: AddSshKeyRoute,
   AuthTokenRoute: AuthTokenRoute,
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,

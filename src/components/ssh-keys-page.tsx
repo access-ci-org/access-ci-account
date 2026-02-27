@@ -21,7 +21,7 @@ export function SSHKeysPage() {
             <div className="flex w-full items-center justify-between gap-4 mb-2">
                 <h1> SSH Keys </h1>
                 <Button asChild>
-                    <Link to="/add">New SSH Key</Link>
+                    <Link to="/add-ssh-key">New SSH Key</Link>
                 </Button>
             </div>
             
