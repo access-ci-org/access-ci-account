@@ -42,19 +42,15 @@ function AddSshKey() {
       }
 
       // Stay on page for error and show message
-      const errorMessage =
-        typeof result.error === "string"
-          ? result.error
-          : result.error?.detail || result.error?.message || "Failed to add SSH key."
+      const errorMessage = result?.error?.message || result?.error?.detail || "Failed to add SSH key."
       setNotification({ variant: "error", message: errorMessage })
-
 
     },
   })
 
   return (
     <>
-      <h1>Add Key</h1>
+      <h1>Add new SSH Key</h1>
       <AddSshKeyForm form={form} />
     </>
   )
