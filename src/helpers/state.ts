@@ -60,6 +60,16 @@ export const usernameAtom = atomWithStorage("username", "", undefined, {
 export const tokenAtom = atomWithStorage("token", "", undefined, {
   getOnInit: true,
 });
+export const tokenDataAtom = atom((get) => {
+  const token = get(tokenAtom);
+  return token ? parseJwt(token) : null;
+});
+export const isLoggedInAtom = atom((get) => {
+  const tokenData = get(tokenDataAtom);
+  return (
+    tokenData?.typ === "login" && tokenData?.exp >= new Date().getTime() / 1000
+  );
+});
 export const logoutAtom = atom(null, (_get, set) => {
   set(emailAtom, "");
   set(usernameAtom, "");
@@ -141,7 +151,7 @@ const accountCreateStatusAtom = atom({
   error: "",
   created: false,
   username: "",
-})
+});
 
 export const createAccountAtom = atom(
   (get) => get(accountCreateStatusAtom),
@@ -149,7 +159,7 @@ export const createAccountAtom = atom(
     const resp = await fetchApiJson("/account", {
       method: "POST",
       body: payload,
-    })
+    });
 
     if ((resp as any)?.error) {
       const status = {
@@ -159,23 +169,23 @@ export const createAccountAtom = atom(
             : (resp as any).error?.message || "Account could not be created.",
         created: false,
         username: "",
-      }
-      set(accountCreateStatusAtom, status)
-      return status
+      };
+      set(accountCreateStatusAtom, status);
+      return status;
     }
 
-    const username = (resp as any).access_id || ""
+    const username = (resp as any).access_id || "";
     const status = {
       error: "",
       created: true,
       username,
-    }
+    };
 
-    set(accountCreateStatusAtom, status)
-    if (username) set(usernameAtom, username) // Populate usernameAtom here (centralized)
-    return status
+    set(accountCreateStatusAtom, status);
+    if (username) set(usernameAtom, username); // Populate usernameAtom here (centralized)
+    return status;
   },
-)
+);
 
 export const accountAtom = atomWithRefresh(async (get) => {
   return await fetchApiJson(`/account/${get(usernameAtom)}`);
@@ -191,9 +201,9 @@ export const updateAccountAtom = atom(
 
     const status = response?.error
       ? {
-        error: response.error,
-        saved: false,
-      }
+          error: response.error,
+          saved: false,
+        }
       : { error: "", saved: true };
     set(accountUpdateStatusAtom, status);
     return status;
@@ -343,9 +353,11 @@ export const domainAtom = atom(async (get) => {
   // Success path: non-400 response
   const data = response as DomainResponse;
   const rawOrgs = data.organizations || [];
-  const filteredOrgs = rawOrgs.filter((o) => o.isActive && o.isEligible === true);
+  const filteredOrgs = rawOrgs.filter(
+    (o) => o.isActive && o.isEligible === true,
+  );
 
-  // Domain is considered eligible if... 
+  // Domain is considered eligible if...
   const isEligible = rawOrgs.length === 0 || filteredOrgs.length > 0;
 
   return {
