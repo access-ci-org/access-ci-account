@@ -155,7 +155,7 @@ const accountCreateStatusAtom = atom({
 
 export const createAccountAtom = atom(
   (get) => get(accountCreateStatusAtom),
-  async (get, set, payload: any) => {
+  async (_get, set, payload: any) => {
     const resp = await fetchApiJson("/account", {
       method: "POST",
       body: payload,
