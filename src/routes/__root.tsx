@@ -12,6 +12,8 @@ import type { QueryClient } from "@tanstack/react-query";
 import { Provider } from "jotai";
 import { store } from "@/helpers/state";
 
+import { UniversalMenus } from "@access-ci/ui/react";
+
 // Notifications
 import { NotificationsBar } from "@/components/notifications";
 
@@ -23,11 +25,13 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
     <Provider store={store}>
       <HeadContent />
-      
-      {/* Notifications below header */}
-      <NotificationsBar />
-
-      <Outlet />
+      <UniversalMenus />
+      <div id="header"></div>
+      <div className="container">
+        <NotificationsBar />
+        <Outlet />
+      </div>
+      <div id="footer"></div>
       <TanStackDevtools
         config={{
           position: "bottom-right",
