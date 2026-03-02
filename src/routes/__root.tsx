@@ -12,9 +12,7 @@ import type { QueryClient } from "@tanstack/react-query";
 import { Provider } from "jotai";
 import { store } from "@/helpers/state";
 
-import { UniversalMenus } from "@access-ci/ui/react";
-
-// Notifications
+import { Footer, Header, UniversalMenus } from "@access-ci/ui/react";
 import { NotificationsBar } from "@/components/notifications";
 
 interface MyRouterContext {
@@ -25,13 +23,16 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
     <Provider store={store}>
       <HeadContent />
-      <UniversalMenus />
-      <div id="header"></div>
-      <div className="container">
+      <UniversalMenus
+        loginUrl={`${import.meta.env.BASE_URL}/login`}
+        logoutUrl={`${import.meta.env.BASE_URL}/logout`}
+      />
+      <Header />
+      <div className="container mb-6!">
         <NotificationsBar />
         <Outlet />
       </div>
-      <div id="footer"></div>
+      <Footer />
       <TanStackDevtools
         config={{
           position: "bottom-right",
