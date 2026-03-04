@@ -4,21 +4,27 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import type React from "react";
 import { cn } from "@/lib/utils";
+import { Textarea } from "./ui/textarea";
 
 export default function TextField({
+  field,
   label,
   placeholder,
   required = false,
   disabled = false,
   className = "",
+  fieldType = "input",
+  rows,
 }: {
+  field: any;
   label: React.ReactNode;
   placeholder: string;
   required?: boolean;
   disabled?: boolean;
   className?: string;
+  fieldType?: "input" | "textarea";
+  rows?: number;
 }) {
-  const field = useFieldContext<string>();
 
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
   return (
@@ -26,21 +32,40 @@ export default function TextField({
       <FieldLabel required={required} htmlFor={field.name}>
         {label}
       </FieldLabel>
-      <Input
-        id={field.name}
-        name={field.name}
-        value={field.state.value}
-        onBlur={field.handleBlur}
-        onChange={(e) => field.handleChange(e.target.value)}
-        aria-invalid={isInvalid}
-        placeholder={placeholder}
-        autoComplete="off"
-        className={cn(
-          "bg-white border-[var(--teal-700)] rounded-none shadow-none",
-          className,
-        )}
-        disabled={disabled}
-      />
+      {fieldType === "textarea" ? (
+        <Textarea
+          id={field.name}
+          name={field.name}
+          value={field.state.value}
+          onBlur={field.handleBlur}
+          onChange={(e) => field.handleChange(e.target.value)}
+          aria-invalid={isInvalid}
+          placeholder={placeholder}
+          autoComplete="off"
+          rows={rows}
+          className={cn(
+            "bg-white border-[var(--teal-700)] rounded-none shadow-none",
+            className,
+          )}
+          disabled={disabled}
+        />
+      ) : (
+        <Input
+          id={field.name}
+          name={field.name}
+          value={field.state.value}
+          onBlur={field.handleBlur}
+          onChange={(e) => field.handleChange(e.target.value)}
+          aria-invalid={isInvalid}
+          placeholder={placeholder}
+          autoComplete="off"
+          className={cn(
+            "bg-white border-[var(--teal-700)] rounded-none shadow-none",
+            className,
+          )}
+          disabled={disabled}
+        />
+      )}
       {isInvalid && <FieldError errors={field.state.meta.errors} />}
     </Field>
   );

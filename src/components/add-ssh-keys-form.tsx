@@ -1,5 +1,5 @@
 import { withForm } from "@/hooks/form"
-import { Textarea } from "./ui/textarea"
+import TextField from "./text-field"
 
 const AddSshKeyForm = withForm({
     defaultValues: {
@@ -19,11 +19,12 @@ const AddSshKeyForm = withForm({
 
                         <form.Field name="sshKey">
                             {(field) => (
-                                <Textarea
-                                    value={field.state.value ?? ""}
-                                    onChange={(e) => field.handleChange(e.target.value)}
-                                    onBlur={field.handleBlur}
+                                <TextField
+                                    field={field}
+                                    label="Public SSH key"
                                     placeholder="Begins with 'ssh-rsa', 'ssh-dss', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp384', 'ecdsa-sha2-nistp521', or 'ssh-ed25519'"
+                                    required
+                                    fieldType="textarea"
                                     rows={6}
                                 />
                             )}
