@@ -67,6 +67,7 @@ function RegisterVerify() {
         // Profile email-change mode: rollback to verified email/domain and return to profile.
         if (pendingEmail) {
           setPendingEmail("");
+          setEmail(email); // Rollback to last verified email
           navigate({ to: "/profile" });
           return;
         }

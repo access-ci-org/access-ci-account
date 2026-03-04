@@ -141,10 +141,23 @@ export const verifyOtpAtom = atom(
         const jwt = parseJwt(response.jwt);
         status = { error: "", verified: true, username: jwt?.uid || null };
 
+        const checkedId = jwt?.uid || null;
+        const currentId = get(usernameAtom)
+
         // Registration mode is default, if there are no opts
         const mode = opts?.mode ?? "registration";
         if (mode === "profileEmailChange") {
-          set(otpTokenAtom, response.jwt); // Store OTP token for email change 
+          if (checkedId && currentId && checkedId !== currentId) {
+            // This email belongs to an existing account
+            status = {
+              error: "This email is already associated with an account.",
+              verified: false,
+              username: checkedId,
+            };
+            set(pendingEmailAtom, ""); // Clear pending email since it's invalid
+          } else {
+            set(otpTokenAtom, response.jwt); // Store OTP token for email change 
+          }
         } else {
           set(tokenAtom, response.jwt);
         }
@@ -203,7 +216,7 @@ export const updateAccountAtom = atom(
   (get) => get(accountUpdateStatusAtom),
   async (get, set, account: Record<string, any>) => {
     const otpToken = get(otpTokenAtom);
-    
+
     const body = otpToken ? { ...account, email_otp_token: otpToken } : account; // Include OTP token in request if it exists for email changes
     const response = await fetchApiJson(`/account/${get(usernameAtom)}`, {
       method: "POST",
@@ -219,8 +232,14 @@ export const updateAccountAtom = atom(
     set(accountUpdateStatusAtom, status);
 
     if (!response?.error) { // Clears OTP & pendingEmail tokens after sucessful profile update
-      set(otpTokenAtom, "");
-      set(pendingEmailAtom, "");
+      if (otpToken) {
+        const pendingEmail = get(pendingEmailAtom);
+        if (pendingEmail) {
+          set(emailAtom, pendingEmail);
+        }
+        set(otpTokenAtom, "");
+        set(pendingEmailAtom, "");
+      }
     }
     return status;
   },
