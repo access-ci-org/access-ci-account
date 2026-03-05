@@ -34,9 +34,23 @@ const fetchApiJson = async (
     body: body ? JSON.stringify(body) : null,
     headers,
     method,
+    credentials: "include",
   });
   if (response.status < 200 || response.status > 299) {
-    return { error: { status: response.status } };
+    // Try to get backend error message from JSON response first 
+    try {
+      const errorJson = await response.json();
+      return { error: { status: response.status, message: errorJson } };
+    } catch {
+      // If it isn't JSON, fall back to raw text
+      try {
+        const errorText = await response.text();
+        return { error: { status: response.status, message: errorText } };
+      } catch (error) {
+        // Generic error 
+        return { error: { status: response.status, message: error } };
+      }
+    }
   } else {
     try {
       return await response.json();
@@ -220,6 +234,8 @@ export type TermsAndConditionsApi = {
   url: string;
   body: string; // HTML string
 };
+export type sshKeyApi = { keyId: number; hash: string; created: string };
+
 // Backend responses from type fields
 type CountriesResponse = {
   countries: CountryApi[];
@@ -232,6 +248,7 @@ type DegreesResponse = {
 type AcademicStatusesResponse = {
   academicStatuses: AcademicStatusApi[];
 };
+
 
 // Read-only Atoms for fetching data from the API
 export const countriesAtom = atom(async (get) => {
@@ -263,6 +280,64 @@ export const termsAndConditionsAtom = atom(async (get) => {
   if ((response as any)?.error) return null;
 
   return response as TermsAndConditionsApi;
+});
+
+export const sshKeysAtom = atomWithRefresh(async (get) => {
+  const token = get(tokenAtom);
+  const username = get(usernameAtom);
+
+  if (!token || !username) return [];
+
+  const response = (await fetchApiJson(`/account/${username}/ssh-key`, {
+    method: "GET",
+    body: null,
+  })) as any;
+
+  if (response?.error) return [];
+  const keys = (response?.sshKeys || response?.ssh_keys) as sshKeyApi[] | undefined;
+
+  return Array.isArray(keys) ? keys : [];
+});
+
+export const sshKeysDeleteAtom = atom(null, async (get, set, keyId: number) => {
+  const token = get(tokenAtom);
+  const username = get(usernameAtom);
+
+  if (!token || !username) return [];
+
+  const response = (await fetchApiJson(`/account/${username}/ssh-key/${keyId}`, {
+    method: "DELETE",
+    body: null,
+  })) as any;
+
+  if (response?.error) return { response };
+
+  // Refresh SSH Key list after deletion 
+  set(sshKeysAtom);
+
+  return response;
+
+});
+
+export const sskKeysAddAtom = atom(null, async (get, set, publicKey: string) => {
+  const token = get(tokenAtom);
+  const username = get(usernameAtom);
+
+  if (!token || !username) return [];
+
+  const trimmed = publicKey.trim()
+  if (!trimmed) return { error: true }
+
+  const response = (await fetchApiJson(`/account/${username}/ssh-key`, {
+    method: "POST",
+    body: { public_key: trimmed },
+  })) as any;
+
+  // Refresh SSH Key list after addition 
+  set(sshKeysAtom);
+
+  return response;
+
 });
 
 // Retrieving Domain information based on email address
