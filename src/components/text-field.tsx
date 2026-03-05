@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 import { Textarea } from "./ui/textarea";
 
 export default function TextField({
-  field,
   label,
   placeholder,
   required = false,
@@ -16,7 +15,6 @@ export default function TextField({
   fieldType = "input",
   rows,
 }: {
-  field: any;
   label: React.ReactNode;
   placeholder: string;
   required?: boolean;
@@ -25,7 +23,7 @@ export default function TextField({
   fieldType?: "input" | "textarea";
   rows?: number;
 }) {
-
+  const field = useFieldContext<string>();
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
   return (
     <Field data-invalid={isInvalid}>
