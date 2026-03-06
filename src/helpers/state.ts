@@ -74,6 +74,16 @@ export const logoutAtom = atom(null, (_get, set) => {
   set(otpTokenAtom, "");
   document.cookie = `${ssoCookieName}=; Max-Age=0; Path=${ssoCookiePath}; Domain=${ssoCookieDomain};`;
 });
+export const tokenDataAtom = atom((get) => {
+  const token = get(tokenAtom);
+  return token ? parseJwt(token) : null;
+});
+export const isLoggedInAtom = atom((get) => {
+  const tokenData = get(tokenDataAtom);
+  return (
+    tokenData?.typ === "login" && tokenData?.exp >= new Date().getTime() / 1000
+  );
+});
 
 export const otpAtom = atom("");
 const otpSendStatusAtom = atom({ error: "", sent: false });
