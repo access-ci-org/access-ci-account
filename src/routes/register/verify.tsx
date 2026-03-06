@@ -1,3 +1,4 @@
+import React from "react";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { siteTitle } from "@/config";
 import { useAppForm } from "@/hooks/form";
@@ -11,7 +12,14 @@ import {
   store,
   verifyOtpAtom,
   pendingEmailAtom,
+  domainAtom,
+  isLoggedInAtom
 } from "@/helpers/state";
+
+import {
+  notificationsAtom,
+  pushNotificationAtom,
+} from "@/helpers/notification";
 
 import { Link } from "@tanstack/react-router";
 
@@ -19,7 +27,6 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { TriangleAlert } from "lucide-react";
 import ProgressBar from "@/components/progress-bar";
 import RegistrationLayout from "@/components/registration-layout";
-import { pushNotificationAtom } from "@/helpers/notification";
 
 
 export const Route = createFileRoute("/register/verify")({
@@ -42,8 +49,14 @@ function RegisterVerify() {
   const [otp, setOtp] = useAtom(otpAtom);
   const [verifyStatus, verifyOtp] = useAtom(verifyOtpAtom);
   const pushNotification = useSetAtom(pushNotificationAtom);
+  const notifications = useAtom(notificationsAtom);
   const navigate = useNavigate();
   const [pendingEmail, setPendingEmail] = useAtom(pendingEmailAtom);
+  const [domain] = useAtom(domainAtom);
+
+  const [emailForLookup, setEmailForLookup] = React.useState(email)
+  const effectiveEmail = pendingEmail || emailForLookup // if pending email exists use for domain look up
+  const emailDomain = effectiveEmail?.split("@")[1]?.toLowerCase() ?? null; // domain from email for domain look up
 
   const form = useAppForm({
     defaultValues: {
@@ -119,6 +132,57 @@ function RegisterVerify() {
           return;
         }
       } else {
+        // Don't evaluate eligibility/redirect until the user has typed a real domain
+        if (!emailDomain) return;
+
+        // When the domain atom is still loading, avoid firing notifications/redirects
+        if (domain === undefined) return;
+
+        // Ineligible
+        if (domain === null) {
+          const id = "ineligible-email-domain";
+
+          pushNotification({
+            id,
+            variant: "error",
+            title: "Ineligible Email Domain",
+            message: (
+              <>
+                The email domain {emailDomain} is not eligible for ACCESS. Please try again
+                with your university or work email address.
+              </>
+            ),
+          });
+          navigate({ to: "/register", replace: true });
+          return;
+        }
+
+        // Unknown (no matching orgs)
+        else if (domain?.isEligible === true && (domain.organizations?.length ?? 0) === 0) {
+          const id = "unknown-email-domain";
+
+          pushNotification({
+            id,
+            variant: "error",
+            title: "Unknown Email Domain",
+            message: (
+              <>
+                The email domain {emailDomain} is not yet registered with ACCESS. Please open a{" "}
+                <a
+                  href="https://support.access-ci.org/help-ticket"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline"
+                >
+                  help ticket
+                </a>{" "}
+                and ask to have your organization added to the ACCESS database.
+              </>
+            ),
+          });
+          navigate({ to: "/register", replace: true });
+          return;
+        }
         if (pendingEmail) {
           setEmail(pendingEmail);
           navigate({ to: "/profile" });

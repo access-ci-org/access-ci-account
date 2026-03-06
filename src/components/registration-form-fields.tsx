@@ -4,14 +4,9 @@ import React from "react";
 
 // Imports for API interaction
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import {
-    notificationsAtom,
-    pushNotificationAtom,
-} from "@/helpers/notification";
 import { countriesAtom, academicStatusesAtom, domainAtom, emailAtom, pendingEmailAtom } from "@/helpers/state";
 
 // Navigation Imports
-import { useNavigate } from "@tanstack/react-router";
 import { useStore } from "@tanstack/react-store";
 
 
@@ -52,15 +47,9 @@ const RegistrationFormInputs = withForm({
                 label: status.name,
             }),
         );
-        // Redirect to register page if domain is ineligible for registration
-        const navigate = useNavigate();
 
         // Fetching domain via atom
         const [domain] = useAtom(domainAtom);
-
-        // Creating notifications via atoms
-        const pushNotification = useSetAtom(pushNotificationAtom);
-        const notifications = useAtomValue(notificationsAtom);
 
         // Fetching email via atom
         const originalEmail = useAtomValue(emailAtom) // orginal email in text box before change
@@ -78,10 +67,6 @@ const RegistrationFormInputs = withForm({
             }
           }, [pendingEmail, email])
 
-
-        const effectiveEmail = pendingEmail || emailForLookup // if pending email exists use for domain look up
-        const emailDomain = effectiveEmail?.split("@")[1]?.toLowerCase() ?? null; // domain from email for domain look up
-
         React.useEffect(() => {
             if (pendingEmail) {
                 (form as any).setFieldValue?.("institution", 0)
@@ -98,75 +83,7 @@ const RegistrationFormInputs = withForm({
                     `Organization ${org.organizationId}`,
             })) ?? [];
 
-        React.useEffect(() => {
-            // Don't evaluate eligibility/redirect until the user has typed a real domain
-            if (!emailDomain) return;
-
-            // When the domain atom is still loading, avoid firing notifications/redirects
-            if (domain === undefined) return;
-
-            // Ineligible
-            if (domain === null) {
-                const id = "ineligible-email-domain";
-                const alreadyShown = notifications.some((n) => n.id === id);
-
-                if (!alreadyShown) {
-                    pushNotification({
-                        id,
-                        variant: "error",
-                        title: "Ineligible Email Domain",
-                        message: (
-                            <>
-                                The email domain {emailDomain} is not eligible for ACCESS. Please try again
-                                with your university or work email address.
-                            </>
-                        ),
-                    });
-                }
-
-                if (isRegistration) {
-                    navigate({ to: "/register", replace: true });
-                }
-                return;
-            }
-
-            // Unknown (no matching orgs)
-            else if (domain?.isEligible === true && (domain.organizations?.length ?? 0) === 0) {
-                const id = "unknown-email-domain";
-                const alreadyShown = notifications.some((n) => n.id === id);
-
-                if (!alreadyShown) {
-                    pushNotification({
-                        id,
-                        variant: "error",
-                        title: "Unknown Email Domain",
-                        message: (
-                            <>
-                                The email domain {emailDomain} is not yet registered with ACCESS. Please open a{" "}
-                                <a
-                                    href="https://support.access-ci.org/help-ticket"
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="underline"
-                                >
-                                    help ticket
-                                </a>{" "}
-                                and ask to have your organization added to the ACCESS database.
-                            </>
-                        ),
-                    });
-                }
-
-                if (isRegistration) {
-                    navigate({ to: "/register", replace: true });
-                }
-                return;
-            }
-        }, [domain, pushNotification, navigate, emailDomain, isRegistration, notifications]);
-
-
         return (
-
             <FieldGroup>
                 <form.AppField name="firstName">
                     {(field) => (
