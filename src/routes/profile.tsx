@@ -2,7 +2,12 @@ import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useAppForm } from "@/hooks/form";
 import { siteTitle } from "@/config";
 import ProfileForm from "@/components/profile-form";
-import { accountAtom, updateAccountAtom, store } from "@/helpers/state";
+import {
+  accountAtom,
+  emailAtom,
+  store,
+  updateAccountAtom,
+} from "@/helpers/state";
 import {
   dismissNotificationAtom,
   pushNotificationAtom,
@@ -20,6 +25,7 @@ export const Route = createFileRoute("/profile")({
   loader: async () => {
     const account = await store.get(accountAtom);
     if (account.error) redirect({ to: "/login", throw: true });
+    store.set(emailAtom, account.email);
     return account;
   },
 });
