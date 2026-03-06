@@ -68,7 +68,7 @@ function Profile() {
           message: "Changes to your profile have been saved.",
           variant: "success",
         });
-        navigate({ to: "/dashboard" });
+        navigate({ to: "/" });
         refreshAccount();
       } else {
         pushNotification({

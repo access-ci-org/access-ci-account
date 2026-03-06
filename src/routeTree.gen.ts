@@ -14,7 +14,6 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PasswordRouteImport } from './routes/password'
 import { Route as LogoutRouteImport } from './routes/logout'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthTokenRouteImport } from './routes/auth-token'
 import { Route as AddSshKeyRouteImport } from './routes/add-ssh-key'
 import { Route as IndexRouteImport } from './routes/index'
@@ -47,11 +46,6 @@ const LogoutRoute = LogoutRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthTokenRoute = AuthTokenRouteImport.update({
@@ -99,7 +93,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/add-ssh-key': typeof AddSshKeyRoute
   '/auth-token': typeof AuthTokenRoute
-  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/password': typeof PasswordRoute
@@ -115,7 +108,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/add-ssh-key': typeof AddSshKeyRoute
   '/auth-token': typeof AuthTokenRoute
-  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/password': typeof PasswordRoute
@@ -132,7 +124,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/add-ssh-key': typeof AddSshKeyRoute
   '/auth-token': typeof AuthTokenRoute
-  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/password': typeof PasswordRoute
@@ -150,7 +141,6 @@ export interface FileRouteTypes {
     | '/'
     | '/add-ssh-key'
     | '/auth-token'
-    | '/dashboard'
     | '/login'
     | '/logout'
     | '/password'
@@ -166,7 +156,6 @@ export interface FileRouteTypes {
     | '/'
     | '/add-ssh-key'
     | '/auth-token'
-    | '/dashboard'
     | '/login'
     | '/logout'
     | '/password'
@@ -182,7 +171,6 @@ export interface FileRouteTypes {
     | '/'
     | '/add-ssh-key'
     | '/auth-token'
-    | '/dashboard'
     | '/login'
     | '/logout'
     | '/password'
@@ -199,7 +187,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AddSshKeyRoute: typeof AddSshKeyRoute
   AuthTokenRoute: typeof AuthTokenRoute
-  DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
   LogoutRoute: typeof LogoutRoute
   PasswordRoute: typeof PasswordRoute
@@ -247,13 +234,6 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth-token': {
@@ -319,7 +299,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AddSshKeyRoute: AddSshKeyRoute,
   AuthTokenRoute: AuthTokenRoute,
-  DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
   LogoutRoute: LogoutRoute,
   PasswordRoute: PasswordRoute,

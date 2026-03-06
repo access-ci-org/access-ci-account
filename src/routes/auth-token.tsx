@@ -41,7 +41,7 @@ function AuthToken() {
     setToken(jwt);
     setRegistrationForm({ firstName, lastName });
 
-    navigate({ to: "/dashboard" });
+    navigate({ to: "/" });
   }, []);
   return <LoaderCircle className="animate-spin" />;
 }

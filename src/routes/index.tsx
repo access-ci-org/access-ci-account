@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { siteTitle } from "@/config";
 
-import { Link } from "@tanstack/react-router";
-import { Button } from "@/components/ui/button";
+import { useAtomValue } from "jotai";
+import { isLoggedInAtom } from "@/helpers/state";
+import Dashboard from "@/components/dashboard";
+import Welcome from "@/components/welcome";
 
 export const Route = createFileRoute("/")({
   component: Home,
@@ -10,21 +12,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-  return (
-    <>
-      <h1>ACCESS Account</h1>
-      <p>
-        Welcome to ACCESS! To get started, log in with your existing ACCESS
-        account, or register for a new account.
-      </p>
-      <div className="flex gap-2">
-        <Button asChild>
-          <Link to="/login">Login</Link>
-        </Button>
-        <Button asChild variant="secondary">
-          <Link to="/register">Register</Link>
-        </Button>
-      </div>
-    </>
-  );
+  const isLoggedIn = useAtomValue(isLoggedInAtom);
+
+  return isLoggedIn ? <Dashboard /> : <Welcome />;
 }

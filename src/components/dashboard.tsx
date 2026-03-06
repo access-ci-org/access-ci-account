@@ -1,6 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { siteTitle } from "@/config";
-
 import {
   User,
   Folder,
@@ -15,12 +12,7 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { DashboardCard } from "@/components/dashboard-card";
 
-export const Route = createFileRoute("/dashboard")({
-  component: Dashboard,
-  head: () => ({ meta: [{ title: `My ACCESS Account | ${siteTitle}` }] }),
-});
-
-function Dashboard() {
+export default function Dashboard() {
   return (
     <>
       <h1>My ACCESS Account</h1>
