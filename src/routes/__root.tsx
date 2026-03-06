@@ -14,6 +14,7 @@ import { isLoggedInAtom, store } from "@/helpers/state";
 
 import { Footer, Header, UniversalMenus } from "@access-ci/ui/react";
 import { NotificationsBar } from "@/components/notifications";
+import Breadcrumbs from "@/components/breadcrumbs";
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -36,7 +37,8 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       <HeadContent />
       <Menus />
       <Header />
-      <div className="container mb-6!">
+      <Breadcrumbs />
+      <div className="container mt-15! mb-30!">
         <NotificationsBar />
         <Outlet />
       </div>
