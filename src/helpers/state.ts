@@ -124,7 +124,7 @@ export const sendOtpAtom = atom(
 
 export const verifyOtpAtom = atom(
   (get) => get(otpVerifyStatusAtom),
-  async (get, set, opts?: { mode?: "registration" | "profileEmailChange" }) => {
+  async (get, set) => {
     const email = getOtpEmail(get); // grabs emails, either pending or current 
     const otp = get(otpAtom); // gets code
 
@@ -153,10 +153,12 @@ export const verifyOtpAtom = atom(
 
         const checkedId = jwt?.uid || null;
         const currentId = get(usernameAtom)
+        const isLoggedIn = get(isLoggedInAtom);
+        console.log("verifyOtpAtom isLoggedIn", get(isLoggedInAtom));
+        console.log("verifyOtpAtom response.jwt", response.jwt);
 
         // Registration mode is default, if there are no opts
-        const mode = opts?.mode ?? "registration";
-        if (mode === "profileEmailChange") {
+        if (isLoggedIn) {
           if (checkedId && currentId && checkedId !== currentId) {
             // This email belongs to an existing account
             status = {
@@ -164,11 +166,12 @@ export const verifyOtpAtom = atom(
               verified: false,
               username: checkedId,
             };
-            set(pendingEmailAtom, ""); // Clear pending email since it's invalid
           } else {
             set(otpTokenAtom, response.jwt); // Store OTP token for email change 
+            console.log("setting otpTokenAtom", response.jwt);
           }
         } else {
+          // registration flow
           set(tokenAtom, response.jwt);
         }
       }

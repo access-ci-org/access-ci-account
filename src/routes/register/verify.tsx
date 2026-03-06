@@ -1,4 +1,3 @@
-import React from "react";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { siteTitle } from "@/config";
 import { useAppForm } from "@/hooks/form";
@@ -13,11 +12,10 @@ import {
   verifyOtpAtom,
   pendingEmailAtom,
   domainAtom,
-  isLoggedInAtom
+  accountAtom
 } from "@/helpers/state";
 
 import {
-  notificationsAtom,
   pushNotificationAtom,
 } from "@/helpers/notification";
 
@@ -49,13 +47,12 @@ function RegisterVerify() {
   const [otp, setOtp] = useAtom(otpAtom);
   const [verifyStatus, verifyOtp] = useAtom(verifyOtpAtom);
   const pushNotification = useSetAtom(pushNotificationAtom);
-  const notifications = useAtom(notificationsAtom);
   const navigate = useNavigate();
   const [pendingEmail, setPendingEmail] = useAtom(pendingEmailAtom);
   const [domain] = useAtom(domainAtom);
 
-  const [emailForLookup, setEmailForLookup] = React.useState(email)
-  const effectiveEmail = pendingEmail || emailForLookup // if pending email exists use for domain look up
+  const [account] = useAtom(accountAtom);
+  const effectiveEmail = pendingEmail || email; // if pending email exists use for domain look up
   const emailDomain = effectiveEmail?.split("@")[1]?.toLowerCase() ?? null; // domain from email for domain look up
 
   const form = useAppForm({
@@ -67,7 +64,7 @@ function RegisterVerify() {
     },
     onSubmit: async ({ value }) => {
       setOtp(value.otp);
-      const status = pendingEmail ? await verifyOtp({ mode: "profileEmailChange" }) : await verifyOtp(); // if pendingEmail exists, start email change process, else normal registration
+      const status = await verifyOtp(); // Checks if is registration or email change in verifyOTP
       setOtp("");
       if (!status.verified) {
         pushNotification({
@@ -79,8 +76,7 @@ function RegisterVerify() {
 
         // Profile email-change mode: rollback to verified email/domain and return to profile.
         if (pendingEmail) {
-          setPendingEmail("");
-          setEmail(email); // Rollback to last verified email
+          setEmail(account.email); // Rollback to last verified email
           navigate({ to: "/profile" });
           return;
         }
@@ -89,6 +85,7 @@ function RegisterVerify() {
         setEmail("");
         navigate({ to: "/register" });
         return;
+
       } else if (status.username) {
         if (pendingEmail) {
           setPendingEmail("");

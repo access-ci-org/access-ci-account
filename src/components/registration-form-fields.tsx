@@ -9,13 +9,9 @@ import { countriesAtom, academicStatusesAtom, domainAtom, emailAtom, pendingEmai
 // Navigation Imports
 import { useStore } from "@tanstack/react-store";
 
-
 // Option type defines selectable options for form fields
 type Option<T> = { label: string; value: T };
 
-type RegistrationFormInputsProps = {
-    isRegistration: boolean;
-};
 
 const RegistrationFormInputs = withForm({
     defaultValues: {
@@ -27,10 +23,7 @@ const RegistrationFormInputs = withForm({
         residenceCountry: 0,
         citizenshipCountryIds: [] as number[],
     },
-    props: {
-        isRegistration: false,
-    } as RegistrationFormInputsProps,
-    render: function Render({ form, isRegistration }) {
+    render: function Render({ form}) {
         // Fetching countries and academic status via atoms
         const academicStatuses = useAtomValue(academicStatusesAtom);
         const countries = useAtomValue(countriesAtom);
@@ -58,10 +51,11 @@ const RegistrationFormInputs = withForm({
             (form as any).store,
             (state: any) => state.values?.email ?? "",
         ); // current email in text box (can be same as orginal or new pending email), used for if user types to show change. 
+
         const [emailForLookup, setEmailForLookup] = React.useState(email)
         const setPendingEmail = useSetAtom(pendingEmailAtom) // allows update to email in text box
         const pendingEmail = useAtomValue(pendingEmailAtom) // if user supplies a new email, this is the pending email before verification
-        React.useEffect(() => {
+        React.useEffect(() => { 
             if (!pendingEmail) {
               setEmailForLookup(email)
             }
@@ -114,7 +108,6 @@ const RegistrationFormInputs = withForm({
                                 label="Email Address"
                                 placeholder="University or work email address"
                                 required
-                                disabled={isRegistration}
                             />
                         </div>
                     )}
