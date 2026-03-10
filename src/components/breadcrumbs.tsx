@@ -1,23 +1,32 @@
 import { Breadcrumbs as AccessBreadcrumbs } from "@access-ci/ui/react";
-import { useLinkProps, useMatches } from "@tanstack/react-router";
+import { useLinkProps, useMatches, useNavigate } from "@tanstack/react-router";
 
 export default function Breadcrumbs() {
   const matches = useMatches();
+  const navigate = useNavigate();
   const { href: baseUrl } = useLinkProps({ to: "/" });
 
   if (matches.length < 2) return;
   const match = matches[1];
 
+  const makeItem = (name, path) => ({
+    name,
+    href: path ? `${baseUrl}${path.replace(/^\//, "")}` : undefined,
+    onClick: path
+      ? (e) => {
+          e.preventDefault();
+          navigate({ to: path });
+        }
+      : undefined,
+  });
+
   const isHome = match.fullPath === "/";
-  const items = [{ name: "Account", href: isHome ? undefined : baseUrl }];
+  const items = [makeItem("Account", isHome ? undefined : "/")];
   if (!isHome) {
     if (match.fullPath.match(/\/register\/.+/))
-      items.push({ name: "Register", href: `${baseUrl}/register` });
+      items.push(makeItem("Register", "/register"));
     if (match?.meta?.length && match.meta[0]?.title)
-      items.push({
-        name: match.meta[0].title.split("|")[0].trim(),
-        href: undefined,
-      });
+      items.push(makeItem(match.meta[0].title.split("|")[0].trim(), undefined));
   }
 
   return <AccessBreadcrumbs topBorder={true} items={items} />;
