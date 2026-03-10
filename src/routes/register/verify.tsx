@@ -55,6 +55,103 @@ function RegisterVerify() {
   const effectiveEmail = pendingEmail || email; // if pending email exists use for domain look up
   const emailDomain = effectiveEmail?.split("@")[1]?.toLowerCase() ?? null; // domain from email for domain look up
 
+  function handleVerificationFailure() {
+    pushNotification({
+      title: "Incorrect Code",
+      message:
+        "The verification code you entered did not match. Please try again.",
+      variant: "error",
+    });
+
+    if (pendingEmail) {
+      setEmail(account.email); // Rollback to last verified email
+      navigate({ to: "/profile" });
+      return;
+    } else {
+      setEmail(""); // Registration mode, clear email and force user to registration page
+      navigate({ to: "/register" });
+      return;
+    }
+  }
+
+  function handleExistingAccount(username: string) {
+    pushNotification({
+      title: "Existing Account",
+      message: (
+        <>
+          You already have an ACCESS account. Your ACCESS ID is{" "}
+          <strong>{username}</strong>. You can{" "}
+          <Link to="/login">login</Link> or
+          <a href="https://identity.access-ci.org/password-reset">
+            {" "}
+            reset your password
+          </a>
+          .
+        </>
+      ),
+      variant: "error",
+    });
+    navigate({ to: "/profile" });
+    return;
+  }
+
+  function handleIneligibleDomain() {
+    // Don't evaluate eligibility/redirect until the user has typed a real domain
+    if (!emailDomain) return;
+
+    // When the domain atom is still loading, avoid firing notifications/redirects
+    if (domain === undefined) return;
+
+    // Ineligible
+    if (domain === null) {
+      const id = "ineligible-email-domain";
+
+      pushNotification({
+        id,
+        variant: "error",
+        title: "Ineligible Email Domain",
+        message: (
+          <>
+            The email domain {emailDomain} is not eligible for ACCESS. Please try again
+            with your university or work email address.
+          </>
+        ),
+      });
+      navigate({ to: "/register", replace: true });
+      return;
+    }
+  }
+
+  function handleUnknownDomain() {
+    // Unknown (no matching orgs)
+    if (domain?.isEligible === true && (domain.organizations?.length ?? 0) === 0) {
+      const id = "unknown-email-domain";
+
+      pushNotification({
+        id,
+        variant: "error",
+        title: "Unknown Email Domain",
+        message: (
+          <>
+            The email domain {emailDomain} is not yet registered with ACCESS. Please open a{" "}
+            <a
+              href="https://support.access-ci.org/help-ticket"
+              target="_blank"
+              rel="noreferrer"
+              className="underline"
+            >
+              help ticket
+            </a>{" "}
+            and ask to have your organization added to the ACCESS database.
+          </>
+        ),
+      });
+      navigate({ to: "/register", replace: true });
+      return;
+    }
+  }
+
+
   const form = useAppForm({
     defaultValues: {
       otp,
@@ -66,129 +163,35 @@ function RegisterVerify() {
       setOtp(value.otp);
       const status = await verifyOtp(); // Checks if is registration or email change in verifyOTP
       setOtp("");
+      // OTP verification failed
       if (!status.verified) {
-        pushNotification({
-          title: "Incorrect Code",
-          message:
-            "The verification code you entered did not match. Please try again.",
-          variant: "error",
-        });
-
-        // Profile email-change mode: rollback to verified email/domain and return to profile.
-        if (pendingEmail) {
-          setEmail(account.email); // Rollback to last verified email
-          navigate({ to: "/profile" });
-          return;
-        }
-
-        // Registration mode
-        setEmail("");
-        navigate({ to: "/register" });
-        return;
-
-      } else if (status.username) {
-        if (pendingEmail) {
-          setPendingEmail("");
-          pushNotification({
-            title: "Existing Account",
-            message: (
-              <>
-                You already have an ACCESS account. Your ACCESS ID is{" "}
-                <strong>{status.username}</strong>. You can{" "}
-                <Link to="/login">login</Link> or
-                <a href="https://identity.access-ci.org/password-reset">
-                  {" "}
-                  reset your password
-                </a>
-                .
-              </>
-            ),
-            variant: "error",
-          });
-          navigate({ to: "/profile" });
-          return;
-        } else {
-          setEmail("");
-          pushNotification({
-            title: "Existing Account",
-            message: (
-              <>
-                You already have an ACCESS account. Your ACCESS ID is{" "}
-                <strong>{status.username}</strong>. You can{" "}
-                <Link to="/login">login</Link> or
-                <a href="https://identity.access-ci.org/password-reset">
-                  {" "}
-                  reset your password
-                </a>
-                .
-              </>
-            ),
-            variant: "error",
-          });
-          navigate({ to: "/" });
-          return;
-        }
-      } else {
-        // Don't evaluate eligibility/redirect until the user has typed a real domain
-        if (!emailDomain) return;
-
-        // When the domain atom is still loading, avoid firing notifications/redirects
-        if (domain === undefined) return;
-
-        // Ineligible
-        if (domain === null) {
-          const id = "ineligible-email-domain";
-
-          pushNotification({
-            id,
-            variant: "error",
-            title: "Ineligible Email Domain",
-            message: (
-              <>
-                The email domain {emailDomain} is not eligible for ACCESS. Please try again
-                with your university or work email address.
-              </>
-            ),
-          });
-          navigate({ to: "/register", replace: true });
-          return;
-        }
-
-        // Unknown (no matching orgs)
-        else if (domain?.isEligible === true && (domain.organizations?.length ?? 0) === 0) {
-          const id = "unknown-email-domain";
-
-          pushNotification({
-            id,
-            variant: "error",
-            title: "Unknown Email Domain",
-            message: (
-              <>
-                The email domain {emailDomain} is not yet registered with ACCESS. Please open a{" "}
-                <a
-                  href="https://support.access-ci.org/help-ticket"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="underline"
-                >
-                  help ticket
-                </a>{" "}
-                and ask to have your organization added to the ACCESS database.
-              </>
-            ),
-          });
-          navigate({ to: "/register", replace: true });
-          return;
-        }
-        if (pendingEmail) {
-          setEmail(pendingEmail);
-          navigate({ to: "/profile" });
-          return;
-        }
-        navigate({ to: "/register/complete" });
+        handleVerificationFailure();
         return;
       }
-    },
+      // Existing account check after successful OTP
+      if (status.username) {
+        const existingUsername = status.username;
+        if (pendingEmail) { // if pending email exists, and is already associated with an account...
+          setPendingEmail("");
+        } else { // if email is already associated with an account...
+          setEmail("");
+        }
+        handleExistingAccount(existingUsername);
+        return;
+      }
+
+      // Domain validation check
+      handleIneligibleDomain();
+      handleUnknownDomain();
+
+      // If we have a pending email, we set it, otherwise send to registration/complete to fill in rest of registration form
+      if (pendingEmail) {
+        setEmail(pendingEmail);
+        navigate({ to: "/profile"})
+        return;
+      }
+      navigate({ to: "/register/complete" });
+    }
   });
 
   return (

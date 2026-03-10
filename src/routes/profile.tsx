@@ -92,7 +92,7 @@ function Profile() {
         }
       }
       
-      // TODO: Figure out a way to save other fields if they are changed along with the emai change. 
+      // TODO: Figure out a way to save other fields if they are changed along with the email change. 
       const { saved } = await updateAccount({
         firstName: value.firstName,
         lastName: value.lastName,
