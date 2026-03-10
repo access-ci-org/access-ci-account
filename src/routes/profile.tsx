@@ -27,7 +27,6 @@ export const Route = createFileRoute("/profile")({
 
 
 function Profile() {
-  const account = Route.useLoaderData();
   const accountValue = useAtomValue(accountAtom);
   const refreshAccount = useSetAtom(accountAtom);
   const updateAccount = useSetAtom(updateAccountAtom);
@@ -63,24 +62,16 @@ function Profile() {
       const currentEmail = (accountValue.email ?? "").trim().toLowerCase(); // Email from account 
       const newEmail = (value.email ?? "").trim().toLowerCase(); // Email from form input 
       const pendingEmail = (pendingEmailValue ?? "").trim().toLowerCase(); // pending email from state
-      console.log("currentEmail", currentEmail);
-      console.log("newEmail", newEmail);
-      console.log("pendingEmail", pendingEmail);
-      console.log("emailOtpToken", emailOtpToken);
 
       let isVerifiedPendingEmail = false;
       if (pendingEmail && emailOtpToken && newEmail === pendingEmail) {
         isVerifiedPendingEmail = true;
       } // if there is a pending email, an otp token, and new email matches pending email, then the pending email is verified and can be saved.
-
-      console.log("isVerifiedPendingEmail", isVerifiedPendingEmail);
       
       let emailChanged = false;
       if (newEmail && newEmail !== currentEmail) {
         emailChanged = true;
       } // if there is a new email and its different from the current email, then it needs verfication before saving. 
-
-      console.log("isEmailChanged", emailChanged);
 
       // Detecting a new unverified email input
       if (emailChanged && !isVerifiedPendingEmail) {
@@ -105,10 +96,6 @@ function Profile() {
         timeZone: value.timeZone,
         // TODO: Add degree
       });
-
-      console.log("isVerifiedPendingEmail", isVerifiedPendingEmail);
-
-      console.log("saved", saved);
 
       if (saved) {
         if (isVerifiedPendingEmail) {

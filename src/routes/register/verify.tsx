@@ -187,7 +187,13 @@ function RegisterVerify() {
       // If we have a pending email, we set it, otherwise send to registration/complete to fill in rest of registration form
       if (pendingEmail) {
         setEmail(pendingEmail);
-        navigate({ to: "/profile"})
+        pushNotification({
+          id: "profile-saved",
+          title: "Profile Saved",
+          message: "Changes to your profile have been saved.",
+          variant: "success",
+        });
+        navigate({ to: "/dashboard" });
         return;
       }
       navigate({ to: "/register/complete" });
