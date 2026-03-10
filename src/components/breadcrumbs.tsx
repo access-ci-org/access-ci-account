@@ -1,3 +1,4 @@
+import type { MouseEvent } from "react";
 import { Breadcrumbs as AccessBreadcrumbs } from "@access-ci/ui/react";
 import { useLinkProps, useMatches, useNavigate } from "@tanstack/react-router";
 
@@ -9,11 +10,11 @@ export default function Breadcrumbs() {
   if (matches.length < 2) return;
   const match = matches[1];
 
-  const makeItem = (name, path) => ({
+  const makeItem = (name: string, path?: string) => ({
     name,
     href: path ? `${baseUrl}${path.replace(/^\//, "")}` : undefined,
     onClick: path
-      ? (e) => {
+      ? (e: MouseEvent<HTMLAnchorElement>) => {
           e.preventDefault();
           navigate({ to: path });
         }
