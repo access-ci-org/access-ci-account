@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Button } from "@/components/ui/button";
 
 type Option = { label: string; value: string };
 type DegreeRow = { degreeId: string; degreeField: string };
@@ -11,32 +12,29 @@ export default function AcademicDegreesSection({
   degreeOptions: Option[];
 }) {
   return (
-    <form.AppField name="academicDegrees">
+    <form.AppField name="academicDegrees" mode="array">
       {(degreesField: any) => {
         const rows = (degreesField.state.value ?? []) as DegreeRow[];
 
         const addRow = () => {
-          degreesField.setValue([
-            ...rows,
-            { degreeId: "", degreeField: "" },
-          ]);
+          degreesField.pushValue({
+            degreeId: "",
+            degreeField: "",
+          });
         };
 
         const removeRow = (idx: number) => {
           if (rows.length <= 1) return;
-
-          const next = rows.slice();
-          next.splice(idx, 1);
-          degreesField.setValue(next);
+          degreesField.removeValue(idx);
         };
 
         return (
           <fieldset className="space-y-4 border border-slate-300 p-4">
-            <legend 
+            <legend
               data-slot="field-label"
               className="
-                mb-3 text-sm font-semibold leading-snug
-                flex w-fit items-center gap-2 select-none
+                mb-3 flex w-fit items-center gap-2
+                text-sm leading-snug font-semibold select-none
               "
             >
               Academic Degrees
@@ -75,36 +73,31 @@ export default function AcademicDegreesSection({
                   </form.AppField>
 
                   <div className="md:mt-8">
-                    <button
+                    <Button
+                      className = "border-red-600 hover:bg-white hover:border-red-600"
                       type="button"
+                      variant="destructive"
+                      size="lg"
                       onClick={() => removeRow(idx)}
                       disabled={rows.length <= 1}
-                      className="
-                        h-10 px-4 text-sm font-semibold text-white
-                        bg-red-700 hover:bg-red-800
-                        disabled:opacity-50 disabled:cursor-not-allowed
-                      "
                       aria-label={`Remove degree ${idx + 1}`}
                     >
-                      REMOVE
-                    </button>
+                      Remove
+                    </Button>
                   </div>
                 </div>
               ))}
             </div>
 
             <div>
-              <button
+              <Button
                 type="button"
+                size="lg"
                 onClick={addRow}
-                className="
-                  h-10 border-4 border-[var(--teal-700)]
-                  bg-[var(--teal-700)] px-4 text-sm font-semibold text-white
-                  hover:bg-white hover:text-[var(--teal-700)]
-                "
+                className="bg-[var(--teal-700)] border-[var(--teal-700)] text-white hover:bg-white hover:text-[var(--teal-700)]"
               >
-                ADD ANOTHER DEGREE
-              </button>
+                Add Another Degree
+              </Button>
             </div>
           </fieldset>
         );
