@@ -12,8 +12,10 @@ import { Field, FieldGroup } from "@/components/ui/field";
 
 // Import Registration Form to include in Profile Form Edit/View
 import RegistrationFormInputs from "./registration-form-fields";
+import AcademicDegreesSection from "./multi-degree-field";
 import { useAtomValue } from "jotai";
 import { degreesAtom } from "@/helpers/state";
+
 
 // Option type defines selectable options for form fields
 type Option = { label: string; value: string };
@@ -45,8 +47,7 @@ const ProfileForm = withForm({
 
     // Profile-Form existing fields
     role: [] as string[],
-    degree: "",
-    degreeField: "",
+    academicDegrees: [{ degreeId: "", degreeField: "" }],
     timeZone: "",
   },
   render: function Render({ form }) {
@@ -90,34 +91,7 @@ const ProfileForm = withForm({
                 }}
               />
 
-              {/* Degree field captures the user's degree level with a dropdown select */}
-              <form.AppField
-                name="degree"
-                children={(field) => {
-                  const value = field.state.value; // Ensures that value holds a string
-                  return (
-                    <field.DropdownSelectField
-                      label="Degree"
-                      name="degree"
-                      value={value}
-                      onChange={(v: string | null) => field.setValue(v ?? "")}
-                      placeholder="Select degree level"
-                      options={degreeOptions}
-                    />
-                  );
-                }}
-              />
-
-              {/* Degree field text input captures the user's degree field of study */}
-              <form.AppField
-                name="degreeField"
-                children={(field) => (
-                  <field.TextField
-                    label="Degree Field"
-                    placeholder="Enter your degree field"
-                  />
-                )}
-              />
+              <AcademicDegreesSection form={form} degreeOptions={degreeOptions} />
 
               {/* Time zone field captures the user's time zone with a dropdown select */}
               <form.AppField

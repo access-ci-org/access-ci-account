@@ -12,8 +12,13 @@ export const profileFormSchema = z.object({
 
   role: z.array(z.string()).catch([]),
 
-  degree: z.string().catch(""),
-  degreeField: z.string().catch(""),
+  academicDegrees: z.array(
+    z.object({
+      degreeId: z.string().min(1, "Select a degree"),
+      degreeField: z.string().min(1, "Enter a degree field"),
+    })
+  ),
+
   timeZone: z.string().catch(""),
 
   firstName: requiredString("First name"),

@@ -37,6 +37,13 @@ function Profile() {
   const pushNotification = useSetAtom(pushNotificationAtom);
   const navigate = useNavigate();
 
+  type ApiDegree = {
+    degreeId: number;
+    degreeField: string;
+  };
+
+  const apiDegrees = (account.academicDegrees ?? []) as ApiDegree[];
+  
   const form = useAppForm({
     defaultValues: {
       firstName: account.firstName as string,
@@ -47,8 +54,12 @@ function Profile() {
       residenceCountry: account.residenceCountryId as number,
       citizenshipCountryIds: account.citizenshipCountryIds as number[],
       role: [] as string[],
-      degree: "",
-      degreeField: "",
+      academicDegrees: apiDegrees.length
+        ? apiDegrees.map((d) => ({
+            degreeId: String(d.degreeId),
+            degreeField: d.degreeField ?? "",
+          }))
+        : [{ degreeId: "", degreeField: "" }],
       timeZone: account.timeZone as string,
     },
     validators: {
@@ -64,7 +75,7 @@ function Profile() {
         residenceCountryId: value.residenceCountry,
         citizenshipCountryIds: value.citizenshipCountryIds,
         timeZone: value.timeZone,
-        // TODO: Add degree
+        degrees: value.academicDegrees,
       });
 
       if (saved) {
