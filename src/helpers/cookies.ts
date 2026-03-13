@@ -1,9 +1,9 @@
 import {
-  ssoCookieName,
-  ssoCookieValue,
-  ssoCookiePath,
   ssoCookieDomain,
   ssoCookieMaxAgeHours,
+  ssoCookieName,
+  ssoCookiePath,
+  ssoCookieValue,
 } from "@/config";
 
 export function getCookie(name: string): string | null {
@@ -38,6 +38,20 @@ export function setSsoCookie(): void {
 
   if (window.location.protocol === "https:") {
     parts.push("secure");
+  }
+
+  document.cookie = parts.join("; ");
+}
+
+export function deleteSsoCookie(): void {
+  const parts = [
+    `${ssoCookieName}=`,
+    "expires=Thu, 01 Jan 1970 00:00:00 GMT",
+    `path=${ssoCookiePath}`,
+  ];
+
+  if (ssoCookieDomain && ssoCookieDomain !== "localhost") {
+    parts.push(`domain=${ssoCookieDomain}`);
   }
 
   document.cookie = parts.join("; ");

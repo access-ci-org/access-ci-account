@@ -10,7 +10,7 @@ import { registrationFormAtom, tokenAtom, usernameAtom } from "@/helpers/state";
 import { parseJwt } from "@/helpers/jwt";
 import { useEffect } from "react";
 import { LoaderCircle } from "lucide-react";
-import { setSsoCookie} from "@/helpers/cookies";
+import { setSsoCookie, hasSsoCookie} from "@/helpers/cookies";
 
 // Define the search schema
 const searchSchema = z.object({
@@ -39,10 +39,10 @@ function AuthToken() {
   useEffect(() => {
     const payload = parseJwt(jwt);
 
-    if (payload?.typ === "login") {
+    if (payload?.typ === "login" && !hasSsoCookie()) {
       setSsoCookie();
     }
-    
+
     setUsername(payload?.uid ?? "");
     setToken(jwt);
     setRegistrationForm({ firstName, lastName });
