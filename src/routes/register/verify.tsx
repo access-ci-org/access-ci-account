@@ -12,7 +12,9 @@ import {
   verifyOtpAtom,
   pendingEmailAtom,
   domainAtom,
-  accountAtom
+  accountAtom,
+  updateAccountAtom,
+  pendingProfileAtom,
 } from "@/helpers/state";
 
 import {
@@ -52,6 +54,9 @@ function RegisterVerify() {
   const [domain] = useAtom(domainAtom);
 
   const [account] = useAtom(accountAtom);
+  const refreshAccount = useSetAtom(accountAtom);
+  const [, updateAccount] = useAtom(updateAccountAtom);
+  const [pendingProfile, setPendingProfile] = useAtom(pendingProfileAtom);
   const effectiveEmail = pendingEmail || email; // if pending email exists use for domain look up
   const emailDomain = effectiveEmail?.split("@")[1]?.toLowerCase() ?? null; // domain from email for domain look up
 
@@ -118,8 +123,9 @@ function RegisterVerify() {
         ),
       });
       navigate({ to: "/register", replace: true });
-      return;
+      return true;
     }
+    return false;
   }
 
   function handleUnknownDomain() {
@@ -147,10 +153,10 @@ function RegisterVerify() {
         ),
       });
       navigate({ to: "/register", replace: true });
-      return;
+      return true;
     }
+    return false;
   }
-
 
   const form = useAppForm({
     defaultValues: {
@@ -160,14 +166,19 @@ function RegisterVerify() {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
+      console.log("ENTERED EMAIL CHANGE BRANCH");
+      console.log("CALLING sendOtp");
       setOtp(value.otp);
-      const status = await verifyOtp(); // Checks if is registration or email change in verifyOTP
+      const status = await verifyOtp();
       setOtp("");
+      
       // OTP verification failed
       if (!status.verified) {
         handleVerificationFailure();
         return;
       }
+      
+      const verifiedOtpToken = status.jwt;
       // Existing account check after successful OTP
       if (status.username) {
         const existingUsername = status.username;
@@ -181,18 +192,65 @@ function RegisterVerify() {
       }
 
       // Domain validation check
-      handleIneligibleDomain();
-      handleUnknownDomain();
+      if (handleIneligibleDomain()) return;
+      if (handleUnknownDomain()) return;
 
-      // If we have a pending email, we set it, otherwise send to registration/complete to fill in rest of registration form
+      // Profile edit flow: OTP succeeded, domain checks passed, now do the real save
       if (pendingEmail) {
+        if (!pendingProfile) {
+          pushNotification({
+            id: "profile-save-missing",
+            title: "Unable to Save Profile",
+            message:
+              "We could not find your pending profile changes. Please try saving your profile again.",
+            variant: "error",
+          });
+          navigate({ to: "/profile" });
+          return;
+        }
+      
+        if (!verifiedOtpToken) {
+          pushNotification({
+            id: "profile-save-missing-otp",
+            title: "Unable to Save Profile",
+            message:
+              "Your email was verified, but the verification token was missing. Please try again.",
+            variant: "error",
+          });
+          navigate({ to: "/profile" });
+          return;
+        }
+        
+        console.log("CALLING updateAccount");
+        const saveStatus = await updateAccount({
+          ...pendingProfile,
+          email: pendingEmail,
+          email_otp_token: verifiedOtpToken,
+        });
+
+        if (!saveStatus) {
+          pushNotification({
+            id: "profile-save-failed",
+            title: "Unable to Save Profile",
+            message: "Your profile could not be saved. Please try again.",
+            variant: "error",
+          });
+          navigate({ to: "/profile" });
+          return;
+        }
+      
         setEmail(pendingEmail);
+        setPendingEmail("");
+        setPendingProfile(null);
+        await refreshAccount();
+      
         pushNotification({
           id: "profile-saved",
           title: "Profile Saved",
           message: "Changes to your profile have been saved.",
           variant: "success",
         });
+      
         navigate({ to: "/dashboard" });
         return;
       }

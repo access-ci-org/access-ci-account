@@ -2,14 +2,14 @@ import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useAppForm } from "@/hooks/form";
 import { siteTitle } from "@/config";
 import ProfileForm from "@/components/profile-form";
-import { accountAtom, updateAccountAtom, store, pendingEmailAtom, otpTokenAtom } from "@/helpers/state";
+import { accountAtom, updateAccountAtom, store, pendingEmailAtom, otpTokenAtom, pendingProfileAtom, domainAtom } from "@/helpers/state";
 import {
   dismissNotificationAtom,
   pushNotificationAtom,
 } from "@/helpers/notification";
 
 import { profileFormSchema } from "@/helpers/validation";
-import { useSetAtom, useAtomValue } from "jotai";
+import { useSetAtom, useAtomValue, useAtom } from "jotai";
 import { sendOtpAtom } from "@/helpers/state";
 
 export const Route = createFileRoute("/profile")({
@@ -32,12 +32,13 @@ function Profile() {
   const updateAccount = useSetAtom(updateAccountAtom);
   const pushNotification = useSetAtom(pushNotificationAtom);
   const navigate = useNavigate();
+  const domainValue = useAtomValue(domainAtom);
 
-  
   // Updating email address
   const pendingEmailValue = useAtomValue(pendingEmailAtom);
   const setPendingEmail = useSetAtom(pendingEmailAtom);
   const emailOtpToken = useAtomValue(otpTokenAtom);
+  const [, setPendingProfile] = useAtom(pendingProfileAtom);
 
   const sendOtp = useSetAtom(sendOtpAtom);
 
@@ -59,31 +60,87 @@ function Profile() {
       onSubmit: profileFormSchema,
     },
     onSubmit: async ({ value }) => {
-      const currentEmail = (accountValue.email ?? "").trim().toLowerCase(); // Email from account 
-      const newEmail = (value.email ?? "").trim().toLowerCase(); // Email from form input 
-      const pendingEmail = (pendingEmailValue ?? "").trim().toLowerCase(); // pending email from state
+      const currentEmail = (accountValue.email ?? "").trim().toLowerCase();
+      const newEmail = (value.email ?? "").trim().toLowerCase();
+      const pendingEmail = (pendingEmailValue ?? "").trim().toLowerCase();
 
-      let isVerifiedPendingEmail = false;
-      if (pendingEmail && emailOtpToken && newEmail === pendingEmail) {
-        isVerifiedPendingEmail = true;
-      } // if there is a pending email, an otp token, and new email matches pending email, then the pending email is verified and can be saved.
-      
-      let emailChanged = false;
-      if (newEmail && newEmail !== currentEmail) {
-        emailChanged = true;
-      } // if there is a new email and its different from the current email, then it needs verfication before saving. 
+      const currentDomain = currentEmail.split("@")[1] ?? "";
+      const newDomain = newEmail.split("@")[1] ?? "";
+      const domainChanged = currentDomain !== newDomain;
 
-      // Detecting a new unverified email input
+      const isVerifiedPendingEmail = Boolean(
+        pendingEmail && emailOtpToken && newEmail === pendingEmail,
+      );
+
+      const emailChanged = Boolean(newEmail && newEmail !== currentEmail);
+
+      // If user entered a new email that has not been verified yet,
+      // stop here, store pending data, send OTP, and go to verify page.
       if (emailChanged && !isVerifiedPendingEmail) {
+        if (domainChanged) {
+          if (!value.institution) {
+            pushNotification({
+              id: "organization-required",
+              title: "Institution Required",
+              message:
+                "Because you changed your email domain, please select an institution that matches your new email.",
+              variant: "error",
+            });
+            return;
+          }
+
+          const matchingOrganizations = domainValue?.organizations ?? [];
+          const matchesInstitution = matchingOrganizations.some(
+            (org) => org.organizationId === value.institution,
+          );
+
+          if (!matchesInstitution) {
+            pushNotification({
+              id: "institution-domain-mismatch",
+              title: "Institution Does Not Match Email",
+              message:
+                "Please select an institution that matches your new email domain before continuing.",
+              variant: "error",
+            });
+            return;
+          }
+        }
+
         setPendingEmail(newEmail);
+        console.log("submitted form values", value);
+        console.log("submitted firstName", value.firstName);
+        console.log("submitted lastName", value.lastName);
+        console.log("submitted email", value.email);
+        console.log("submitted institution", value.institution);
+        setPendingProfile({
+          first_name: value.firstName,
+          last_name: value.lastName,
+          organization_id: value.institution,
+          academic_status_id: value.academicStatus,
+          residence_country_id: value.residenceCountry,
+          citizenship_country_ids: value.citizenshipCountryIds,
+          time_zone: value.timeZone,
+          degree: value.degree,
+          role: value.role,
+          degree_field: value.degreeField,
+        });
+
         const status = await sendOtp();
         if (status.sent) {
           navigate({ to: "/register/verify" });
           return;
         }
+        pushNotification({
+          id: "otp-send-failed",
+          title: "Unable to Send Verification Code",
+          message: "We could not send a verification code. Please try again.",
+          variant: "error",
+        });
+        return;
       }
-      
-      // TODO: Figure out a way to save other fields if they are changed along with the email change. 
+
+      // Otherwise, this is either:
+      // no email change, or  email change that has already been verified
       const { saved } = await updateAccount({
         firstName: value.firstName,
         lastName: value.lastName,
@@ -113,7 +170,7 @@ function Profile() {
         pushNotification({
           id: "profile-error",
           title: "Error Saving Profile",
-          message: `An error occurred while saving your profile. Please try again later.`,
+          message: "An error occurred while saving your profile. Please try again later.",
           variant: "error",
         });
         window.scrollTo({ top: 0 });

@@ -125,19 +125,22 @@ export const sendOtpAtom = atom(
 export const verifyOtpAtom = atom(
   (get) => get(otpVerifyStatusAtom),
   async (get, set) => {
-    const email = getOtpEmail(get); // grabs emails, either pending or current 
-    const otp = get(otpAtom); // gets code
+    const email = getOtpEmail(get);
+    const otp = get(otpAtom);
 
     let status = {
       error: "Email address or verification code are not set.",
       verified: false,
-      username: null,
+      username: null as string | null,
+      jwt: null as string | null,
     };
+
     if (email && otp) {
       const response = await fetchApiJson("/auth/verify-otp", {
         method: "POST",
         body: { email, otp },
       });
+
       if (response?.error) {
         status = {
           error:
@@ -146,36 +149,38 @@ export const verifyOtpAtom = atom(
               : response.error,
           verified: false,
           username: null,
+          jwt: null,
         };
       } else {
-        const jwt = parseJwt(response.jwt);
-        status = { error: "", verified: true, username: jwt?.uid || null };
+        const decodedJwt = parseJwt(response.jwt);
+        status = {
+          error: "",
+          verified: true,
+          username: decodedJwt?.uid || null,
+          jwt: response.jwt,
+        };
 
-        const checkedId = jwt?.uid || null;
-        const currentId = get(usernameAtom)
+        const checkedId = decodedJwt?.uid || null;
+        const currentId = get(usernameAtom);
         const isLoggedIn = get(isLoggedInAtom);
-        console.log("verifyOtpAtom isLoggedIn", get(isLoggedInAtom));
-        console.log("verifyOtpAtom response.jwt", response.jwt);
 
-        // Registration mode is default, if there are no opts
         if (isLoggedIn) {
           if (checkedId && currentId && checkedId !== currentId) {
-            // This email belongs to an existing account
             status = {
               error: "This email is already associated with an account.",
               verified: false,
               username: checkedId,
+              jwt: null,
             };
           } else {
-            set(otpTokenAtom, response.jwt); // Store OTP token for email change 
-            console.log("setting otpTokenAtom", response.jwt);
+            set(otpTokenAtom, response.jwt);
           }
         } else {
-          // registration flow
           set(tokenAtom, response.jwt);
         }
       }
     }
+
     set(otpVerifyStatusAtom, status);
     return status;
   },
@@ -413,3 +418,25 @@ export const domainAtom = atom(async (get) => {
     isEligible,
   };
 });
+
+// Pending Profile atom to save profile information that under goes a change.
+export type PendingProfile = {
+  first_name?: string;
+  last_name?: string;
+  email?: string;
+  organization_id?: number | null;
+  time_zone?: string | null;
+  academic_status_id?: number | null;
+  residence_country_id?: number | null;
+  citizenship_country_ids?: number[];
+  role?: string[];
+  degree?: string;
+  degree_field?: string;
+};
+
+export const pendingProfileAtom = atomWithStorage<PendingProfile | null>(
+  "pendingProfile",
+  null,
+  undefined,
+  { getOnInit: true },
+);
