@@ -166,8 +166,6 @@ function RegisterVerify() {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
-      console.log("ENTERED EMAIL CHANGE BRANCH");
-      console.log("CALLING sendOtp");
       setOtp(value.otp);
       const status = await verifyOtp();
       setOtp("");
@@ -220,8 +218,7 @@ function RegisterVerify() {
           navigate({ to: "/profile" });
           return;
         }
-        
-        console.log("CALLING updateAccount");
+      
         const saveStatus = await updateAccount({
           ...pendingProfile,
           email: pendingEmail,

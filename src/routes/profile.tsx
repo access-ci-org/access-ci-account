@@ -107,11 +107,6 @@ function Profile() {
         }
 
         setPendingEmail(newEmail);
-        console.log("submitted form values", value);
-        console.log("submitted firstName", value.firstName);
-        console.log("submitted lastName", value.lastName);
-        console.log("submitted email", value.email);
-        console.log("submitted institution", value.institution);
         setPendingProfile({
           first_name: value.firstName,
           last_name: value.lastName,
