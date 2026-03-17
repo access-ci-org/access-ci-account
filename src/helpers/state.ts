@@ -60,6 +60,9 @@ export const usernameAtom = atomWithStorage("username", "", undefined, {
 export const tokenAtom = atomWithStorage("token", "", undefined, {
   getOnInit: true,
 });
+export const ciLogonTokenAtom = atomWithStorage("ciLogonToken", "", undefined, {
+  getOnInit: true,
+});
 export const tokenDataAtom = atom((get) => {
   const token = get(tokenAtom);
   return token ? parseJwt(token) : null;
@@ -74,6 +77,7 @@ export const logoutAtom = atom(null, (_get, set) => {
   set(emailAtom, "");
   set(usernameAtom, "");
   set(tokenAtom, "");
+  set(ciLogonTokenAtom, "");
   document.cookie = `${ssoCookieName}=; Max-Age=0; Path=${ssoCookiePath}; Domain=${ssoCookieDomain};`;
 });
 
@@ -155,10 +159,20 @@ const accountCreateStatusAtom = atom({
 
 export const createAccountAtom = atom(
   (get) => get(accountCreateStatusAtom),
-  async (_get, set, payload: any) => {
+  async (get, set, payload: any) => {
+    const ciLogonToken = get(ciLogonTokenAtom); // grabs cilogon token
+
+    const body = ciLogonToken ? { // if we have cilogon use it in payload if we dont use normal payload
+      ...payload,
+      cilogon_token: ciLogonToken, // adding token value for backend to use existing identity 
+    } : payload // normal payload
+    console.log("ciLogonToken:", ciLogonToken);
+    console.log("payload before send:", payload);
+    console.log("final request body:", body);
+    console.log("sending cilogon token?", !!ciLogonToken);
     const resp = await fetchApiJson("/account", {
       method: "POST",
-      body: payload,
+      body, // stores body in request
     });
 
     if ((resp as any)?.error) {
@@ -201,9 +215,9 @@ export const updateAccountAtom = atom(
 
     const status = response?.error
       ? {
-          error: response.error,
-          saved: false,
-        }
+        error: response.error,
+        saved: false,
+      }
       : { error: "", saved: true };
     set(accountUpdateStatusAtom, status);
     return status;

@@ -10,7 +10,9 @@ import {
   sendOtpAtom,
   store,
   verifyOtpAtom,
+  domainAtom
 } from "@/helpers/state";
+import { startLogin } from "@/helpers/auth";
 
 import { Link } from "@tanstack/react-router";
 
@@ -41,6 +43,8 @@ function RegisterVerify() {
   const [verifyStatus, verifyOtp] = useAtom(verifyOtpAtom);
   const pushNotification = useSetAtom(pushNotificationAtom);
   const navigate = useNavigate();
+  const [domain] = useAtom(domainAtom);
+
 
   const form = useAppForm({
     defaultValues: {
@@ -82,6 +86,15 @@ function RegisterVerify() {
         });
         navigate({ to: "/" });
       } else {
+        const idpEntityId = domain?.idps?.[0]?.entityId; // pulling the first IdP
+        if (idpEntityId) { // if domain has idp entity id
+          startLogin({
+            idp: idpEntityId,
+            token_type: "cilogon",  // startLogin with IdP
+          });
+          return;
+        }
+
         navigate({ to: "/register/complete" });
       }
     },
