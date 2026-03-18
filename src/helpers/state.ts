@@ -236,6 +236,26 @@ export type TermsAndConditionsApi = {
 };
 export type sshKeyApi = { keyId: number; hash: string; created: string };
 
+export type IdentifierApi = { // just pulling identitier 
+  type: string;
+  identifier: string;
+  login: boolean;
+};
+
+export type IdentityApi = { // pulling in the entire backend structure
+  identity_id: number;
+  organization: string | null;
+  identifiers: IdentifierApi[];
+};
+
+export type CombinationIdentityApi = {  // Combination of two 
+  identity_id: number;
+  organization: string | null;
+  type: string;
+  identifier: string;
+  login: boolean;
+};
+
 // Backend responses from type fields
 type CountriesResponse = {
   countries: CountryApi[];
@@ -335,6 +355,53 @@ export const sskKeysAddAtom = atom(null, async (get, set, publicKey: string) => 
 
   // Refresh SSH Key list after addition 
   set(sshKeysAtom);
+
+  return response;
+
+});
+
+export const identityAtom = atomWithRefresh(async (get) => {
+  const token = get(tokenAtom);
+  const username = get(usernameAtom);
+
+  if (!token || !username) return [];
+
+  const response = (await fetchApiJson(`/account/${username}/identity`, {
+    method: "GET",
+    body: null,
+  })) as { identities?: IdentityApi[]; error?: any };
+
+  if (response?.error) return [];
+
+  const identities = Array.isArray(response.identities) ? response.identities : [];
+
+  return identities.flatMap((identity) =>
+    (identity.identifiers || []).map((item) => ({
+      identity_id: identity.identity_id,
+      organization: identity.organization,
+      type: item.type,
+      identifier: item.identifier,
+      login: item.login,
+    })),
+  );
+});
+
+export const identityAddAtom = atom(null, async (get, set, identity: string) => {
+  const token = get(tokenAtom);
+  const username = get(usernameAtom);
+
+  if (!token || !username) return [];
+
+  const trimmed = identity.trim()
+  if (!trimmed) return { error: true }
+
+  const response = (await fetchApiJson(`/account/${username}/identity`, {
+    method: "POST",
+    body: { identity: trimmed },
+  })) as any;
+
+  // Refresh Identities list after addition 
+  set(identityAtom);
 
   return response;
 
