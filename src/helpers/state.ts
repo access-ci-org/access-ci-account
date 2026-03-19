@@ -407,6 +407,25 @@ export const identityAddAtom = atom(null, async (get, set, identity: string) => 
 
 });
 
+export const identityDeleteAtom = atom(null, async (get, set, identity_id: number) => {
+  const token = get(tokenAtom);
+  const username = get(usernameAtom);
+
+  if (!token || !username) return [];
+
+  const response = (await fetchApiJson(`/account/${username}/identity/${identity_id}`, {
+    method: "DELETE",
+    body: null,
+  })) as any;
+
+  if (response?.error) return { response };
+
+  // Refresh Identities list after addition 
+  set(identityAtom);
+
+  return response;
+});
+
 // Retrieving Domain information based on email address
 export type Idp = {
   displayName: string;

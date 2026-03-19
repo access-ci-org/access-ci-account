@@ -8,18 +8,20 @@ import { LoaderCircle } from "lucide-react";
 
 // Imports for API Interaction
 import { useAtom, useSetAtom } from "jotai";
-import { identityAtom } from "@/helpers/state";
+import { identityAtom, identityDeleteAtom } from "@/helpers/state";
 
 export function IdentityPage() {
     // Fetching SSH keys details via atoms
     const [identityDetails] = useAtom(identityAtom)
-    // const deleteSshKey = useSetAtom(sshKeysDeleteAtom)
+    const deleteIdentity = useSetAtom(identityDeleteAtom)
 
     // Notification atom for feedback on actions
     const setNotification = useSetAtom(pushNotificationAtom)
 
     // States to show loading when deleting a key
-    const [deletingKey, setDeletingKey] = React.useState<number | null>(null)
+    const [deletingIdentity, setDeletingIdentity] = React.useState<number | null>(null) 
+
+    // TODO: Implement delete functionality as each rows are mini-forms 
 
     return (
         <div className="w-full mt-4">
@@ -70,8 +72,20 @@ export function IdentityPage() {
 
                             {/* 4th */}
                             <div className="flex justify-end sm:justify-end">
-                                <Button variant="destructive" size="lg">
-                                    Delete
+                                <Button
+                                    type="submit"
+                                    variant="destructive"
+                                    size="lg"
+                                    disabled={deletingIdentity === item.identity_id}
+                                >
+                                    {deletingIdentity === item.identity_id ? (
+                                        <>
+                                            <LoaderCircle className="mr-2 size-4 animate-spin" />
+                                            Deleting...
+                                        </>
+                                    ) : (
+                                        "Delete"
+                                    )}
                                 </Button>
                             </div>
                         </div>
