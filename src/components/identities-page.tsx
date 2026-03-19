@@ -50,20 +50,34 @@ export function IdentityPage() {
                         className="rounded-sm border border-muted overflow-hidden mb-3"
                     >
                         <div className="flex flex-col gap-3 p-2 m-2 sm:flex-row sm:items-center sm:justify-between">
-                            <div className="flex flex-col items-start gap-1 sm:w-auto">
-                                <IoPerson className="text-2xl mb-1 self-center" style={{ color: "#1a5b6e" }} />
-                                <p className="rounded-sm border text-xs px-2 py-0.5 text-center self-center bg-muted">
+                            {/* 1st */}
+                            <div className="flex flex-col items-start gap-1 w-full sm:w-24 shrink-0">
+                                <IoPerson className="!text-2xl mb-1 self-center" style={{ color: "#1a5b6e" }} />
+                                <p className="rounded-sm border !text-sm px-2 py-0.5 text-center self-center bg-muted">
                                     {item.type}
                                 </p>
                             </div>
 
+                            {/* 2nd */}
                             <div className="text-xs sm:flex-1 sm:ml-4 min-w-0">
                                 <p className="break-words">{item.identifier}</p>
+                            </div>
+
+                            {/* 3rd */}
+                            <div className="text-xs sm:flex-1 sm:ml-4 min-w-0">
                                 <p>{item.login ? "Used for login" : "Not used for login"}</p>
+                            </div>
+
+                            {/* 4th */}
+                            <div className="flex justify-end sm:justify-end">
+                                <Button variant="destructive" size="lg">
+                                    Delete
+                                </Button>
                             </div>
                         </div>
                     </div>
-                ))}
+                ))
+                }
             </div>
         </div>
     )
