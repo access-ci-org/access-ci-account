@@ -21,6 +21,46 @@ export function SSHKeysPage() {
     // States to show loading when deleting a key
     const [deletingKey, setDeletingKey] = React.useState<number | null>(null)
 
+    async function handleDeleteSshKey(event: React.FormEvent<HTMLFormElement>, keyId: number) { // form submit event package
+        event.preventDefault(); // prevents refresh
+
+        // if there is no id, throw error notification
+        if (!keyId) {
+            setNotification({
+                variant: "error",
+                message: "Missing  SSH Key Id.",
+            });
+            return;
+        }
+
+        try {
+            setDeletingKey(keyId); // put in "delete" state
+            console.log("deleting...", keyId)
+
+            const result = await deleteSshKey(keyId) // calling delete atom on id
+            if (result?.error || result?.response?.error) { // if backend returned an error 
+                throw new Error("Unable to delete SSH.");
+            } else {
+                // successful deletion
+                setNotification({
+                    variant: "success",
+                    message: "SSH Key deleted successfully.",
+                });
+            }
+
+        } catch (error) {
+            // if anything else fails..
+            setNotification({
+                variant: "error",
+                message: "Unable to delete SSH Key",
+            });
+
+        } finally {
+            setDeletingKey(null); // reset state so button returns to normal
+        }
+
+    }
+
     return (
         <div className="w-full mt-4">
             <div className="flex w-full items-center justify-between gap-4 mb-2">
@@ -44,11 +84,10 @@ export function SSHKeysPage() {
                     </p>
                 )}
                 {sshKeyDetails?.map((key) => {
-                    const deletingThis = deletingKey === key.keyId
-                    const deletingAny = deletingKey !== null
                     return (
-                        <div
+                        <form
                             key={key.keyId}
+                            onSubmit={(event) => handleDeleteSshKey(event, key.keyId)}
                             className="rounded-sm border border-muted overflow-hidden"
                         >
                             <div className="flex flex-col gap-3 p-2 m-2 sm:flex-row sm:items-center sm:justify-between">
@@ -69,36 +108,23 @@ export function SSHKeysPage() {
                                 {/* ACTION */}
                                 <div className="flex justify-end sm:justify-end">
                                     <Button
+                                        type="submit"
                                         variant="destructive"
                                         size="lg"
-                                        disabled={deletingAny}
-                                        onClick={async () => {
-                                            // show loading immediately
-                                            setDeletingKey(key.keyId)
-                                            try {
-                                                const result = await deleteSshKey(key.keyId)
-                                                if (result.success) {
-                                                    setNotification({ variant: "success", message: "SSH key deleted." })
-                                                } else {
-                                                    setNotification({ variant: "error", message: "Failed to delete SSH key." })
-                                                }
-                                            } finally {
-                                                setDeletingKey(null)
-                                            }
-                                        }}
+                                        disabled={deletingKey === key.keyId}
                                     >
-                                        {deletingThis ? (
-                                            <span className="inline-flex items-center gap-2">
-                                                <LoaderCircle className="h-4 w-4 animate-spin" />
-                                                Deleting…
-                                            </span>
+                                        {deletingKey === key.keyId ? (
+                                            <>
+                                                <LoaderCircle className="mr-2 size-4 animate-spin" />
+                                                Deleting...
+                                            </>
                                         ) : (
                                             "Delete"
                                         )}
                                     </Button>
                                 </div>
                             </div>
-                        </div>
+                        </form>
                     )
                 })}
             </div>
