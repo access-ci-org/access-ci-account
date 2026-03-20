@@ -93,8 +93,8 @@ export function SSHKeysPage() {
                             <div className="flex flex-col gap-3 p-2 m-2 sm:flex-row sm:items-center sm:justify-between">
                                 {/* LEFT ICON */}
                                 <div className="flex flex-col items-start gap-1 sm:w-auto">
-                                    <FaKey className="text-2xl mb-1 self-center" style={{ color: "#1a5b6e" }} />
-                                    <p className="rounded-sm border text-xs px-2 py-0.5 text-center self-center bg-muted">
+                                    <FaKey className="!text-2xl mb-1 self-center" style={{ color: "#1a5b6e" }} />
+                                    <p className="rounded-sm border !text-sm px-2 py-0.5 text-center self-center bg-muted">
                                         SSH
                                     </p>
                                 </div>
@@ -102,7 +102,7 @@ export function SSHKeysPage() {
                                 {/* DETAILS */}
                                 <div className="text-xs sm:flex-1 sm:ml-4 min-w-0">
                                     <p className="break-words"> {key.hash} </p>
-                                    <p> Added on {key.created} </p>
+                                    <p className="!text-sm"> Added on {key.created} </p>
                                 </div>
 
                                 {/* ACTION */}
