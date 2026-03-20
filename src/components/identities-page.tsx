@@ -19,9 +19,50 @@ export function IdentityPage() {
     const setNotification = useSetAtom(pushNotificationAtom)
 
     // States to show loading when deleting a key
-    const [deletingIdentity, setDeletingIdentity] = React.useState<number | null>(null) 
+    const [deletingIdentity, setDeletingIdentity] = React.useState<number | null>(null)
 
-    // TODO: Implement delete functionality as each rows are mini-forms 
+    // Deleting identities action
+    async function handleDeleteIdentity(event: React.FormEvent<HTMLFormElement>, identityId: number) { // form submit event package
+        event.preventDefault(); // prevents refresh
+
+        // if there is no id, throw error notification
+        if (!identityId) {
+            setNotification({
+                variant: "error",
+                message: "Missing identity id.",
+            });
+            return;
+        }
+
+        try {
+            setDeletingIdentity(identityId); // put in "delete" state
+            console.log("deleting...", identityId)
+
+        /*
+            const result = await deleteIdentity(identityId) // calling delete atom on id
+            if (result?.error ||result?.response?.error) { // if backend returned an error 
+                  throw new Error("Unable to delete identity.");
+            } else {
+                // successful deletion
+                setNotification({
+                    variant: "success",
+                    message: "Identity deleted successfully.",
+                });
+            }
+        */
+
+        } catch (error) {
+            // if anything else fails..
+            setNotification({
+                variant: "error",
+                message: "Unable to delete identity",
+            });
+
+        } finally {
+            setDeletingIdentity(null); // reset state so button returns to normal
+        }
+
+    }
 
     return (
         <div className="w-full mt-4">
@@ -47,8 +88,9 @@ export function IdentityPage() {
                 )}
 
                 {identityDetails?.map((item) => (
-                    <div
+                    <form
                         key={`${item.identity_id}-${item.type}-${item.identifier}`}
+                        onSubmit={(event) => handleDeleteIdentity(event, item.identity_id)}
                         className="rounded-sm border border-muted overflow-hidden mb-3"
                     >
                         <div className="flex flex-col gap-3 p-2 m-2 sm:flex-row sm:items-center sm:justify-between">
@@ -89,7 +131,7 @@ export function IdentityPage() {
                                 </Button>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 ))
                 }
             </div>

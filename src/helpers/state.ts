@@ -215,9 +215,9 @@ export const updateAccountAtom = atom(
 
     const status = response?.error
       ? {
-          error: response.error,
-          saved: false,
-        }
+        error: response.error,
+        saved: false,
+      }
       : { error: "", saved: true };
     set(accountUpdateStatusAtom, status);
     return status;
@@ -243,13 +243,13 @@ export type IdentifierApi = { // just pulling identitier
 };
 
 export type IdentityApi = { // pulling in the entire backend structure
-  identity_id: number;
+  identityId: number;
   organization: string | null;
   identifiers: IdentifierApi[];
 };
 
 export type CombinationIdentityApi = {  // Combination of two 
-  identity_id: number;
+  identityId: number;
   organization: string | null;
   type: string;
   identifier: string;
@@ -375,15 +375,15 @@ export const identityAtom = atomWithRefresh(async (get) => {
 
   const identities = Array.isArray(response.identities) ? response.identities : [];
 
-  return identities.flatMap((identity) =>
-    (identity.identifiers || []).map((item) => ({
-      identity_id: identity.identity_id,
+  return identities.flatMap((identity) => {
+    return (identity.identifiers || []).map((item) => ({
+      identity_id: identity.identityId,
       organization: identity.organization,
       type: item.type,
       identifier: item.identifier,
       login: item.login,
-    })),
-  );
+    }));
+  });
 });
 
 export const identityAddAtom = atom(null, async (get, set, identity: string) => {
