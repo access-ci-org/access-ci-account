@@ -69,7 +69,7 @@ export function IdentityPage() {
             <div className="flex w-full items-center justify-between gap-4 mb-2">
                 <h1> Identities </h1>
                 <Button asChild>
-                    <Link to="/add-identity">New Idenitity</Link>
+                    <Link to="/">New Idenitity</Link>
                 </Button>
             </div>
 
