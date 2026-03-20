@@ -5,13 +5,15 @@ import { IoPerson } from "react-icons/io5";
 import { Link } from "@tanstack/react-router"
 import { pushNotificationAtom } from "@/helpers/notification"
 import { LoaderCircle } from "lucide-react";
+import { apiBaseUrl } from "@/config";
 
 // Imports for API Interaction
 import { useAtom, useSetAtom } from "jotai";
-import { identityAtom, identityDeleteAtom } from "@/helpers/state";
+import { identityAtom, identityDeleteAtom, isLoggedInAtom } from "@/helpers/state";
 
 export function IdentityPage() {
-    // Fetching SSH keys details via atoms
+    const [isLoggedIn] = useAtom(isLoggedInAtom);
+    // Fetching Identity details via atoms
     const [identityDetails] = useAtom(identityAtom)
     const deleteIdentity = useSetAtom(identityDeleteAtom)
 
@@ -20,6 +22,25 @@ export function IdentityPage() {
 
     // States to show loading when deleting a key
     const [deletingIdentity, setDeletingIdentity] = React.useState<number | null>(null)
+
+    // Linking a new identity handler 
+    function handleLinkIdentity() {
+        if (!isLoggedIn) { // checking if user is logged in to make CiLogon call
+            setNotification({
+                variant: "error",
+                message: "User is not logged in."
+            });
+            return
+        } else {
+            const form = document.createElement("form");
+            form.method = "POST";
+            form.action = `${apiBaseUrl}/auth/link`;
+            form.style.display = "none";
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
 
     // Deleting identities action
     async function handleDeleteIdentity(event: React.FormEvent<HTMLFormElement>, identityId: number) { // form submit event package
@@ -38,18 +59,18 @@ export function IdentityPage() {
             setDeletingIdentity(identityId); // put in "delete" state
             console.log("deleting...", identityId)
 
-        /*
-            const result = await deleteIdentity(identityId) // calling delete atom on id
-            if (result?.error ||result?.response?.error) { // if backend returned an error 
-                  throw new Error("Unable to delete identity.");
-            } else {
-                // successful deletion
-                setNotification({
-                    variant: "success",
-                    message: "Identity deleted successfully.",
-                });
-            }
-        */
+            /*
+                const result = await deleteIdentity(identityId) // calling delete atom on id
+                if (result?.error ||result?.response?.error) { // if backend returned an error 
+                      throw new Error("Unable to delete identity.");
+                } else {
+                    // successful deletion
+                    setNotification({
+                        variant: "success",
+                        message: "Identity deleted successfully.",
+                    });
+                }
+            */
 
         } catch (error) {
             // if anything else fails..
@@ -68,8 +89,8 @@ export function IdentityPage() {
         <div className="w-full mt-4">
             <div className="flex w-full items-center justify-between gap-4 mb-2">
                 <h1> Identities </h1>
-                <Button asChild>
-                    <Link to="/">New Idenitity</Link>
+                <Button onClick={handleLinkIdentity}>
+                    Link New Idenitity 
                 </Button>
             </div>
 
