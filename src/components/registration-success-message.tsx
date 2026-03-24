@@ -14,7 +14,6 @@ export default function RegistrationSuccessMethod() {
             ? domain.idps[0].displayName
             : "ACCESS CI (XSEDE)";
     const username = useAtomValue(usernameAtom);
-    console.log(idpName);
 
     return (
         <div>
