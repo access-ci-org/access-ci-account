@@ -89,14 +89,24 @@ export type UserInfo = {
 };
 
 export type FetchOptions = {
-  accessToken?: string;
+  accessToken?: string | null;
   body?: any;
   headers?: { [key: string]: string };
   method?: string;
-  refreshToken?: string;
+  refreshToken?: string | null;
 };
 
 export type RefreshResponse = {
   accessToken: string;
   refreshToken: string;
+};
+
+export type RegistrationData = {
+  first_name: string;
+  last_name: string;
+  email: string;
+  institution: number;
+  academic_status: number;
+  residence_country: number;
+  citizenship_country: number[];
 };

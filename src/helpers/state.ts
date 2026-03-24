@@ -22,6 +22,7 @@ import {
   type VerifyOtpResponse,
   type FetchOptions,
   type RefreshResponse,
+  type RegistrationData,
 } from "./types";
 
 export const store = createStore();
@@ -79,19 +80,20 @@ const doRefresh = async (
 
 const fetchApiJson = async <T extends object>(
   relativeUrl: string,
-  { body, method }: FetchOptions = {},
+  { accessToken, body, method, refreshToken }: FetchOptions = {},
 ): Promise<T | ApiError> => {
   const loginTokens = store.get(loginTokensAtom);
   const otpTokens = store.get(otpTokensAtom);
 
-  const accessToken = loginTokens.accessToken || otpTokens.accessToken;
-  const refreshToken = loginTokens.refreshToken || otpTokens.refreshToken;
+  if (accessToken === undefined)
+    accessToken = loginTokens.accessToken || otpTokens.accessToken;
+  if (refreshToken === undefined)
+    refreshToken = loginTokens.refreshToken || otpTokens.refreshToken;
 
   const response = await (<T>fetchJson(`${apiBaseUrl}${relativeUrl}`, {
     accessToken,
     body,
     method,
-    refreshToken,
   }));
 
   // If the response is an HTTP 401 forbidden and we have a refresh token,
@@ -160,6 +162,7 @@ export const sendOtpAtom = atom(
     let status = { error: "Email address is not set.", sent: false };
     if (email) {
       const response = await fetchApiJson<SuccessResponse>("/auth/send-otp", {
+        accessToken: null,
         method: "POST",
         body: { email },
       });
@@ -194,6 +197,7 @@ export const verifyOtpAtom = atom(
       const response = await fetchApiJson<VerifyOtpResponse>(
         "/auth/verify-otp",
         {
+          accessToken: null,
           method: "POST",
           body: { email, otp },
         },
@@ -411,3 +415,11 @@ export const domainAtom = atom(async (get) => {
     isEligible,
   };
 });
+
+// Atom surives page refresh within the same tab
+export const registrationDataAtom = atomWithStorage<RegistrationData | null>(
+  "access.registrationData",
+  null,
+  undefined,
+  { getOnInit: true },
+);

@@ -7,7 +7,7 @@ import RegistrationLayout from "@/components/registration-layout";
 import { profileFormSchema } from "@/helpers/validation";
 
 import { useSetAtom } from "jotai";
-import { registrationDataAtom } from "@/helpers/registration-data";
+import { registrationDataAtom } from "@/helpers/state";
 import { useAtomValue } from "jotai";
 import { emailAtom } from "@/helpers/state";
 
@@ -44,10 +44,10 @@ function RegisterComplete() {
         academic_status: value.academicStatus,
         residence_country: value.residenceCountry,
         citizenship_country: value.citizenshipCountryIds,
-      }
-      setRegistrationData(payload)
-      await Promise.resolve() // Ensure state is set before navigating
-      navigate({ to: "/register/aup" })
+      };
+      setRegistrationData(payload);
+      await Promise.resolve(); // Ensure state is set before navigating
+      navigate({ to: "/register/aup" });
     },
   });
 

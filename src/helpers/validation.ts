@@ -12,12 +12,14 @@ export const profileFormSchema = z.object({
 
   role: z.array(z.string()).catch([]),
 
-  academicDegrees: z.array(
-    z.object({
-      degreeId: z.string().min(1, "Select a degree"),
-      degreeField: z.string().min(1, "Enter a degree field"),
-    })
-  ),
+  academicDegrees: z
+    .array(
+      z.object({
+        degreeId: z.string().min(1, "Select a degree"),
+        degreeField: z.string().min(1, "Enter a degree field"),
+      }),
+    )
+    .catch([]),
 
   timeZone: z.string().catch(""),
 
@@ -34,5 +36,5 @@ export const profileFormSchema = z.object({
 export type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 export const sshKeyFormSchema = z.object({
-  sshKey: z.string().min(1, { message: "SSH Key is required." })
+  sshKey: z.string().min(1, { message: "SSH Key is required." }),
 });

@@ -3,15 +3,13 @@ import * as z from "zod";
 import { useAppForm } from "@/hooks/form";
 import { siteTitle } from "@/config";
 import StartRegistrationForm from "@/components/start-registration-form";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { emailAtom, sendOtpAtom } from "@/helpers/state";
-
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { TriangleAlert } from "lucide-react";
 
 import ProgressBar from "@/components/progress-bar";
 
 import RegistrationLayout from "@/components/registration-layout";
+import { pushNotificationAtom } from "@/helpers/notification";
 
 export const Route = createFileRoute("/register/")({
   component: RegisterStart,
@@ -25,6 +23,7 @@ const formSchema = z.object({
 function RegisterStart() {
   const [email, setEmail] = useAtom(emailAtom);
   const [otpStatus, sendOtp] = useAtom(sendOtpAtom);
+  const pushNotification = useSetAtom(pushNotificationAtom);
   const navigate = useNavigate();
 
   const form = useAppForm({
@@ -37,7 +36,13 @@ function RegisterStart() {
     onSubmit: async ({ value }) => {
       setEmail(value.email);
       const status = await sendOtp();
-      if (status.sent) navigate({ to: "/register/verify" });
+      if (otpStatus.error)
+        pushNotification({
+          title: "Error Sending Verification Code",
+          message: otpStatus.error,
+          variant: "error",
+        });
+      else if (status.sent) navigate({ to: "/register/verify" });
     },
   });
 
@@ -48,16 +53,9 @@ function RegisterStart() {
         Welcome! Create an account to use ACCESS resources and start or join
         projects.
       </p>
-      {otpStatus?.error && (
-        <Alert variant="destructive">
-          <TriangleAlert />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>{otpStatus.error}</AlertDescription>
-        </Alert>
-      )}
       <RegistrationLayout
-      left={<StartRegistrationForm form={form} />}
-      right={<ProgressBar />}
+        left={<StartRegistrationForm form={form} />}
+        right={<ProgressBar />}
       />
     </>
   );
