@@ -110,3 +110,15 @@ export type RegistrationData = {
   residence_country: number;
   citizenship_country: number[];
 };
+
+export type AccountResponse = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  organizationId: number;
+  academicStatusId: number;
+  residenceCountryId: number;
+  citizenshipCountryIds: number[];
+  academicDegrees?: { degreeId: number; degreeField: string }[];
+  timeZone?: string;
+};

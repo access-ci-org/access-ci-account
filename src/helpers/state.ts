@@ -23,6 +23,7 @@ import {
   type FetchOptions,
   type RefreshResponse,
   type RegistrationData,
+  type AccountResponse,
 } from "./types";
 
 export const store = createStore();
@@ -262,7 +263,7 @@ export const createAccountAtom = atom(
 );
 
 export const accountAtom = atomWithRefresh(async (get) => {
-  return await fetchApiJson(`/account/${get(usernameAtom)}`);
+  return await fetchApiJson<AccountResponse>(`/account/${get(usernameAtom)}`);
 });
 
 export const updateAccountAtom = atom(
@@ -344,7 +345,7 @@ export const sskKeysAddAtom = atom(
     const username = get(usernameAtom);
 
     const trimmed = publicKey.trim();
-    if (!trimmed) return { error: true };
+    if (!trimmed) return { error: { message: "SSH public key is required." } };
 
     const response = await fetchApiJson<SshKeyResponse>(
       `/account/${username}/ssh-key`,

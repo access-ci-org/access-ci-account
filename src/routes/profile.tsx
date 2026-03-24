@@ -15,6 +15,7 @@ import {
 
 import { profileFormSchema } from "@/helpers/validation";
 import { useSetAtom } from "jotai";
+import type { AccountResponse } from "@/helpers/types";
 
 export const Route = createFileRoute("/profile")({
   component: Profile,
@@ -24,14 +25,17 @@ export const Route = createFileRoute("/profile")({
   },
   loader: async () => {
     const account = await store.get(accountAtom);
-    if (account.error) redirect({ to: "/login", throw: true });
-    store.set(emailAtom, account.email);
+    if ("error" in account) {
+      redirect({ to: "/login", throw: true });
+    } else {
+      store.set(emailAtom, account.email);
+    }
     return account;
   },
 });
 
 function Profile() {
-  const account = Route.useLoaderData();
+  const account = Route.useLoaderData() as AccountResponse;
   const refreshAccount = useSetAtom(accountAtom);
   const updateAccount = useSetAtom(updateAccountAtom);
   const pushNotification = useSetAtom(pushNotificationAtom);
@@ -43,7 +47,7 @@ function Profile() {
   };
 
   const apiDegrees = (account.academicDegrees ?? []) as ApiDegree[];
-  
+
   const form = useAppForm({
     defaultValues: {
       firstName: account.firstName as string,
