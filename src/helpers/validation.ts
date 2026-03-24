@@ -10,16 +10,17 @@ const requiredNumber = (label: string) =>
 export const profileFormSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
 
-  role: z.array(z.string()).catch([]),
+  role: z.array(z.string()).catch([]).optional(),
 
   academicDegrees: z.array(
     z.object({
       degreeId: z.string().min(1, "Select a degree"),
       degreeField: z.string().min(1, "Enter a degree field"),
     })
-  ),
+  )
+  .optional(),
 
-  timeZone: z.string().catch(""),
+  timeZone: z.string().catch("").optional(),
 
   firstName: requiredString("First name"),
   lastName: requiredString("Last name"),
