@@ -63,7 +63,7 @@ const SSHKeysPage = withForm({
                                         <div className="flex justify-end sm:justify-end">
                                             <Field orientation="horizontal">
                                                 <form.AppForm>
-                                                        <form.DeleteButton label="Delete" fieldName="keyId" value={key.keyId}  />
+                                                        <form.SubmitButton label="Delete"/>
                                                 </form.AppForm>
                                             </Field>
                                         </div>

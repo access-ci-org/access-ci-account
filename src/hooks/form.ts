@@ -8,7 +8,6 @@ import MultiSelectCheckboxGroup from "@/components/multi-select-checkbox-field";
 import DropdownSelectField from "@/components/dropdown-select-field";
 import CheckboxField from "@/components/single-checkbox-field";
 import PasswordTextField from "@/components/password-text-field"
-import DeleteButton from "@/components/delete-button";
 
 export const { useAppForm, withForm } = createFormHook({
   fieldComponents: {
@@ -20,8 +19,7 @@ export const { useAppForm, withForm } = createFormHook({
     PasswordTextField
   },
   formComponents: {
-    SubmitButton,
-    DeleteButton
+    SubmitButton
   },
   fieldContext,
   formContext,
