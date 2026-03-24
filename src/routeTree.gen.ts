@@ -14,7 +14,6 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PasswordRouteImport } from './routes/password'
 import { Route as LogoutRouteImport } from './routes/logout'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as AuthTokenRouteImport } from './routes/auth-token'
 import { Route as AddSshKeyRouteImport } from './routes/add-ssh-key'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RegisterIndexRouteImport } from './routes/register/index'
@@ -22,6 +21,7 @@ import { Route as RegisterVerifyRouteImport } from './routes/register/verify'
 import { Route as RegisterSuccessRouteImport } from './routes/register/success'
 import { Route as RegisterCompleteRouteImport } from './routes/register/complete'
 import { Route as RegisterAupRouteImport } from './routes/register/aup'
+import { Route as AuthTokenClientRouteImport } from './routes/auth-token.$client'
 
 const SshKeysRoute = SshKeysRouteImport.update({
   id: '/ssh-keys',
@@ -46,11 +46,6 @@ const LogoutRoute = LogoutRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthTokenRoute = AuthTokenRouteImport.update({
-  id: '/auth-token',
-  path: '/auth-token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AddSshKeyRoute = AddSshKeyRouteImport.update({
@@ -88,16 +83,21 @@ const RegisterAupRoute = RegisterAupRouteImport.update({
   path: '/register/aup',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthTokenClientRoute = AuthTokenClientRouteImport.update({
+  id: '/auth-token/$client',
+  path: '/auth-token/$client',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/add-ssh-key': typeof AddSshKeyRoute
-  '/auth-token': typeof AuthTokenRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/password': typeof PasswordRoute
   '/profile': typeof ProfileRoute
   '/ssh-keys': typeof SshKeysRoute
+  '/auth-token/$client': typeof AuthTokenClientRoute
   '/register/aup': typeof RegisterAupRoute
   '/register/complete': typeof RegisterCompleteRoute
   '/register/success': typeof RegisterSuccessRoute
@@ -107,12 +107,12 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/add-ssh-key': typeof AddSshKeyRoute
-  '/auth-token': typeof AuthTokenRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/password': typeof PasswordRoute
   '/profile': typeof ProfileRoute
   '/ssh-keys': typeof SshKeysRoute
+  '/auth-token/$client': typeof AuthTokenClientRoute
   '/register/aup': typeof RegisterAupRoute
   '/register/complete': typeof RegisterCompleteRoute
   '/register/success': typeof RegisterSuccessRoute
@@ -123,12 +123,12 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/add-ssh-key': typeof AddSshKeyRoute
-  '/auth-token': typeof AuthTokenRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/password': typeof PasswordRoute
   '/profile': typeof ProfileRoute
   '/ssh-keys': typeof SshKeysRoute
+  '/auth-token/$client': typeof AuthTokenClientRoute
   '/register/aup': typeof RegisterAupRoute
   '/register/complete': typeof RegisterCompleteRoute
   '/register/success': typeof RegisterSuccessRoute
@@ -140,12 +140,12 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/add-ssh-key'
-    | '/auth-token'
     | '/login'
     | '/logout'
     | '/password'
     | '/profile'
     | '/ssh-keys'
+    | '/auth-token/$client'
     | '/register/aup'
     | '/register/complete'
     | '/register/success'
@@ -155,12 +155,12 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/add-ssh-key'
-    | '/auth-token'
     | '/login'
     | '/logout'
     | '/password'
     | '/profile'
     | '/ssh-keys'
+    | '/auth-token/$client'
     | '/register/aup'
     | '/register/complete'
     | '/register/success'
@@ -170,12 +170,12 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/add-ssh-key'
-    | '/auth-token'
     | '/login'
     | '/logout'
     | '/password'
     | '/profile'
     | '/ssh-keys'
+    | '/auth-token/$client'
     | '/register/aup'
     | '/register/complete'
     | '/register/success'
@@ -186,12 +186,12 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AddSshKeyRoute: typeof AddSshKeyRoute
-  AuthTokenRoute: typeof AuthTokenRoute
   LoginRoute: typeof LoginRoute
   LogoutRoute: typeof LogoutRoute
   PasswordRoute: typeof PasswordRoute
   ProfileRoute: typeof ProfileRoute
   SshKeysRoute: typeof SshKeysRoute
+  AuthTokenClientRoute: typeof AuthTokenClientRoute
   RegisterAupRoute: typeof RegisterAupRoute
   RegisterCompleteRoute: typeof RegisterCompleteRoute
   RegisterSuccessRoute: typeof RegisterSuccessRoute
@@ -234,13 +234,6 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth-token': {
-      id: '/auth-token'
-      path: '/auth-token'
-      fullPath: '/auth-token'
-      preLoaderRoute: typeof AuthTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/add-ssh-key': {
@@ -292,18 +285,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterAupRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth-token/$client': {
+      id: '/auth-token/$client'
+      path: '/auth-token/$client'
+      fullPath: '/auth-token/$client'
+      preLoaderRoute: typeof AuthTokenClientRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AddSshKeyRoute: AddSshKeyRoute,
-  AuthTokenRoute: AuthTokenRoute,
   LoginRoute: LoginRoute,
   LogoutRoute: LogoutRoute,
   PasswordRoute: PasswordRoute,
   ProfileRoute: ProfileRoute,
   SshKeysRoute: SshKeysRoute,
+  AuthTokenClientRoute: AuthTokenClientRoute,
   RegisterAupRoute: RegisterAupRoute,
   RegisterCompleteRoute: RegisterCompleteRoute,
   RegisterSuccessRoute: RegisterSuccessRoute,
