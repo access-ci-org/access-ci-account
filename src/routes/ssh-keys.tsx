@@ -37,5 +37,5 @@ function SSHKeysRoute() {
     },
   })
 
-  return <SSHKeysPage form={form} />
+  return <SSHKeysPage />
 }
