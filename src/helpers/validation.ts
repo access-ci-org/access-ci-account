@@ -10,7 +10,7 @@ const requiredNumber = (label: string) =>
 export const profileFormSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
 
-  role: z.array(z.string()).catch([]),
+  role: z.array(z.string()).catch([]).optional(),
 
   academicDegrees: z
     .array(
@@ -19,9 +19,10 @@ export const profileFormSchema = z.object({
         degreeField: z.string().min(1, "Enter a degree field"),
       }),
     )
-    .catch([]),
+    .catch([])
+  .optional(),
 
-  timeZone: z.string().catch(""),
+  timeZone: z.string().catch("").optional(),
 
   firstName: requiredString("First name"),
   lastName: requiredString("Last name"),

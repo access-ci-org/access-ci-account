@@ -19,7 +19,7 @@ export const { useAppForm, withForm } = createFormHook({
     PasswordTextField
   },
   formComponents: {
-    SubmitButton,
+    SubmitButton
   },
   fieldContext,
   formContext,
