@@ -78,6 +78,23 @@ export type Organization = {
   orgType: string | null;
 };
 
+export type IdentifierResponse = {
+  type: string;
+  identifier: string;
+  login: boolean;
+};
+
+export type Identity = {
+  identityId: number;
+  organization: string | null;
+  identifiers: IdentifierResponse[];
+};
+
+export type IdentityResponse = {
+  identities: Identity[];
+};
+
+
 export type VerifyOtpResponse = {
   jwt: string;
 };

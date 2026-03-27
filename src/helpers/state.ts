@@ -24,6 +24,7 @@ import {
   type RefreshResponse,
   type RegistrationData,
   type AccountResponse,
+  type IdentityResponse,
 } from "./types";
 
 export const store = createStore();
@@ -357,6 +358,60 @@ export const sskKeysAddAtom = atom(
 
     // Refresh SSH Key list after addition
     set(sshKeysAtom);
+
+    return response;
+  },
+);
+
+export const identityAtom = atomWithRefresh(async (get) => {
+  const response = await fetchApiJson<IdentityResponse>(
+    `/account/${get(usernameAtom)}/identity`,
+    {
+      method: "GET",
+      body: null,
+    },
+  );
+  return "error" in response ? [] : response.identities;
+});
+
+export const identityAddAtom = atom(
+  null,
+  async (get, set, identity: string) => {
+    const username = get(usernameAtom);
+
+    const trimmed = identity.trim();
+    if (!trimmed) {
+      return { error: { message: "Identity is required." } };
+    }
+
+    const response = await fetchApiJson<IdentityResponse>(
+      `/account/${username}/identity`,
+      {
+        method: "POST",
+        body: { identity: trimmed },
+      },
+    );
+
+    // Refresh identities list after addition
+    set(identityAtom);
+
+    return response;
+  },
+);
+
+export const identityDeleteAtom = atom(
+  null,
+  async (get, set, identityId: number) => {
+    const username = get(usernameAtom);
+    const response = await fetchApiJson<SuccessResponse>(
+      `/account/${username}/identity/${identityId}`,
+      {
+        method: "DELETE",
+      },
+    );
+
+    // Refresh identities list after deletion
+    set(identityAtom);
 
     return response;
   },
