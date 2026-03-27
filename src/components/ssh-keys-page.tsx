@@ -4,9 +4,9 @@ import { FaKey } from "react-icons/fa";
 import { Link } from "@tanstack/react-router"
 
 // Imports for API Interaction
-import { useAtom, useSetAtom, useAtomValue } from "jotai";
+import { useSetAtom, useAtomValue } from "jotai";
 import { sshKeysAtom, sshKeysDeleteAtom } from "@/helpers/state";
-import DeleteRowForm from "@/components/delete-row-form";
+import DeleteRow from "./delete-row";
 
 function SSHKeysPage() {
     const sshKeyDetails = useAtomValue(sshKeysAtom)
@@ -56,7 +56,7 @@ function SSHKeysPage() {
 
                                 {/* ACTION */}
                                 <div className="flex justify-end sm:justify-end">
-                                    <DeleteRowForm
+                                    <DeleteRow
                                         id={key.keyId}
                                         onDelete={deleteSshKey}
                                         label="Delete"

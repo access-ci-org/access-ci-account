@@ -21,9 +21,6 @@ function SSHKeysRoute() {
       keyId: 0,
     },
     onSubmit: async ({ value }) => {
-      console.log("DELETE BUTTON CLICKED")
-      console.log(`Deleting.... ${value.keyId}`)
-      console.log("submit fired", value)
       if (!value.keyId){
         setNotification({ variant: "error", message: "SSH key does not exist." })
         return
