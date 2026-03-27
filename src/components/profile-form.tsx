@@ -15,7 +15,7 @@ import RegistrationFormInputs from "./registration-form-fields";
 import AcademicDegreesSection from "./multi-degree-field";
 import { useAtomValue } from "jotai";
 import { degreesAtom } from "@/helpers/state";
-
+import { profileFormDefault } from "@/helpers/defaults";
 
 // Option type defines selectable options for form fields
 type Option = { label: string; value: string };
@@ -35,21 +35,7 @@ const TIMEZONE_OPTIONS: Option[] = Intl.supportedValuesOf("timeZone").map(
 );
 
 const ProfileForm = withForm({
-  defaultValues: {
-    // Registration Form existing fields
-    firstName: "",
-    lastName: "",
-    email: "",
-    institution: 0,
-    academicStatus: 0,
-    residenceCountry: 0,
-    citizenshipCountryIds: [] as number[],
-
-    // Profile-Form existing fields
-    role: [] as string[],
-    academicDegrees: [{ degreeId: "", degreeField: "" }],
-    timeZone: "",
-  },
+  defaultValues: profileFormDefault,
   render: function Render({ form }) {
     const degrees = useAtomValue(degreesAtom);
     // Mapping API response to Option
@@ -73,7 +59,10 @@ const ProfileForm = withForm({
           <CardContent>
             <FieldGroup>
               {/* Importing Complete Registration Form fields */}
-              <RegistrationFormInputs form={form as any} isRegistration={false} />
+              <RegistrationFormInputs
+                form={form as any}
+                isRegistration={false}
+              />
 
               {/* Role field captures the user's role with a single-select checkbox */}
               <form.AppField
@@ -91,7 +80,10 @@ const ProfileForm = withForm({
                 }}
               />
 
-              <AcademicDegreesSection form={form} degreeOptions={degreeOptions} />
+              <AcademicDegreesSection
+                form={form}
+                degreeOptions={degreeOptions}
+              />
 
               {/* Time zone field captures the user's time zone with a dropdown select */}
               <form.AppField

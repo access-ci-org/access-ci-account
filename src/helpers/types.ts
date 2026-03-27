@@ -82,12 +82,6 @@ export type VerifyOtpResponse = {
   jwt: string;
 };
 
-export type UserInfo = {
-  sub: string;
-  given_name?: string;
-  family_name?: string;
-};
-
 export type FetchOptions = {
   accessToken?: string | null;
   body?: any;
@@ -101,17 +95,7 @@ export type RefreshResponse = {
   refreshToken: string;
 };
 
-export type RegistrationData = {
-  first_name: string;
-  last_name: string;
-  email: string;
-  institution: number;
-  academic_status: number;
-  residence_country: number;
-  citizenship_country: number[];
-};
-
-export type AccountResponse = {
+export type RegistrationForm = {
   firstName: string;
   lastName: string;
   email: string;
@@ -119,6 +103,10 @@ export type AccountResponse = {
   academicStatusId: number;
   residenceCountryId: number;
   citizenshipCountryIds: number[];
-  academicDegrees?: { degreeId: number; degreeField: string }[];
-  timeZone?: string;
+};
+
+export type AccountResponse = RegistrationForm & {
+  academicDegrees: { degreeId: number; degreeField: string }[];
+  timeZone: string;
+  role: string[];
 };

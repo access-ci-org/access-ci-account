@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { apiBaseUrl, siteTitle } from "@/config";
+import { siteTitle } from "@/config";
 import { LoaderCircle } from "lucide-react";
 import { useEffect } from "react";
+import { startAuth } from "@/helpers/auth";
 
 export const Route = createFileRoute("/login")({
   component: Login,
@@ -9,16 +10,7 @@ export const Route = createFileRoute("/login")({
 });
 
 function Login() {
-  useEffect(() => {
-    // Create and submit a form to post to the API login route.
-    const form = document.createElement("form");
-    form.method = "POST";
-    form.action = `${apiBaseUrl}/auth/login`;
-    form.style.display = "none";
-
-    document.body.appendChild(form);
-    form.submit();
-  }, []);
+  useEffect(() => startAuth("login"), []);
 
   return <LoaderCircle className="animate-spin" />;
 }

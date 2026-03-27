@@ -8,7 +8,12 @@ import {
   ssoCookiePath,
 } from "@/config";
 import { atom, createStore } from "jotai";
-import { atomWithRefresh, atomWithStorage } from "jotai/utils";
+import {
+  atomWithRefresh,
+  atomWithReset,
+  atomWithStorage,
+  RESET,
+} from "jotai/utils";
 import { parseJwt } from "./jwt";
 import {
   type ApiError,
@@ -22,9 +27,10 @@ import {
   type VerifyOtpResponse,
   type FetchOptions,
   type RefreshResponse,
-  type RegistrationData,
   type AccountResponse,
+  type RegistrationForm,
 } from "./types";
+import { registrationFormDefault } from "./defaults";
 
 export const store = createStore();
 
@@ -154,7 +160,9 @@ const otpSendStatusAtom = atom({ error: "", sent: false });
 const otpVerifyStatusAtom = atom({ error: "", verified: false });
 const accountUpdateStatusAtom = atom({ error: "", saved: false });
 
-export const registrationFormAtom = atom({});
+export const registrationFormAtom = atomWithReset<RegistrationForm>(
+  registrationFormDefault,
+);
 
 export const sendOtpAtom = atom(
   (get) => get(otpSendStatusAtom),
@@ -230,10 +238,13 @@ const accountCreateStatusAtom = atom({
 
 export const createAccountAtom = atom(
   (get) => get(accountCreateStatusAtom),
-  async (_get, set, payload: any) => {
+  async (get, set) => {
     const resp = await fetchApiJson("/account", {
       method: "POST",
-      body: payload,
+      body: {
+        ...get(registrationFormAtom),
+        cilogonToken: get(linkTokensAtom).accessToken,
+      },
     });
 
     if ((resp as any)?.error) {
@@ -257,7 +268,8 @@ export const createAccountAtom = atom(
     };
 
     set(accountCreateStatusAtom, status);
-    if (username) set(usernameAtom, username); // Populate usernameAtom here (centralized)
+    if (username) set(usernameAtom, username);
+    if (status.created) set(registrationFormAtom, RESET);
     return status;
   },
 );
@@ -416,11 +428,3 @@ export const domainAtom = atom(async (get) => {
     isEligible,
   };
 });
-
-// Atom surives page refresh within the same tab
-export const registrationDataAtom = atomWithStorage<RegistrationData | null>(
-  "access.registrationData",
-  null,
-  undefined,
-  { getOnInit: true },
-);

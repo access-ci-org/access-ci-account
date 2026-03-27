@@ -41,46 +41,13 @@ function Profile() {
   const pushNotification = useSetAtom(pushNotificationAtom);
   const navigate = useNavigate();
 
-  type ApiDegree = {
-    degreeId: number;
-    degreeField: string;
-  };
-
-  const apiDegrees = (account.academicDegrees ?? []) as ApiDegree[];
-
   const form = useAppForm({
-    defaultValues: {
-      firstName: account.firstName as string,
-      lastName: account.lastName as string,
-      email: account.email as string,
-      institution: account.organizationId as number,
-      academicStatus: account.academicStatusId as number,
-      residenceCountry: account.residenceCountryId as number,
-      citizenshipCountryIds: account.citizenshipCountryIds as number[],
-      role: [] as string[],
-      academicDegrees: apiDegrees.length
-        ? apiDegrees.map((d) => ({
-            degreeId: String(d.degreeId),
-            degreeField: d.degreeField ?? "",
-          }))
-        : [{ degreeId: "", degreeField: "" }],
-      timeZone: account.timeZone as string,
-    },
+    defaultValues: account,
     validators: {
       onSubmit: profileFormSchema,
     },
     onSubmit: async ({ value }) => {
-      const { saved } = await updateAccount({
-        firstName: value.firstName,
-        lastName: value.lastName,
-        email: value.email,
-        organizationId: value.institution,
-        academicStatusId: value.academicStatus,
-        residenceCountryId: value.residenceCountry,
-        citizenshipCountryIds: value.citizenshipCountryIds,
-        timeZone: value.timeZone,
-        degrees: value.academicDegrees,
-      });
+      const { saved } = await updateAccount(value);
 
       if (saved) {
         pushNotification({

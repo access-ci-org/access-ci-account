@@ -2,7 +2,7 @@ import * as React from "react";
 import { Button } from "@/components/ui/button";
 
 type Option = { label: string; value: string };
-type DegreeRow = { degreeId: string; degreeField: string };
+type DegreeRow = { degreeId: number; degreeField: string };
 
 export default function AcademicDegreesSection({
   form,
@@ -18,7 +18,7 @@ export default function AcademicDegreesSection({
 
         const addRow = () => {
           degreesField.pushValue({
-            degreeId: "",
+            degreeId: 0,
             degreeField: "",
           });
         };
@@ -74,7 +74,7 @@ export default function AcademicDegreesSection({
 
                   <div className="md:mt-8">
                     <Button
-                      className = "border-red-600 hover:bg-white hover:border-red-600"
+                      className="border-red-600 hover:bg-white hover:border-red-600"
                       type="button"
                       variant="destructive"
                       size="lg"

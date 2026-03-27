@@ -5,17 +5,10 @@ import { Field, FieldGroup } from "@/components/ui/field";
 
 // Importing form input field for Registration Form
 import RegistrationFormInputs from "./registration-form-fields";
+import { registrationFormDefault } from "@/helpers/defaults";
 
 const CompleteRegistrationForm = withForm({
-  defaultValues: {
-    firstName: "",
-    lastName: "",
-    email: "",
-    institution: 0,
-    academicStatus: 0,
-    residenceCountry: 0,
-    citizenshipCountryIds: [] as number[],
-  },
+  defaultValues: registrationFormDefault,
   render: function Render({ form }) {
     return (
       <form
@@ -36,7 +29,7 @@ const CompleteRegistrationForm = withForm({
           <CardFooter>
             <Field orientation="horizontal">
               <form.AppForm>
-                <form.SubmitButton label="Continue"/>
+                <form.SubmitButton label="Continue" />
               </form.AppForm>
             </Field>
           </CardFooter>
