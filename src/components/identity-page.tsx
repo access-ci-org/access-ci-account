@@ -1,24 +1,16 @@
 import { Button } from "./ui/button";
 import { FieldSeparator } from "./ui/field";
 import { IoPerson } from "react-icons/io5";
-import { pushNotificationAtom } from "@/helpers/notification"
-import { apiBaseUrl } from "@/config";
 import DeleteRow from "./delete-row";
 
 // Imports for API Interaction
 import { useAtom, useSetAtom } from "jotai";
-import { identityAtom, identityDeleteAtom, isLoggedInAtom } from "@/helpers/state";
+import { identityAtom, identityDeleteAtom } from "@/helpers/state";
 
 export function IdentityPage() {
-    // LoggedIn Atom to confirm user status
-    const [isLoggedIn] = useAtom(isLoggedInAtom);
-
     // Fetching Identity details via atoms
     const [identityDetails] = useAtom(identityAtom)
     const deleteIdentity = useSetAtom(identityDeleteAtom)
-
-    // Notification atom for feedback on actions
-    const setNotification = useSetAtom(pushNotificationAtom)
 
     // Due to nested structure, we will need to flatten out details to show row by row
     const flattenedIdentityDetails = (identityDetails ?? []).flatMap((identity) => // flattens and maps at the same time
@@ -31,30 +23,11 @@ export function IdentityPage() {
         }))
     );
 
-    // Linking a new identity handler 
-    function handleLinkIdentity() {
-        if (!isLoggedIn) { // checking if user is logged in to make CiLogon call
-            setNotification({
-                variant: "error",
-                message: "User is not logged in."
-            });
-            return
-        } else {
-            const form = document.createElement("form");
-            form.method = "POST";
-            form.action = `${apiBaseUrl}/auth/link`;
-            form.style.display = "none";
-
-            document.body.appendChild(form);
-            form.submit();
-        }
-    }
-
     return (
         <div className="w-full mt-4">
             <div className="flex w-full items-center justify-between gap-4 mb-2">
                 <h1> Identities </h1>
-                <Button onClick={handleLinkIdentity}>
+                <Button>
                     Link New Idenitity 
                 </Button>
             </div>
