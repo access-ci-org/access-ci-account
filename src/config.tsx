@@ -14,6 +14,7 @@ export const MIN_CHARACTERS_PER_CLASS: number = 1;
 export const ssoCookieName = "SESSaccesscisso";
 export const ssoCookiePath = "/";
 export const ssoCookieValue = "1";
+export const ssoCookieMaxAgeHours = 18;
 export const ssoCookieDomain = window.location.host
   .split(".")
   .slice(-2)
