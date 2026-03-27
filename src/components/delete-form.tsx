@@ -27,7 +27,7 @@ const DeleteForm = withForm({
 
         <Field orientation="horizontal">
           <form.AppForm>
-            <form.SubmitButton label="Delete" />
+            <form.SubmitButton label="Delete" variant="destructive" />
           </form.AppForm>
         </Field>
       </form>
