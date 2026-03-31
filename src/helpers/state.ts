@@ -7,7 +7,7 @@ import {
   ssoCookieName,
   ssoCookiePath,
 } from "@/config";
-import { atom, createStore } from "jotai";
+import { atom, createStore, type WritableAtom } from "jotai";
 import {
   atomWithRefresh,
   atomWithReset,
@@ -29,6 +29,7 @@ import {
   type RefreshResponse,
   type AccountResponse,
   type RegistrationForm,
+  type CreateAccountResponse,
 } from "./types";
 import { registrationFormDefault } from "./defaults";
 
@@ -72,17 +73,27 @@ export const fetchJson = async <T extends object>(
   }
 };
 
-const doRefresh = async (
-  client: string,
-  currentRefreshToken: string,
-): Promise<RefreshResponse | ApiError> => {
-  return await fetchJson<RefreshResponse>(
+const doRefresh = async (client: string): Promise<boolean> => {
+  const clientTokensAtom: WritableAtom<
+    { accessToken: string; refreshToken: string },
+    [RefreshResponse],
+    unknown
+  > = client === "link" ? linkTokensAtom : loginTokensAtom;
+  const currentRefreshToken = store.get(clientTokensAtom).refreshToken;
+
+  const refreshResponse = await fetchJson<RefreshResponse>(
     `${apiBaseUrl}/auth/${client}/refresh`,
     {
       accessToken: currentRefreshToken,
       method: "POST",
     },
   );
+
+  const success = "accessToken" in refreshResponse;
+  if (success) {
+    store.set(clientTokensAtom, refreshResponse);
+  }
+  return success;
 };
 
 const fetchApiJson = async <T extends object>(
@@ -113,11 +124,8 @@ const fetchApiJson = async <T extends object>(
     "status" in response.error &&
     response.error.status === 401
   ) {
-    const refreshResponse = await doRefresh("login", refreshToken);
-    if ("accessToken" in refreshResponse) {
-      store.set(loginTokensAtom, refreshResponse);
+    if (await doRefresh("login"))
       return await fetchApiJson(relativeUrl, { body, method });
-    }
   }
 
   return response;
@@ -239,20 +247,33 @@ const accountCreateStatusAtom = atom({
 export const createAccountAtom = atom(
   (get) => get(accountCreateStatusAtom),
   async (get, set) => {
-    const resp = await fetchApiJson("/account", {
-      method: "POST",
-      body: {
-        ...get(registrationFormAtom),
-        cilogonToken: get(linkTokensAtom).accessToken,
-      },
-    });
+    const linkTokens = get(linkTokensAtom);
+    if (linkTokens.refreshToken) {
+      if (!(await doRefresh("link"))) {
+        const status = {
+          error: "Access token is invalid or has expired.",
+          created: false,
+          username: "",
+        };
+        set(accountCreateStatusAtom, status);
+        return status;
+      }
+    }
 
-    if ((resp as any)?.error) {
+    const creationResponse = await fetchApiJson<CreateAccountResponse>(
+      "/account",
+      {
+        method: "POST",
+        body: {
+          ...get(registrationFormAtom),
+          cilogonToken: get(linkTokensAtom).accessToken,
+        },
+      },
+    );
+
+    if ("error" in creationResponse) {
       const status = {
-        error:
-          typeof (resp as any).error === "number"
-            ? "Account could not be created. Please try again later."
-            : (resp as any).error?.message || "Account could not be created.",
+        error: creationResponse.error.message,
         created: false,
         username: "",
       };
@@ -260,7 +281,7 @@ export const createAccountAtom = atom(
       return status;
     }
 
-    const username = (resp as any).access_id || "";
+    const username = creationResponse.access_id || "";
     const status = {
       error: "",
       created: true,

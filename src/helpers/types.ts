@@ -110,3 +110,8 @@ export type AccountResponse = RegistrationForm & {
   timeZone: string;
   role: string[];
 };
+
+export type CreateAccountResponse = {
+  success: boolean;
+  access_id: string;
+};

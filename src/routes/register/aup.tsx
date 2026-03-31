@@ -8,6 +8,7 @@ import * as z from "zod";
 import { useNavigate } from "@tanstack/react-router";
 
 import { store, createAccountAtom } from "@/helpers/state";
+import { pushNotificationAtom } from "@/helpers/notification";
 
 export const Route = createFileRoute("/register/aup")({
   component: AcceptableUsePolicy,
@@ -35,7 +36,11 @@ function AcceptableUsePolicy() {
       if (status?.created) {
         navigate({ to: "/register/success" });
       } else {
-        // TODO: Display an error message.
+        store.set(pushNotificationAtom, {
+          title: "Account Creation Failed",
+          message: status.error,
+          variant: "error",
+        });
       }
     },
   });
