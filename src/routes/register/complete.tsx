@@ -24,8 +24,10 @@ export const Route = createFileRoute("/register/complete")({
     const domain = await store.get(domainAtom);
     const linkTokens = store.get(linkTokensAtom);
 
-    if (domain && domain.idps.length && !linkTokens.accessToken)
+    if (domain && domain.idps.length && !linkTokens.accessToken) {
       startAuth("link", domain.idps.map((idp) => idp.entityId).join(","));
+      return new Promise(() => {});
+    }
   },
 });
 
