@@ -109,6 +109,7 @@ export type RegistrationData = {
   academic_status: number;
   residence_country: number;
   citizenship_country: number[];
+  department: string;
 };
 
 export type AccountResponse = {
@@ -121,4 +122,5 @@ export type AccountResponse = {
   citizenshipCountryIds: number[];
   academicDegrees?: { degreeId: number; degreeField: string }[];
   timeZone?: string;
+  department: string;
 };

@@ -31,6 +31,7 @@ function RegisterComplete() {
       academicStatus: 0,
       residenceCountry: 0,
       citizenshipCountryIds: [] as number[],
+      department: "",
     },
     validators: {
       onSubmit: profileFormSchema,
@@ -44,6 +45,7 @@ function RegisterComplete() {
         academic_status: value.academicStatus,
         residence_country: value.residenceCountry,
         citizenship_country: value.citizenshipCountryIds,
+        department: value.department,
       };
       setRegistrationData(payload);
       await Promise.resolve(); // Ensure state is set before navigating

@@ -15,6 +15,7 @@ const CompleteRegistrationForm = withForm({
     academicStatus: 0,
     residenceCountry: 0,
     citizenshipCountryIds: [] as number[],
+    department: "",
   },
   render: function Render({ form }) {
     return (

@@ -42,6 +42,7 @@ function AcceptableUsePolicy() {
       const payload = {
         firstName: registrationData.first_name,
         lastName: registrationData.last_name,
+        department: registrationData.department,
         organizationId: Number(registrationData.institution),
         academicStatusId: Number(registrationData.academic_status),
         residenceCountryId: Number(registrationData.residence_country),

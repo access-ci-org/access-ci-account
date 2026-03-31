@@ -27,6 +27,7 @@ export const profileFormSchema = z.object({
   firstName: requiredString("First name"),
   lastName: requiredString("Last name"),
   institution: requiredNumber("Institution"),
+  department: requiredString("Department"),
   academicStatus: requiredNumber("Academic status"),
   residenceCountry: requiredNumber("Country of residence"),
   citizenshipCountryIds: z
