@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { siteTitle } from "@/config";
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
   registrationFormAtom,
   linkTokensAtom,
@@ -27,7 +27,7 @@ function AuthToken() {
   const setLinkTokens = useSetAtom(linkTokensAtom);
   const setLoginTokens = useSetAtom(loginTokensAtom);
   const setUsername = useSetAtom(usernameAtom);
-  const setRegistrationForm = useSetAtom(registrationFormAtom);
+  const [registrationForm, setRegistrationForm] = useAtom(registrationFormAtom);
 
   useEffect(() => {
     const accessToken = popCookie("access_token");
@@ -53,9 +53,9 @@ function AuthToken() {
           // TODO: Link the account using the access token.
         } else {
           // The user is registering with an existing identity.
-          if ("givenName" in userInfo && "familyName" in userInfo) {
-            const { givenName: firstName, familyName: lastName } = userInfo;
-            setRegistrationForm({ firstName, lastName });
+          if ("given_name" in userInfo && "family_name" in userInfo) {
+            const { given_name: firstName, family_name: lastName } = userInfo;
+            setRegistrationForm({ ...registrationForm, firstName, lastName });
           }
           setLinkTokens({ accessToken, refreshToken });
           navigate({ to: "/register/complete" });

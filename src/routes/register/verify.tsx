@@ -70,9 +70,8 @@ function RegisterVerify() {
             <>
               You already have an ACCESS account. Your ACCESS ID is{" "}
               <strong>{status.username}</strong>. You can{" "}
-              <Link to="/login">login</Link> or
+              <Link to="/login">login</Link> or{" "}
               <a href="https://identity.access-ci.org/password-reset">
-                {" "}
                 reset your password
               </a>
               .

@@ -8,30 +8,30 @@ const requiredNumber = (label: string) =>
   z.number().min(0, { message: `${label} is required.` });
 
 export const profileFormSchema = z.object({
+  firstName: requiredString("First name"),
+  lastName: requiredString("Last name"),
   email: z.string().email({ message: "Invalid email address." }),
+  organizationId: requiredNumber("Institution"),
+  academicStatusId: requiredNumber("Academic status"),
+  residenceCountryId: requiredNumber("Country of residence"),
 
-  role: z.array(z.string()).catch([]).optional(),
+  citizenshipCountryIds: z
+    .array(z.number())
+    .min(1, { message: "At least one country of citizenship is required." }),
+
+  role: z.array(z.string()).catch([]),
 
   academicDegrees: z
     .array(
       z.object({
-        degreeId: z.string().min(1, "Select a degree"),
+        degreeId: z.number().min(1, "Select a degree"),
         degreeField: z.string().min(1, "Enter a degree field"),
       }),
     )
     .catch([])
-  .optional(),
+    .optional(),
 
-  timeZone: z.string().catch("").optional(),
-
-  firstName: requiredString("First name"),
-  lastName: requiredString("Last name"),
-  institution: requiredNumber("Institution"),
-  academicStatus: requiredNumber("Academic status"),
-  residenceCountry: requiredNumber("Country of residence"),
-  citizenshipCountryIds: z
-    .array(z.number())
-    .min(1, { message: "At least one country of citizenship is required." }),
+  timeZone: z.string().catch(""),
 });
 
 export type ProfileFormValues = z.infer<typeof profileFormSchema>;

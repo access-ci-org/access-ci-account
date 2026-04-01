@@ -6,47 +6,43 @@ import ProgressBar from "@/components/progress-bar";
 import RegistrationLayout from "@/components/registration-layout";
 import { profileFormSchema } from "@/helpers/validation";
 
-import { useSetAtom } from "jotai";
-import { registrationDataAtom } from "@/helpers/state";
+import { useAtom } from "jotai";
+import {
+  domainAtom,
+  linkTokensAtom,
+  registrationFormAtom,
+  store,
+} from "@/helpers/state";
 import { useAtomValue } from "jotai";
 import { emailAtom } from "@/helpers/state";
+import { startAuth } from "@/helpers/auth";
 
 export const Route = createFileRoute("/register/complete")({
   component: RegisterComplete,
   head: () => ({ meta: [{ title: `Register | ${siteTitle}` }] }),
+  beforeLoad: async () => {
+    const domain = await store.get(domainAtom);
+    const linkTokens = store.get(linkTokensAtom);
+
+    if (domain && domain.idps.length && !linkTokens.accessToken) {
+      startAuth("link", domain.idps.map((idp) => idp.entityId).join(","));
+      return new Promise(() => {});
+    }
+  },
 });
 
 function RegisterComplete() {
   const navigate = useNavigate();
-  const setRegistrationData = useSetAtom(registrationDataAtom);
-
+  const [registrationForm, setRegistrationForm] = useAtom(registrationFormAtom);
   const email = useAtomValue(emailAtom);
 
   const form = useAppForm({
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      email,
-      institution: 0,
-      academicStatus: 0,
-      residenceCountry: 0,
-      citizenshipCountryIds: [] as number[],
-    },
+    defaultValues: { ...registrationForm, email },
     validators: {
       onSubmit: profileFormSchema,
     },
     onSubmit: async ({ value }) => {
-      const payload = {
-        first_name: value.firstName,
-        last_name: value.lastName,
-        email: value.email,
-        institution: value.institution,
-        academic_status: value.academicStatus,
-        residence_country: value.residenceCountry,
-        citizenship_country: value.citizenshipCountryIds,
-      };
-      setRegistrationData(payload);
-      await Promise.resolve(); // Ensure state is set before navigating
+      setRegistrationForm(value);
       navigate({ to: "/register/aup" });
     },
   });

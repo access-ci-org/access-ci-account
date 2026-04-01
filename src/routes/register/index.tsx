@@ -4,7 +4,13 @@ import { useAppForm } from "@/hooks/form";
 import { siteTitle } from "@/config";
 import StartRegistrationForm from "@/components/start-registration-form";
 import { useAtom, useSetAtom } from "jotai";
-import { emailAtom, sendOtpAtom } from "@/helpers/state";
+import {
+  emailAtom,
+  linkTokensAtom,
+  otpTokensAtom,
+  sendOtpAtom,
+  store,
+} from "@/helpers/state";
 
 import ProgressBar from "@/components/progress-bar";
 
@@ -14,6 +20,12 @@ import { pushNotificationAtom } from "@/helpers/notification";
 export const Route = createFileRoute("/register/")({
   component: RegisterStart,
   head: () => ({ meta: [{ title: `Register | ${siteTitle}` }] }),
+  beforeLoad: () => {
+    // Reset everything
+    store.set(emailAtom, "");
+    store.set(linkTokensAtom, { accessToken: "", refreshToken: "" });
+    store.set(otpTokensAtom, { accessToken: "", refreshToken: "" });
+  },
 });
 
 const formSchema = z.object({
