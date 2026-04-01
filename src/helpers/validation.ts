@@ -28,8 +28,7 @@ export const profileFormSchema = z.object({
         degreeField: z.string().min(1, "Enter a degree field"),
       }),
     )
-    .catch([])
-    .optional(),
+    .catch([]),
 
   timeZone: z.string().catch(""),
 });
