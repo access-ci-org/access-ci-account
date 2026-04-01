@@ -13,6 +13,7 @@ import { LoaderCircle } from "lucide-react";
 import { popCookie } from "@/helpers/cookie";
 import { pushNotificationAtom } from "@/helpers/notification";
 import { parseJwt } from "@/helpers/jwt";
+import { hasSsoCookie, setSsoCookie } from "@/helpers/cookie";
 
 export const Route = createFileRoute("/auth-token/$client")({
   component: AuthToken,
@@ -63,6 +64,9 @@ function AuthToken() {
       } else if (client === "login") {
         // The user is logging in.
         if ("sub" in userInfo && userInfo.sub.endsWith("@access-ci.org")) {
+          if (!hasSsoCookie()) {
+            setSsoCookie();
+          }
           setUsername(userInfo.sub.replace("@access-ci.org", ""));
           setLoginTokens({ accessToken, refreshToken });
           navigate({ to: "/" });
@@ -73,6 +77,16 @@ function AuthToken() {
         loginError("unknown-client", "Login failed due to unknown client.");
       }
     })();
-  }, []);
+  }, [
+    client,
+    isLoggedIn,
+    navigate,
+    pushNotification,
+    setLinkTokens,
+    setLoginTokens,
+    setRegistrationForm,
+    setUsername,
+  ]);
+
   return <LoaderCircle className="animate-spin" />;
 }
