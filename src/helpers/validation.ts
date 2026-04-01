@@ -31,6 +31,7 @@ export const profileFormSchema = z.object({
     .catch([]),
 
   timeZone: z.string().catch(""),
+  department: requiredString("Department"),
 });
 
 export type ProfileFormValues = z.infer<typeof profileFormSchema>;

@@ -34,6 +34,7 @@ const RegistrationFormInputs = withForm({
     academicStatusId: 0,
     residenceCountryId: 0,
     citizenshipCountryIds: [] as number[],
+    department: "",
   },
   props: {
     isRegistration: false,
@@ -181,6 +182,14 @@ const RegistrationFormInputs = withForm({
             );
           }}
         />
+
+        <form.AppField
+          name="department"
+          children={(field) => (
+            <field.TextField label="Department" placeholder="Enter your department" required />
+          )}
+        />
+
         <form.AppField
           name="academicStatusId"
           children={(field) => {

@@ -8,6 +8,7 @@ export const registrationFormDefault: RegistrationForm = {
   academicStatusId: 0,
   residenceCountryId: 0,
   citizenshipCountryIds: [] as number[],
+  department: "",
 };
 
 export const profileFormDefault = {
