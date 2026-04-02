@@ -103,7 +103,7 @@ export type RegistrationForm = {
   academicStatusId: number;
   residenceCountryId: number;
   citizenshipCountryIds: number[];
-  department: string | null;
+  department: string;
 };
 
 export type AccountResponse = RegistrationForm & {
