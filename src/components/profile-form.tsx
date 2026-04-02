@@ -65,12 +65,13 @@ const ProfileForm = withForm({
               />
 
               {/* Role field captures the user's role with a single-select checkbox */}
-              <form.AppField
+              {/* This field is disabled until a storage backend is implemented. */}
+              {/*<form.AppField
                 name="role"
                 children={(field) => {
                   return (
                     <field.MultiSelectCheckboxGroup
-                      label="Which user person role at ACCESS best describes you:"
+                      label="What is your role in ACCESS?"
                       name="role"
                       values={field.state.value ?? []}
                       onChange={(v) => field.setValue(v)}
@@ -78,7 +79,7 @@ const ProfileForm = withForm({
                     />
                   );
                 }}
-              />
+              />*/}
 
               <AcademicDegreesSection
                 form={form}
