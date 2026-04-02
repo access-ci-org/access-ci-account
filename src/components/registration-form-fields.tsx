@@ -1,25 +1,13 @@
 import { withForm } from "@/hooks/form";
 import { FieldGroup } from "@/components/ui/field";
-import React from "react";
-
 // Imports for API interaction
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import {
-  notificationsAtom,
-  pushNotificationAtom,
-} from "@/helpers/notification";
+import { useAtom, useAtomValue } from "jotai";
 import {
   countriesAtom,
   academicStatusesAtom,
   domainAtom,
-  emailAtom,
 } from "@/helpers/state";
-
-// Navigation Imports
-import { useNavigate } from "@tanstack/react-router";
-
-// Option type defines selectable options for form fields
-type Option<T> = { label: string; value: T };
+import type { Option } from "@/helpers/types";
 
 type RegistrationFormInputsProps = {
   isRegistration: boolean;
@@ -55,15 +43,9 @@ const RegistrationFormInputs = withForm({
         label: status.name,
       }),
     );
-    // Redirect to register page if domain is ineligible for registration
-    const navigate = useNavigate();
 
     // Fetching domain via atom
     const [domain] = useAtom(domainAtom);
-
-    // Creating notifications via atoms
-    const pushNotification = useSetAtom(pushNotificationAtom);
-    const notifications = useAtomValue(notificationsAtom);
 
     // Domain option generating via id
     const domainOptions: Option<number>[] =
@@ -74,70 +56,6 @@ const RegistrationFormInputs = withForm({
           org.organizationAbbrev ??
           `Organization ${org.organizationId}`,
       })) ?? [];
-
-    // Fetching email via atom
-    const email = useAtomValue(emailAtom);
-    const emailDomain = email?.split("@")[1]?.toLowerCase() ?? null;
-
-    React.useEffect(() => {
-      // Ineligible
-      if (domain === null) {
-        const id = "ineligible-email-domain";
-        const alreadyShown = notifications.some((n) => n.id === id);
-
-        if (!alreadyShown) {
-          pushNotification({
-            id,
-            variant: "error",
-            title: "Ineligible Email Domain",
-            message: (
-              <>
-                The email domain {emailDomain} is not eligible for ACCESS.
-                Please try again with your university or work email address.
-              </>
-            ),
-          });
-        }
-
-        navigate({ to: "/register", replace: true });
-        return;
-      }
-
-      // Unknown (no matching orgs)
-      else if (
-        domain?.isEligible === true &&
-        (domain.organizations?.length ?? 0) === 0
-      ) {
-        const id = "unknown-email-domain";
-        const alreadyShown = notifications.some((n) => n.id === id);
-
-        if (!alreadyShown) {
-          pushNotification({
-            id,
-            variant: "error",
-            title: "Unknown Email Domain",
-            message: (
-              <>
-                The email domain {emailDomain} is not yet registered with
-                ACCESS. Please open a{" "}
-                <a
-                  href="https://support.access-ci.org/help-ticket"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="underline"
-                >
-                  help ticket
-                </a>{" "}
-                and ask to have your organization added to the ACCESS database.
-              </>
-            ),
-          });
-        }
-
-        navigate({ to: "/register", replace: true });
-        return;
-      }
-    }, [domain, pushNotification, navigate, emailDomain]);
 
     return (
       <FieldGroup>

@@ -3,10 +3,14 @@ import { siteTitle } from "@/config";
 import { useAppForm } from "@/hooks/form";
 import * as z from "zod";
 import VerifyEmailForm from "@/components/email-verification-form";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
+  domainAtom,
   emailAtom,
+  isLoggedInAtom,
   otpAtom,
+  pushNotificationAtom,
+  saveProfileAtom,
   sendOtpAtom,
   store,
   verifyOtpAtom,
@@ -14,11 +18,8 @@ import {
 
 import { Link } from "@tanstack/react-router";
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { TriangleAlert } from "lucide-react";
 import ProgressBar from "@/components/progress-bar";
 import RegistrationLayout from "@/components/registration-layout";
-import { pushNotificationAtom } from "@/helpers/notification";
 
 export const Route = createFileRoute("/register/verify")({
   component: RegisterVerify,
@@ -30,17 +31,32 @@ export const Route = createFileRoute("/register/verify")({
 });
 
 const formSchema = z.object({
-  otp: z
-    .string()
-    .length(6, { message: "OTP code must be 6 digits and letters." }), // Only error is must be 6 digits due to only allowing numeric input
+  otp: z.string().length(6, { message: "OTP code must be 6 characters." }),
 });
+
+const helpTicketLink = (
+  <a
+    href="https://support.access-ci.org/help-ticket"
+    target="_blank"
+    rel="noreferrer"
+    className="underline"
+  >
+    open a help ticket
+  </a>
+);
 
 function RegisterVerify() {
   const [email, setEmail] = useAtom(emailAtom);
   const [otp, setOtp] = useAtom(otpAtom);
-  const [verifyStatus, verifyOtp] = useAtom(verifyOtpAtom);
+  const verifyOtp = useSetAtom(verifyOtpAtom);
   const pushNotification = useSetAtom(pushNotificationAtom);
+  const saveProfile = useSetAtom(saveProfileAtom);
+  const isLoggedIn = useAtomValue(isLoggedInAtom);
   const navigate = useNavigate();
+
+  const prevPath = isLoggedIn ? "/profile" : "/register";
+  const nextPath = isLoggedIn ? "/" : "/register/complete";
+  const existingAccountPath = isLoggedIn ? "/profile" : "/";
 
   const form = useAppForm({
     defaultValues: {
@@ -61,12 +77,18 @@ function RegisterVerify() {
           variant: "error",
         });
         setEmail("");
-        navigate({ to: "/register" });
+        navigate({ to: prevPath });
       } else if (status.username) {
         setEmail("");
         pushNotification({
           title: "Existing Account",
-          message: (
+          message: isLoggedIn ? (
+            <>
+              The email address {email} is already associated with ACCESS ID{" "}
+              {status.username}. Please {helpTicketLink} if you have multiple
+              ACCESS IDs and need to have them merged.
+            </>
+          ) : (
             <>
               You already have an ACCESS account. Your ACCESS ID is{" "}
               <strong>{status.username}</strong>. You can{" "}
@@ -79,9 +101,40 @@ function RegisterVerify() {
           ),
           variant: "error",
         });
-        navigate({ to: "/" });
+        navigate({ to: existingAccountPath });
       } else {
-        navigate({ to: "/register/complete" });
+        const domain = await store.get(domainAtom);
+        const emailDomain = email.split("@")[1].toLowerCase();
+
+        if (domain === null) {
+          pushNotification({
+            variant: "error",
+            title: "Ineligible Email Domain",
+            message: (
+              <>
+                The email domain {emailDomain} is not eligible for ACCESS.
+                Please try again with your university or work email address.
+              </>
+            ),
+          });
+          navigate({ to: prevPath });
+        } else if (domain.isEligible && !domain.organizations.length) {
+          pushNotification({
+            variant: "error",
+            title: "Unknown Email Domain",
+            message: (
+              <>
+                The email domain {emailDomain} is not yet registered with
+                ACCESS. Please {helpTicketLink} and ask to have your
+                organization added to the ACCESS database.
+              </>
+            ),
+          });
+          navigate({ to: prevPath });
+        } else {
+          if (isLoggedIn) await saveProfile();
+          navigate({ to: nextPath });
+        }
       }
     },
   });
@@ -92,13 +145,6 @@ function RegisterVerify() {
       <p className="intro">
         Enter the 6-digit verification code sent to {email}.
       </p>
-      {verifyStatus?.error && (
-        <Alert variant="destructive">
-          <TriangleAlert />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>{verifyStatus.error}</AlertDescription>
-        </Alert>
-      )}
       <RegistrationLayout
         left={<VerifyEmailForm form={form} />}
         right={<ProgressBar />}

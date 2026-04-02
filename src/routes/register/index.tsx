@@ -15,7 +15,6 @@ import {
 import ProgressBar from "@/components/progress-bar";
 
 import RegistrationLayout from "@/components/registration-layout";
-import { pushNotificationAtom } from "@/helpers/notification";
 
 export const Route = createFileRoute("/register/")({
   component: RegisterStart,
@@ -34,8 +33,7 @@ const formSchema = z.object({
 
 function RegisterStart() {
   const [email, setEmail] = useAtom(emailAtom);
-  const [otpStatus, sendOtp] = useAtom(sendOtpAtom);
-  const pushNotification = useSetAtom(pushNotificationAtom);
+  const sendOtp = useSetAtom(sendOtpAtom);
   const navigate = useNavigate();
 
   const form = useAppForm({
@@ -48,13 +46,7 @@ function RegisterStart() {
     onSubmit: async ({ value }) => {
       setEmail(value.email);
       const status = await sendOtp();
-      if (otpStatus.error)
-        pushNotification({
-          title: "Error Sending Verification Code",
-          message: otpStatus.error,
-          variant: "error",
-        });
-      else if (status.sent) navigate({ to: "/register/verify" });
+      if (status.sent) navigate({ to: "/register/verify" });
     },
   });
 

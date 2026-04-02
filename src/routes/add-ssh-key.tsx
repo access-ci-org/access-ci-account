@@ -6,8 +6,7 @@ import AddSshKeyForm from "@/components/add-ssh-keys-form";
 
 import { useNavigate } from "@tanstack/react-router";
 import { useSetAtom } from "jotai";
-import { sskKeysAddAtom } from "@/helpers/state";
-import { pushNotificationAtom } from "@/helpers/notification";
+import { pushNotificationAtom, sskKeysAddAtom } from "@/helpers/state";
 
 export const Route = createFileRoute("/add-ssh-key")({
   component: AddSshKey,

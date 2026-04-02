@@ -7,8 +7,11 @@ import { useAppForm } from "@/hooks/form";
 import * as z from "zod";
 import { useNavigate } from "@tanstack/react-router";
 
-import { store, createAccountAtom } from "@/helpers/state";
-import { pushNotificationAtom } from "@/helpers/notification";
+import {
+  store,
+  createAccountAtom,
+  pushNotificationAtom,
+} from "@/helpers/state";
 
 export const Route = createFileRoute("/register/aup")({
   component: AcceptableUsePolicy,

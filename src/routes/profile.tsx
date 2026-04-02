@@ -4,14 +4,13 @@ import { siteTitle } from "@/config";
 import ProfileForm from "@/components/profile-form";
 import {
   accountAtom,
-  emailAtom,
-  store,
-  updateAccountAtom,
-} from "@/helpers/state";
-import {
   dismissNotificationAtom,
-  pushNotificationAtom,
-} from "@/helpers/notification";
+  emailAtom,
+  profileFormAtom,
+  saveProfileAtom,
+  sendOtpAtom,
+  store,
+} from "@/helpers/state";
 
 import { profileFormSchema } from "@/helpers/validation";
 import { useSetAtom } from "jotai";
@@ -36,36 +35,37 @@ export const Route = createFileRoute("/profile")({
 
 function Profile() {
   const account = Route.useLoaderData() as AccountResponse;
-  const refreshAccount = useSetAtom(accountAtom);
-  const updateAccount = useSetAtom(updateAccountAtom);
-  const pushNotification = useSetAtom(pushNotificationAtom);
+  const setEmail = useSetAtom(emailAtom);
+  const setProfileForm = useSetAtom(profileFormAtom);
+  const saveProfile = useSetAtom(saveProfileAtom);
+  const sendOtp = useSetAtom(sendOtpAtom);
   const navigate = useNavigate();
 
   const form = useAppForm({
     defaultValues: account,
+    listeners: {
+      onBlur: ({ fieldApi }) => {
+        if (fieldApi.name === "email") setEmail(fieldApi.state.value);
+      },
+    },
     validators: {
       onSubmit: profileFormSchema,
     },
     onSubmit: async ({ value }) => {
-      const { saved } = await updateAccount(value);
-
-      if (saved) {
-        pushNotification({
-          id: "profile-saved",
-          title: "Profile Saved",
-          message: "Changes to your profile have been saved.",
-          variant: "success",
-        });
-        navigate({ to: "/" });
-        refreshAccount();
+      setProfileForm(value);
+      if (value.email === account.email) {
+        // The email address has not changed. Save the profile now.
+        const { saved } = await saveProfile();
+        if (saved) {
+          navigate({ to: "/" });
+        } else {
+          window.scrollTo({ top: 0 });
+        }
       } else {
-        pushNotification({
-          id: "profile-error",
-          title: "Error Saving Profile",
-          message: `An error occurred while saving your profile. Please try again later.`,
-          variant: "error",
-        });
-        window.scrollTo({ top: 0 });
+        // The email address has changed. Verify the email address before
+        // saving the profile.
+        await sendOtp();
+        navigate({ to: "/register/verify" });
       }
     },
   });

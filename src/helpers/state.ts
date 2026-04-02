@@ -30,8 +30,9 @@ import {
   type AccountResponse,
   type RegistrationForm,
   type CreateAccountResponse,
+  type AppNotification,
 } from "./types";
-import { registrationFormDefault } from "./defaults";
+import { profileFormDefault, registrationFormDefault } from "./defaults";
 
 export const store = createStore();
 
@@ -194,6 +195,12 @@ export const sendOtpAtom = atom(
         status = { error: "", sent: true };
       }
     }
+    if (status.error)
+      set(pushNotificationAtom, {
+        title: "Error Sending Verification Code",
+        message: status.error,
+        variant: "error",
+      });
     set(otpSendStatusAtom, status);
     return status;
   },
@@ -448,4 +455,73 @@ export const domainAtom = atom(async (get) => {
     idps: data.idps || [],
     isEligible,
   };
+});
+
+export const notificationsAtom = atom<AppNotification[]>([]);
+
+// Helper: add a notification
+export const pushNotificationAtom = atom(
+  null,
+  (get, set, n: Omit<AppNotification, "id"> & { id?: string }) => {
+    const id = n.id ?? crypto.randomUUID();
+
+    // Only show one notification with unique id
+    const current = get(notificationsAtom);
+    if (current.some((x) => x.id === id)) return;
+
+    const next: AppNotification = {
+      id,
+      variant: n.variant ?? "info",
+      dismissible: n.dismissible ?? true,
+      ...n,
+    };
+    set(notificationsAtom, [...get(notificationsAtom), next]);
+  },
+);
+
+// Helper: remove a notification
+export const dismissNotificationAtom = atom(
+  null,
+  (get, set, id: string | string[]) => {
+    set(
+      notificationsAtom,
+      get(notificationsAtom).filter((n) =>
+        Array.isArray(id) ? !id.includes(n.id) : n.id !== id,
+      ),
+    );
+  },
+);
+
+// Helper: Clear all
+export const clearNotificationsAtom = atom(null, (_get, set) => {
+  set(notificationsAtom, []);
+});
+
+export const profileFormAtom = atom<AccountResponse>(profileFormDefault);
+
+export const saveProfileAtom = atom(null, async (get, set) => {
+  const profileForm = get(profileFormAtom);
+  const { saved, error } = await set(updateAccountAtom, {
+    ...profileForm,
+    emailOtpToken: get(otpTokensAtom).accessToken,
+  });
+  if (saved) {
+    set(pushNotificationAtom, {
+      id: "profile-saved",
+      title: "Profile Saved",
+      message: "Changes to your profile have been saved.",
+      variant: "success",
+    });
+    // Refresh the account and wait for it to reload.
+    set(accountAtom);
+    await get(accountAtom);
+  } else {
+    set(pushNotificationAtom, {
+      id: "profile-error",
+      title: "Error Saving Profile",
+      message: error,
+      variant: "error",
+    });
+  }
+  return { saved, error };
 });

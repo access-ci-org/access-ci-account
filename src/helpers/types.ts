@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 export type AcademicStatusesResponse = {
   academicStatuses: { academicStatusId: number; name: string }[];
 };
@@ -114,4 +116,18 @@ export type AccountResponse = RegistrationForm & {
 export type CreateAccountResponse = {
   success: boolean;
   access_id: string;
+};
+
+// Option type defines selectable options for form fields
+export type Option<T> = { label: string; value: T };
+
+export type NotificationType = "success" | "error" | "info" | "warning";
+
+export type AppNotification = {
+  id: string;
+  title?: string;
+  message: string | ReactNode;
+  variant?: NotificationType;
+  dismissible?: boolean;
+  autoCloseMs?: number; // time in milliseconds to auto close the notification
 };

@@ -2,16 +2,16 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { siteTitle } from "@/config";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
-  registrationFormAtom,
+  isLoggedInAtom,
   linkTokensAtom,
   loginTokensAtom,
+  pushNotificationAtom,
+  registrationFormAtom,
   usernameAtom,
-  isLoggedInAtom,
 } from "@/helpers/state";
 import { useEffect } from "react";
 import { LoaderCircle } from "lucide-react";
 import { popCookie } from "@/helpers/cookie";
-import { pushNotificationAtom } from "@/helpers/notification";
 import { parseJwt } from "@/helpers/jwt";
 import { hasSsoCookie, setSsoCookie } from "@/helpers/cookie";
 
