@@ -40,40 +40,36 @@ export function IdentityPage() {
                 {identityDetails.map((identity) => (
                     <div
                         key={identity.identityId}
-                        className="rounded-sm border border-muted overflow-hidden mb-3"
+                        className="mb-3 overflow-hidden rounded-sm border border-muted"
                     >
-                        <div className="flex flex-col p-2 m-2 sm:flex-row sm:items-center sm:justify-between">
-                            {/* 1st */}
-                            <div className="flex flex-col items-start w-full sm:w-24 shrink-0">
-                                <IoPerson className="!text-2xl mb-1 self-center" style={{ color: "#1a5b6e" }} />
+                        <div className="grid gap-4 p-4 md:grid-cols-[56px_minmax(0,1fr)_120px_180px_auto] md:items-center">
+                            <div className="flex items-center justify-center self-center">
+                                <IoPerson className="text-2xl" style={{ color: "#1a5b6e" }} />
                             </div>
 
-                            {/* 2nd */}
-                            <div className="text-xs flex-[2] sm:ml-4 min-w-0">
+                            <div className="min-w-0 space-y-3">
                                 {identity.identifiers.map((item) => (
-                                    <p key={item.identifier} className="break-words">{item.identifier}</p>
+                                    <div
+                                        key={item.identifier}
+                                        className="grid gap-2 md:grid-cols-[minmax(0,1fr)_120px] md:items-center"
+                                    >
+                                        <p className="break-words text-sm">{item.identifier}</p>
+                                        <p className="w-fit rounded-sm border bg-muted px-2 py-0.5 text-center text-xs md:justify-self-start">
+                                            {item.type}
+                                        </p>
+                                    </div>
                                 ))}
                             </div>
 
-                            {/* 3rd */}
-                            <div className="text-xs flex-[0.5] sm:ml-4 min-w-0 flex flex-col items-center justify-center" >
-                                {identity.identifiers.map((item) => (
-                                    <p key={item.identifier} className="rounded-sm border !text-sm px-2 py-0.5 max-w-20 text-center self-center bg-muted">
-                                        {item.type}
-                                    </p>
-                                ))}
-                            </div>
-
-                            {/* 4th */}
-                            <div className="text-xs sm:flex-1 sm:ml-4 min-w-0 flex flex-col items-center justify-center">
+                            <div className="flex items-center text-sm md:justify-center">
                                 <p>
-                                    {identity.identifiers.some((item) => item.login) ?
-                                        "Used for login" : "Not used for login"}
+                                    {identity.identifiers.some((item) => item.login)
+                                        ? "Used for login"
+                                        : "Not used for login"}
                                 </p>
                             </div>
 
-                            {/* 5th */}
-                            <div className="flex justify-end sm:justify-end min-w-[100px]">
+                            <div className="flex items-center md:justify-end">
                                 {!identity.identifiers.some((item) => item.identifier.includes("@access-ci.org")) ? (
                                     <ButtonRow
                                         label="Delete"
@@ -94,7 +90,7 @@ export function IdentityPage() {
                                         }}
                                     />
                                 ) : (
-                                    <div className="w-full h-8" />
+                                    <div className="h-8 w-[88px]" />
                                 )}
                             </div>
                         </div>
