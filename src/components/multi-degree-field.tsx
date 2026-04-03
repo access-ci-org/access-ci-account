@@ -22,7 +22,7 @@ export default function AcademicDegreesSection({
         };
 
         const removeRow = (idx: number) => {
-          if (rows.length <= 1) return;
+          if (rows.length < 1) return;
           degreesField.removeValue(idx);
         };
 
@@ -77,7 +77,6 @@ export default function AcademicDegreesSection({
                       variant="destructive"
                       size="lg"
                       onClick={() => removeRow(idx)}
-                      disabled={rows.length <= 1}
                       aria-label={`Remove degree ${idx + 1}`}
                     >
                       Remove
@@ -94,7 +93,7 @@ export default function AcademicDegreesSection({
                 onClick={addRow}
                 className="bg-[var(--teal-700)] border-[var(--teal-700)] text-white hover:bg-white hover:text-[var(--teal-700)]"
               >
-                Add Another Degree
+                Add a Degree
               </Button>
             </div>
           </fieldset>
