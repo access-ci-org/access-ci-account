@@ -2,7 +2,10 @@
 import * as z from "zod";
 
 const requiredString = (label: string) =>
-  z.string().min(1, { message: `${label} is required.` });
+  z.preprocess(
+    (value) => (value == null ? "" : value),
+    z.string().trim().min(1, { message: `${label} is required.` }),
+  );
 
 const requiredNumber = (label: string) =>
   z.number().min(0, { message: `${label} is required.` });
