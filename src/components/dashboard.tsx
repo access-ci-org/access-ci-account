@@ -11,19 +11,32 @@ import {
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { DashboardCard } from "@/components/dashboard-card";
+import { showWelcomeMessageAtom, dismissWelcomeMessageAtom } from "@/helpers/state";
+import { useAtomValue, useSetAtom } from "jotai";
+import { X } from "lucide-react";
 
 export default function Dashboard() {
+  const showWelcomeMessage = useAtomValue(showWelcomeMessageAtom);
+  const dismissWelcomeMessage = useSetAtom(dismissWelcomeMessageAtom);
   return (
     <>
       <h1>My ACCESS Account</h1>
       <div className="min-h-full pt-3">
-        <div>
+        {showWelcomeMessage && (
           <Alert className="border-none rounded-none shadow-none bg-transparent bg-[var(--teal-050)] p-4">
             <CheckCircle2Icon />
             <AlertTitle className="text-lg font-medium">
               Congratulations! You've successfully created your ACCESS
               Account{" "}
             </AlertTitle>
+            <button
+              type="button"
+              onClick={dismissWelcomeMessage}
+              className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-black/5"
+              aria-label="Dismiss welcome message"
+            >
+              <X className="h-4 w-4" />
+            </button>
             <AlertDescription>
               <h3 className="text-base"> Next steps: </h3>
               <ol className="list-decimal pl-5">
@@ -42,66 +55,66 @@ export default function Dashboard() {
               </ol>
             </AlertDescription>
           </Alert>
+        )}
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch pt-6">
+        <div className="w-full h-full">
+          <DashboardCard
+            icon={User}
+            title="Profile"
+            description="Edit, update, or add to your profile."
+            to="/profile"
+          />
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch pt-6">
-          <div className="w-full h-full">
-            <DashboardCard
-              icon={User}
-              title="Profile"
-              description="Edit, update, or add to your profile."
-              to="/profile"
-            />
-          </div>
-          <div className="w-full h-full">
-            <DashboardCard
-              icon={Folder}
-              title="Projects"
-              description="Find your allocations and projects."
-              to="https://allocations.access-ci.org/"
-            />
-          </div>
-          <div className="w-full h-full">
-            <DashboardCard
-              icon={KeyRound}
-              title="SSH Keys"
-              description="Log into your resources securely. Find user names/SSH keys."
-              to="/ssh-keys"
-            />
-          </div>
-          <div className="w-full h-full">
-            <DashboardCard
-              icon={BarChart3}
-              title="Metrics"
-              description="Use XDMoD to track your project's performance and efficiency."
-              to="https://metrics.access-ci.org/"
-            />
-          </div>
+        <div className="w-full h-full">
+          <DashboardCard
+            icon={Folder}
+            title="Projects"
+            description="Find your allocations and projects."
+            to="https://allocations.access-ci.org/"
+          />
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 items-stretch pt-6 pb-6">
-          <div className="w-full h-full">
-            <DashboardCard
-              icon={FileText}
-              title="Publications"
-              description="Add your paper, dataset, software, dissertation, or other publihsed work."
-              to="https://allocations.access-ci.org/publications"
-            />
-          </div>
-          <div className="w-full h-full">
-            <DashboardCard
-              icon={Users}
-              title="Community Persona"
-              description="Tag your skills and interests. Find affinity groups, contributions, and event registrations."
-              to="https://support.access-ci.org/community-persona"
-            />
-          </div>
-          <div className="w-full h-full">
-            <DashboardCard
-              icon={LifeBuoy}
-              title="Help Tickets"
-              description="Find help tickets associated with your account."
-              to="https://access-ci.atlassian.net/servicedesk/customer/user/requests"
-            />
-          </div>
+        <div className="w-full h-full">
+          <DashboardCard
+            icon={KeyRound}
+            title="SSH Keys"
+            description="Log into your resources securely. Find user names/SSH keys."
+            to="/ssh-keys"
+          />
+        </div>
+        <div className="w-full h-full">
+          <DashboardCard
+            icon={BarChart3}
+            title="Metrics"
+            description="Use XDMoD to track your project's performance and efficiency."
+            to="https://metrics.access-ci.org/"
+          />
+        </div>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 items-stretch pt-6 pb-6">
+        <div className="w-full h-full">
+          <DashboardCard
+            icon={FileText}
+            title="Publications"
+            description="Add your paper, dataset, software, dissertation, or other publihsed work."
+            to="https://allocations.access-ci.org/publications"
+          />
+        </div>
+        <div className="w-full h-full">
+          <DashboardCard
+            icon={Users}
+            title="Community Persona"
+            description="Tag your skills and interests. Find affinity groups, contributions, and event registrations."
+            to="https://support.access-ci.org/community-persona"
+          />
+        </div>
+        <div className="w-full h-full">
+          <DashboardCard
+            icon={LifeBuoy}
+            title="Help Tickets"
+            description="Find help tickets associated with your account."
+            to="https://access-ci.atlassian.net/servicedesk/customer/user/requests"
+          />
         </div>
       </div>
     </>
