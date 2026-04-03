@@ -3,8 +3,7 @@ import { useFieldContext } from "@/hooks/form-context";
 import { FieldLabel, FieldError } from "@/components/ui/field";
 import type React from "react";
 import { cn } from "@/lib/utils";
-
-export type Option<T> = { label: string; value: T };
+import type { Option } from "@/helpers/types";
 
 type DropdownSelectFieldProps<T, IsMulti extends boolean = boolean> = {
   name: string;

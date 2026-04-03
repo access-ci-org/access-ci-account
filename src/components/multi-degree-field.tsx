@@ -1,20 +1,18 @@
 import * as React from "react";
 import { Button } from "@/components/ui/button";
-
-type Option = { label: string; value: string };
-type DegreeRow = { degreeId: number; degreeField: string };
+import type { Degree, Option } from "@/helpers/types";
 
 export default function AcademicDegreesSection({
   form,
   degreeOptions,
 }: {
   form: any;
-  degreeOptions: Option[];
+  degreeOptions: Option<number>[];
 }) {
   return (
-    <form.AppField name="academicDegrees" mode="array">
+    <form.AppField name="degrees" mode="array">
       {(degreesField: any) => {
-        const rows = (degreesField.state.value ?? []) as DegreeRow[];
+        const rows = (degreesField.state.value ?? []) as Degree[];
 
         const addRow = () => {
           degreesField.pushValue({
@@ -46,11 +44,11 @@ export default function AcademicDegreesSection({
                   key={idx}
                   className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_1fr_auto] md:items-start"
                 >
-                  <form.AppField name={`academicDegrees[${idx}].degreeId`}>
+                  <form.AppField name={`degrees[${idx}].degreeId`}>
                     {(field: any) => (
                       <field.DropdownSelectField
                         label="Degree"
-                        name={`academicDegrees[${idx}].degreeId`}
+                        name={`degrees[${idx}].degreeId`}
                         value={field.state.value ?? ""}
                         onChange={(v: string | null) => field.setValue(v ?? "")}
                         placeholder="Select degree level"
@@ -59,7 +57,7 @@ export default function AcademicDegreesSection({
                     )}
                   </form.AppField>
 
-                  <form.AppField name={`academicDegrees[${idx}].degreeField`}>
+                  <form.AppField name={`degrees[${idx}].degreeField`}>
                     {(field: any) => (
                       <field.TextField
                         label="Degree field"

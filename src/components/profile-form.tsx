@@ -16,12 +16,10 @@ import AcademicDegreesSection from "./multi-degree-field";
 import { useAtomValue } from "jotai";
 import { degreesAtom } from "@/helpers/state";
 import { profileFormDefault } from "@/helpers/defaults";
-
-// Option type defines selectable options for form fields
-type Option = { label: string; value: string };
+import type { Option } from "@/helpers/types";
 
 // ROLE_OPTIONS defines selectable user roles
-const ROLE_OPTIONS: Option[] = [
+const ROLE_OPTIONS: Option<string>[] = [
   { label: "Researcher", value: "researcher" },
   { label: "Educator", value: "educator" },
   { label: "Graduate Student", value: "grad_student" },
@@ -30,17 +28,17 @@ const ROLE_OPTIONS: Option[] = [
 ];
 
 // TIMEZONE_OPTIONS defines selectable time zones
-const TIMEZONE_OPTIONS: Option[] = Intl.supportedValuesOf("timeZone").map(
-  (tz) => ({ label: tz, value: tz }),
-);
+const TIMEZONE_OPTIONS: Option<string>[] = Intl.supportedValuesOf(
+  "timeZone",
+).map((tz) => ({ label: tz, value: tz }));
 
 const ProfileForm = withForm({
   defaultValues: profileFormDefault,
   render: function Render({ form }) {
     const degrees = useAtomValue(degreesAtom);
     // Mapping API response to Option
-    const degreeOptions: Option[] = degrees.map((degree) => ({
-      value: degree.degreeId.toString(),
+    const degreeOptions: Option<number>[] = degrees.map((degree) => ({
+      value: degree.degreeId,
       label: degree.name,
     }));
 

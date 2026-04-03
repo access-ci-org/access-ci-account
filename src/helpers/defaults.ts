@@ -13,6 +13,6 @@ export const registrationFormDefault: RegistrationForm = {
 export const profileFormDefault = {
   ...registrationFormDefault,
   role: [] as string[],
-  academicDegrees: [{ degreeId: 0, degreeField: "" }],
+  degrees: [{ degreeId: 0, degreeField: "" }],
   timeZone: "",
 };

@@ -21,7 +21,7 @@ export const profileFormSchema = z.object({
 
   role: z.array(z.string()).catch([]),
 
-  academicDegrees: z
+  degrees: z
     .array(
       z.object({
         degreeId: z.number().min(1, "Select a degree"),

@@ -107,8 +107,10 @@ export type RegistrationForm = {
   citizenshipCountryIds: number[];
 };
 
+export type Degree = { degreeId: number; degreeField: string };
+
 export type AccountResponse = RegistrationForm & {
-  academicDegrees: { degreeId: number; degreeField: string }[];
+  degrees: Degree[];
   timeZone: string;
   role: string[];
 };
