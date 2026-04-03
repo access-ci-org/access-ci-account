@@ -105,6 +105,7 @@ export type RegistrationForm = {
   academicStatusId: number;
   residenceCountryId: number;
   citizenshipCountryIds: number[];
+  department: string;
 };
 
 export type Degree = { degreeId: number; degreeField: string };
