@@ -29,7 +29,7 @@ function AddSshKey() {
       if (!trimmed) {
         setNotification({
           variant: "error",
-          message: "Please paste a public SSH key.",
+          message: "Please paste an SSH public key.",
         });
         return;
       }
@@ -52,7 +52,7 @@ function AddSshKey() {
 
   return (
     <>
-      <h1>Add new SSH Key</h1>
+      <h1>Add SSH Key</h1>
       <AddSshKeyForm form={form} />
     </>
   );

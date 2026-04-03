@@ -15,7 +15,7 @@ const AddSshKeyForm = withForm({
         >
           <div className="mb-4">
             <p>
-              Please paste your public SSH key below to add it to your ACCESS
+              Please paste your SSH public key below to add it to your ACCESS
               account.
             </p>
 
@@ -33,7 +33,7 @@ const AddSshKeyForm = withForm({
           </div>
 
           <div className="mt-4 mb-4">
-            <form.SubmitButton label="Submit Key" />
+            <form.SubmitButton label="Add Key" />
           </div>
         </form>
       </form.AppForm>
