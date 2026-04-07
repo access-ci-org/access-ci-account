@@ -7,6 +7,7 @@ import {
   Users,
   LifeBuoy,
   CheckCircle2Icon,
+  Link,
 } from "lucide-react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -70,14 +71,22 @@ export default function Dashboard() {
           </div>
           <div className="w-full h-full">
             <DashboardCard
+              icon={Link}
+              title="Linked Accounts"
+              description="Manage the accounts you can use to sign into ACCESS."
+              to="/identity"
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch pt-6">
+          <div className="w-full h-full">
+            <DashboardCard
               icon={BarChart3}
               title="Metrics"
               description="Use XDMoD to track your project's performance and efficiency."
               to="https://metrics.access-ci.org/"
             />
           </div>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 items-stretch pt-6 pb-6">
           <div className="w-full h-full">
             <DashboardCard
               icon={FileText}

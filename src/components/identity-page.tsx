@@ -17,7 +17,7 @@ export function IdentityPage() {
     return (
         <div className="w-full mt-4">
             <div className="flex w-full items-center justify-between gap-4 mb-2">
-                <h1> Identities </h1>
+                <h1> Link an Account </h1>
                 <Button>
                     Link New Idenitity
                 </Button>
