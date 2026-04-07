@@ -2,10 +2,7 @@
 import * as z from "zod";
 
 const requiredString = (label: string) =>
-  z.preprocess( // gets raw value
-    (value) => (value == null ? "" : value), // converts null/undefined to empty string 
-    z.string().trim().min(1, { message: `${label} is required.` }), // check value
-  );
+  z.string().trim().min(1, { message: `${label} is required.` });
 
 const requiredNumber = (label: string) =>
   z.number().min(0, { message: `${label} is required.` });
@@ -35,6 +32,7 @@ export const profileFormSchema = z.object({
 
   timeZone: z.string().catch(""),
   department: requiredString("Department"),
+  username: z.string(),
 });
 
 export type ProfileFormValues = z.infer<typeof profileFormSchema>;

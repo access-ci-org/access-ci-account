@@ -11,7 +11,7 @@ import type { Option } from "@/helpers/types";
 
 type RegistrationFormInputsProps = {
   isRegistration: boolean;
-  showAccessId?: boolean;
+  showAccessId: boolean;
 };
 
 const RegistrationFormInputs = withForm({
@@ -24,7 +24,7 @@ const RegistrationFormInputs = withForm({
     residenceCountryId: 0,
     citizenshipCountryIds: [] as number[],
     department: "",
-    accessId: "",
+    username: "",
   },
   props: {
     isRegistration: false,
@@ -76,16 +76,18 @@ const RegistrationFormInputs = withForm({
           )}
         />
 
-        <form.AppField
-          name="accessId"
-          children={(field) => (
-            <field.TextField
-              label="ACCESS ID"
-              placeholder="ACCESS ID"
-              disabled={showAccessId}
-            />
-          )}
-        />
+        {showAccessId && (
+          <form.AppField
+            name="username"
+            children={(field) => (
+              <field.TextField
+                label="ACCESS ID"
+                placeholder="ACCESS ID"
+                disabled
+              />
+            )}
+          />
+        )}
 
         <form.AppField
           name="email"

@@ -10,6 +10,7 @@ import {
   saveProfileAtom,
   sendOtpAtom,
   store,
+  usernameAtom
 } from "@/helpers/state";
 
 import { profileFormSchema } from "@/helpers/validation";
@@ -40,12 +41,14 @@ function Profile() {
   const saveProfile = useSetAtom(saveProfileAtom);
   const sendOtp = useSetAtom(sendOtpAtom);
   const navigate = useNavigate();
+  const setUsername = useSetAtom(usernameAtom)
 
   const form = useAppForm({
     defaultValues: account,
     listeners: {
       onBlur: ({ fieldApi }) => {
         if (fieldApi.name === "email") setEmail(fieldApi.state.value);
+        if (fieldApi.name === "username") setUsername(fieldApi.state.value);
       },
     },
     validators: {
