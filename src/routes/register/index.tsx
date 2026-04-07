@@ -12,8 +12,6 @@ import {
   store,
 } from "@/helpers/state";
 
-import ProgressBar from "@/components/progress-bar";
-
 import RegistrationLayout from "@/components/registration-layout";
 
 export const Route = createFileRoute("/register/")({
@@ -57,10 +55,9 @@ function RegisterStart() {
         Welcome! Create an account to use ACCESS resources and start or join
         projects.
       </p>
-      <RegistrationLayout
-        left={<StartRegistrationForm form={form} />}
-        right={<ProgressBar />}
-      />
+      <RegistrationLayout>
+        <StartRegistrationForm form={form} />
+      </RegistrationLayout>
     </>
   );
 }

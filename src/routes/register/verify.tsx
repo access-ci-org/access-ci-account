@@ -18,7 +18,6 @@ import {
 
 import { Link } from "@tanstack/react-router";
 
-import ProgressBar from "@/components/progress-bar";
 import RegistrationLayout from "@/components/registration-layout";
 
 export const Route = createFileRoute("/register/verify")({
@@ -145,10 +144,9 @@ function RegisterVerify() {
       <p className="intro">
         Enter the 6-digit verification code sent to {email}.
       </p>
-      <RegistrationLayout
-        left={<VerifyEmailForm form={form} />}
-        right={<ProgressBar />}
-      />
+      <RegistrationLayout>
+        <VerifyEmailForm form={form} />
+      </RegistrationLayout>
     </>
   );
 }

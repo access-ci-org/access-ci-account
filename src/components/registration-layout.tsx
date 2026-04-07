@@ -1,9 +1,10 @@
+import { Button } from "@/components/ui/button";
+import ProgressBar from "@/components/progress-bar";
+
 export default function RegistrationLayout({
-  left,
-  right,
+  children,
 }: {
-  left: React.ReactNode;
-  right: React.ReactNode;
+  children: React.ReactNode;
 }) {
   return (
     <div
@@ -15,10 +16,21 @@ export default function RegistrationLayout({
       "
     >
       {/* Main column */}
-      <div className="min-w-0">{left}</div>
+      <main>{children}</main>
 
       {/* Sidebar column */}
-      <aside className="min-w-0 lg:pt-2">{right}</aside>
+      <aside className="lg:pt-2">
+        <ProgressBar />
+        <Button asChild variant="secondary" className="mt-4">
+          <a
+            href="https://support.access-ci.org/help-ticket"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Open a Help Ticket
+          </a>
+        </Button>
+      </aside>
     </div>
   );
 }

@@ -62,7 +62,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       <Menus />
       <Header />
       <Breadcrumbs />
-      <div className="container mt-15! mb-30!">
+      <div className="container mt-15! mb-30! box-content">
         <NotificationsBar />
         <Outlet />
       </div>

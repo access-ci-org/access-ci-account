@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { siteTitle } from "@/config";
 import RegistrationLayout from "@/components/registration-layout";
-import ProgressBar from "@/components/progress-bar";
 import AcceptAupForm from "@/components/accept-aup-form";
 import { useAppForm } from "@/hooks/form";
 import * as z from "zod";
@@ -51,10 +50,9 @@ function AcceptableUsePolicy() {
   return (
     <>
       <h1>Acceptable Use Policy</h1>
-      <RegistrationLayout
-        left={<AcceptAupForm form={form} />}
-        right={<ProgressBar />}
-      />
+      <RegistrationLayout>
+        <AcceptAupForm form={form} />
+      </RegistrationLayout>
     </>
   );
 }

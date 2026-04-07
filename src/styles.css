@@ -36,7 +36,9 @@
   font-family: "Archivo", sans-serif;
 }
 .container {
+  box-sizing: content-box;
   margin: 0 auto;
+  max-width: 100%;
   padding: 0 var(--padding);
   width: var(--width);
 }
