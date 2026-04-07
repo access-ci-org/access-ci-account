@@ -6,7 +6,7 @@
   "license": "Apache-2.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --port 3000 --base /access-ci-ui",
+    "dev": "vite --port 3000 --base /access-ci-account",
     "build": "tsc && vite build",
     "serve": "vite preview",
     "test": "vitest run"
