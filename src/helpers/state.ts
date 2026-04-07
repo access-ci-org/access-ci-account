@@ -147,10 +147,6 @@ export const showWelcomeMessageAtom = atomWithStorage("showWelcomeMessage", fals
   getOnInit: true,
 });
 
-export const dismissWelcomeMessageAtom = atom(null, (_get, set) => {
-  set(showWelcomeMessageAtom, false);
-});
-
 const noTokens = { accessToken: "", refreshToken: "" };
 const tokensAtom = (key: string) =>
   atomWithStorage(key, { ...noTokens }, undefined, {
@@ -304,8 +300,10 @@ export const createAccountAtom = atom(
 
     set(accountCreateStatusAtom, status);
     if (username) set(usernameAtom, username);
-    set(showWelcomeMessageAtom, true);
-    if (status.created) set(registrationFormAtom, RESET);
+    if (status.created) {
+      set(showWelcomeMessageAtom, true);
+      set(registrationFormAtom, RESET);
+    }
     return status;
   },
 );
