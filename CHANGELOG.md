@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/access-ci-org/access-ci-account/compare/v0.1.0...v0.1.1) (2026-04-07)
+
+
+### Bug Fixes
+
+* only set base URL for development and staging ([a0a3749](https://github.com/access-ci-org/access-ci-account/commit/a0a374990eee69f75082975403121d0bef66b3c2))
+
 ## 0.1.0 (2026-04-07)
 
 
