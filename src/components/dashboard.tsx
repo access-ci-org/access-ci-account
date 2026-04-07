@@ -11,13 +11,12 @@ import {
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { DashboardCard } from "@/components/dashboard-card";
-import { showWelcomeMessageAtom, dismissWelcomeMessageAtom } from "@/helpers/state";
-import { useAtomValue, useSetAtom } from "jotai";
+import { showWelcomeMessageAtom } from "@/helpers/state";
+import { useAtom } from "jotai";
 import { X } from "lucide-react";
 
 export default function Dashboard() {
-  const showWelcomeMessage = useAtomValue(showWelcomeMessageAtom);
-  const dismissWelcomeMessage = useSetAtom(dismissWelcomeMessageAtom);
+  const [showWelcomeMessage, setShowWelcomeMessage] = useAtom(showWelcomeMessageAtom);
   return (
     <>
       <h1>My ACCESS Account</h1>
@@ -31,7 +30,7 @@ export default function Dashboard() {
             </AlertTitle>
             <button
               type="button"
-              onClick={dismissWelcomeMessage}
+              onClick={() => setShowWelcomeMessage(false)}
               className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-black/5"
               aria-label="Dismiss welcome message"
             >
