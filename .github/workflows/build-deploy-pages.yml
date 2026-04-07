@@ -27,7 +27,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Build project
-        run: npm run build
+        run: npm run build -- --base /access-ci-ui
       - name: Copy index to 404 page
         run: cp dist/index.html dist/404.html
       - name: Setup Pages
