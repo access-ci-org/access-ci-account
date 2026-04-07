@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.2](https://github.com/access-ci-org/access-ci-account/compare/v0.1.1...v0.1.2) (2026-04-07)
+
+
+### Bug Fixes
+
+* correct base URL for development and staging ([302de03](https://github.com/access-ci-org/access-ci-account/commit/302de030bca98e76ed6e1a2abf95691325b14db1))
+* remove TanStack dev tools ([a9549a5](https://github.com/access-ci-org/access-ci-account/commit/a9549a597167f8fe8ded04f1c411239ed3497e52))
+
 ## [0.1.1](https://github.com/access-ci-org/access-ci-account/compare/v0.1.0...v0.1.1) (2026-04-07)
 
 
