@@ -45,6 +45,7 @@ export const Menus = () => {
       lastItem.items.unshift({
         name: "Impersonate user...",
         onClick: () => {
+          document.body.click();
           const targetUsername = prompt("Enter the ACCESS ID to impersonate:");
           if (targetUsername)
             (async () => {
@@ -78,6 +79,7 @@ export const Menus = () => {
           name: "Stop Impersonating",
           onClick: () =>
             (async () => {
+              document.body.click();
               await stopImpersonating();
               pushNotification({
                 id: "impersonate",
