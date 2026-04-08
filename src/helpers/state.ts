@@ -143,6 +143,9 @@ export const emailAtom = atomWithStorage("email", "", undefined, {
 export const usernameAtom = atomWithStorage("username", "", undefined, {
   getOnInit: true,
 });
+export const showWelcomeMessageAtom = atomWithStorage("showWelcomeMessage", false, undefined, {
+  getOnInit: true,
+});
 
 const noTokens = { accessToken: "", refreshToken: "" };
 const tokensAtom = (key: string) =>
@@ -297,7 +300,10 @@ export const createAccountAtom = atom(
 
     set(accountCreateStatusAtom, status);
     if (username) set(usernameAtom, username);
-    if (status.created) set(registrationFormAtom, RESET);
+    if (status.created) {
+      set(showWelcomeMessageAtom, true);
+      set(registrationFormAtom, RESET);
+    }
     return status;
   },
 );
@@ -320,9 +326,9 @@ export const updateAccountAtom = atom(
     const status =
       "error" in response
         ? {
-            error: response.error.message,
-            saved: false,
-          }
+          error: response.error.message,
+          saved: false,
+        }
         : { error: "", saved: true };
     set(accountUpdateStatusAtom, status);
     return status;
