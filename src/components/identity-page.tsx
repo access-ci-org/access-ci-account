@@ -1,12 +1,11 @@
-import { Button } from "./ui/button";
 import { FieldSeparator } from "./ui/field";
 import { IoPerson } from "react-icons/io5";
 import ButtonRow from "@/components/button-row";
+import { startAuth } from "@/helpers/auth";
 
 // Imports for API Interaction
 import { useAtom, useSetAtom } from "jotai";
 import { identityAtom, identityDeleteAtom, pushNotificationAtom } from "@/helpers/state";
-
 export function IdentityPage() {
     // Fetching Identity details via atoms
     const [identityDetails] = useAtom(identityAtom)
@@ -17,9 +16,13 @@ export function IdentityPage() {
         <div className="w-full mt-4">
             <div className="flex w-full items-center justify-between gap-4 mb-2">
                 <h1> Link an Account </h1>
-                <Button>
-                    Link New Idenitity
-                </Button>
+                <ButtonRow
+                    label="Link New Identity"
+                    variant="default"
+                    onSubmit={async () => {
+                        await startAuth("link");
+                    }}
+                />
             </div>
 
             <FieldSeparator />
@@ -97,6 +100,6 @@ export function IdentityPage() {
                 ))
                 }
             </div>
-        </div>
+        </div >
     )
 };
