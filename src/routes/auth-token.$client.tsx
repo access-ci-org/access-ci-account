@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { siteTitle } from "@/config";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
+  adminUsernameAtom,
   isLoggedInAtom,
   linkTokensAtom,
   loginTokensAtom,
@@ -28,12 +29,14 @@ function AuthToken() {
   const setLinkTokens = useSetAtom(linkTokensAtom);
   const setLoginTokens = useSetAtom(loginTokensAtom);
   const setUsername = useSetAtom(usernameAtom);
+  const setAdminUsername = useSetAtom(adminUsernameAtom);
   const [registrationForm, setRegistrationForm] = useAtom(registrationFormAtom);
 
   useEffect(() => {
     const accessToken = popCookie("access_token");
     const refreshToken = popCookie("refresh_token");
     const idToken = popCookie("id_token");
+    const isAdmin = popCookie("is_admin") === "true";
     if (!accessToken || !refreshToken || !idToken) return;
 
     const userInfo = parseJwt(idToken);
@@ -67,7 +70,9 @@ function AuthToken() {
           if (!hasSsoCookie()) {
             setSsoCookie();
           }
-          setUsername(userInfo.sub.replace("@access-ci.org", ""));
+          const username = userInfo.sub.replace("@access-ci.org", "");
+          setUsername(username);
+          if (isAdmin) setAdminUsername(username);
           setLoginTokens({ accessToken, refreshToken });
           navigate({ to: "/" });
         } else {

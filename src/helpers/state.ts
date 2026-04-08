@@ -137,15 +137,49 @@ if (initUsername)
   localStorage.setItem("username", JSON.stringify(initUsername));
 if (initToken) localStorage.setItem("token", JSON.stringify(initToken));
 
+export const showWelcomeMessageAtom = atomWithStorage(
+  "showWelcomeMessage",
+  false,
+  undefined,
+  {
+    getOnInit: true,
+  },
+);
 export const emailAtom = atomWithStorage("email", "", undefined, {
   getOnInit: true,
 });
 export const usernameAtom = atomWithStorage("username", "", undefined, {
   getOnInit: true,
 });
-export const showWelcomeMessageAtom = atomWithStorage("showWelcomeMessage", false, undefined, {
-  getOnInit: true,
-});
+// If the user is an admin, adminUsernameAtom contains their real username,
+// while usernameAtom contains the username of the user they are acting as.
+export const adminUsernameAtom = atomWithStorage(
+  "adminUsername",
+  "",
+  undefined,
+  {
+    getOnInit: true,
+  },
+);
+
+export const isAdminAtom = atom((get) => get(adminUsernameAtom) !== "");
+export const isImpersonatingAtom = atom(
+  (get) => get(isAdminAtom) && get(adminUsernameAtom) !== get(usernameAtom),
+);
+export const impersonateAtom = atom(
+  null,
+  async (get, set, username: string) => {
+    if (get(isAdminAtom)) {
+      set(usernameAtom, username);
+      set(accountAtom);
+      return await get(accountAtom);
+    }
+  },
+);
+export const stopImpersonatingAtom = atom(
+  null,
+  async (get, set) => await set(impersonateAtom, get(adminUsernameAtom)),
+);
 
 const noTokens = { accessToken: "", refreshToken: "" };
 const tokensAtom = (key: string) =>
@@ -161,6 +195,7 @@ export const isLoggedInAtom = atom(
 export const logoutAtom = atom(null, (_get, set) => {
   set(emailAtom, "");
   set(usernameAtom, "");
+  set(adminUsernameAtom, "");
   set(linkTokensAtom, { ...noTokens });
   set(loginTokensAtom, { ...noTokens });
   set(otpTokensAtom, { ...noTokens });
@@ -326,9 +361,9 @@ export const updateAccountAtom = atom(
     const status =
       "error" in response
         ? {
-          error: response.error.message,
-          saved: false,
-        }
+            error: response.error.message,
+            saved: false,
+          }
         : { error: "", saved: true };
     set(accountUpdateStatusAtom, status);
     return status;
@@ -471,9 +506,10 @@ export const pushNotificationAtom = atom(
   (get, set, n: Omit<AppNotification, "id"> & { id?: string }) => {
     const id = n.id ?? crypto.randomUUID();
 
-    // Only show one notification with unique id
-    const current = get(notificationsAtom);
-    if (current.some((x) => x.id === id)) return;
+    // Filter out existing notifications with the same ID.
+    const current = get(notificationsAtom).filter(
+      (notification) => notification.id !== id,
+    );
 
     const next: AppNotification = {
       id,
@@ -481,7 +517,7 @@ export const pushNotificationAtom = atom(
       dismissible: n.dismissible ?? true,
       ...n,
     };
-    set(notificationsAtom, [...get(notificationsAtom), next]);
+    set(notificationsAtom, [...current, next]);
   },
 );
 
