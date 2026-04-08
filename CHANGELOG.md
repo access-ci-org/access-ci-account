@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.2.0](https://github.com/access-ci-org/access-ci-account/compare/v0.1.2...v0.2.0) (2026-04-08)
+
+
+### Features
+
+* add ability for admins to impersonate ([06a9634](https://github.com/access-ci-org/access-ci-account/commit/06a96344277b597713ca3119eb2ea450c7e0b32c))
+
+
+### Bug Fixes
+
+* **menus:** close menu after impersonate click ([83e852d](https://github.com/access-ci-org/access-ci-account/commit/83e852d46172346c3fa65d589e5ed4da50ea3843))
+
 ## [0.1.2](https://github.com/access-ci-org/access-ci-account/compare/v0.1.1...v0.1.2) (2026-04-07)
 
 
