@@ -62,20 +62,7 @@ const RegistrationFormInputs = withForm({
       })) ?? [];
 
     return (
-      <FieldGroup>
-        <form.AppField name="firstName">
-          {(field) => (
-            <field.TextField label="First Name" placeholder="" required />
-          )}
-        </form.AppField>
-
-        <form.AppField
-          name="lastName"
-          children={(field) => (
-            <field.TextField label="Last Name" placeholder="" required />
-          )}
-        />
-
+      < FieldGroup >
         {showAccessId && (
           <form.AppField
             name="username"
@@ -88,6 +75,19 @@ const RegistrationFormInputs = withForm({
             )}
           />
         )}
+        
+        <form.AppField name="firstName">
+          {(field) => (
+            <field.TextField label="First Name" placeholder="" required />
+          )}
+        </form.AppField>
+
+        <form.AppField
+          name="lastName"
+          children={(field) => (
+            <field.TextField label="Last Name" placeholder="" required />
+          )}
+        />
 
         <form.AppField
           name="email"
@@ -177,7 +177,7 @@ const RegistrationFormInputs = withForm({
             );
           }}
         />
-      </FieldGroup>
+      </FieldGroup >
     );
   },
 });
