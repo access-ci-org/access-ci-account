@@ -17,7 +17,7 @@ export function IdentityPage() {
             <div className="flex w-full items-center justify-between gap-4 mb-2">
                 <h1> Link an Account </h1>
                 <ButtonRow
-                    label="Link New Identity"
+                    label="Link an Account"
                     variant="default"
                     onSubmit={async () => {
                         await startAuth("link");
@@ -28,8 +28,8 @@ export function IdentityPage() {
             <FieldSeparator />
 
             <div className="mt-4">
-                <p className="text-xs"> This is a list of identities associated with your account. Please remove any identities that you do not recognize.</p>
-                <h2 className="text-xl font-semibold"> Authenticated Identities </h2>
+                <p className="text-xs"> This is a list of accounts associated with your ACCESS account. Please remove any accounts that you do not recognize.</p>
+                <h2 className="text-xl font-semibold"> Authenticated Accounts </h2>
             </div>
 
             <div className="w-full mb-8 mt-4">
