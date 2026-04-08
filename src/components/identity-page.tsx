@@ -15,7 +15,7 @@ export function IdentityPage() {
     return (
         <div className="w-full mt-4">
             <div className="flex w-full items-center justify-between gap-4 mb-2">
-                <h1> Link an Account </h1>
+                <h1> Linked Accounts </h1>
                 <ButtonRow
                     label="Link an Account"
                     variant="default"
@@ -29,13 +29,13 @@ export function IdentityPage() {
 
             <div className="mt-4">
                 <p className="text-xs"> This is a list of accounts associated with your ACCESS account. Please remove any accounts that you do not recognize.</p>
-                <h2 className="text-xl font-semibold"> Authenticated Accounts </h2>
+                <h2 className="text-xl font-semibold"> Linked Accounts </h2>
             </div>
 
             <div className="w-full mb-8 mt-4">
                 {identityDetails.length === 0 && (
                     <p className="text-sm text-muted-foreground mt-4">
-                        No identities added yet.
+                        No accounts linked yet.
                     </p>
                 )}
 

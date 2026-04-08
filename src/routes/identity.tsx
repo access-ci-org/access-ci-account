@@ -4,7 +4,7 @@ import { siteTitle } from '@/config'
 
 export const Route = createFileRoute('/identity')({
   component: IdentityRoute,
-  head: () => ({ meta: [{ title: `Identities | ${siteTitle}` }] }),
+  head: () => ({ meta: [{ title: `Linked Accounts | ${siteTitle}` }] }),
 })
 
 function IdentityRoute() {
