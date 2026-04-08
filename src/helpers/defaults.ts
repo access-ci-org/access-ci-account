@@ -16,4 +16,5 @@ export const profileFormDefault = {
   role: [] as string[],
   degrees: [{ degreeId: 0, degreeField: "" }],
   timeZone: "",
+  username: "",
 };

@@ -114,6 +114,7 @@ export type AccountResponse = RegistrationForm & {
   degrees: Degree[];
   timeZone: string;
   role: string[];
+  username: string;
 };
 
 export type CreateAccountResponse = {

@@ -23,6 +23,7 @@ const CompleteRegistrationForm = withForm({
               <RegistrationFormInputs
                 form={form as any}
                 isRegistration={true}
+                showAccessId={false}
               />
             </FieldGroup>
           </CardContent>

@@ -11,6 +11,7 @@ import type { Option } from "@/helpers/types";
 
 type RegistrationFormInputsProps = {
   isRegistration: boolean;
+  showAccessId: boolean;
 };
 
 const RegistrationFormInputs = withForm({
@@ -23,11 +24,13 @@ const RegistrationFormInputs = withForm({
     residenceCountryId: 0,
     citizenshipCountryIds: [] as number[],
     department: "",
+    username: "",
   },
   props: {
     isRegistration: false,
+    showAccessId: false,
   } as RegistrationFormInputsProps,
-  render: function Render({ form, isRegistration }) {
+  render: function Render({ form, isRegistration, showAccessId }) {
     // Fetching countries and academic status via atoms
     const academicStatuses = useAtomValue(academicStatusesAtom);
     const countries = useAtomValue(countriesAtom);
@@ -59,18 +62,33 @@ const RegistrationFormInputs = withForm({
       })) ?? [];
 
     return (
-      <FieldGroup>
+      < FieldGroup >
+        {showAccessId && (
+          <form.AppField
+            name="username"
+            children={(field) => (
+              <field.TextField
+                label="ACCESS ID"
+                placeholder="ACCESS ID"
+                disabled
+              />
+            )}
+          />
+        )}
+        
         <form.AppField name="firstName">
           {(field) => (
             <field.TextField label="First Name" placeholder="" required />
           )}
         </form.AppField>
+
         <form.AppField
           name="lastName"
           children={(field) => (
             <field.TextField label="Last Name" placeholder="" required />
           )}
         />
+
         <form.AppField
           name="email"
           children={(field) => (
@@ -159,7 +177,7 @@ const RegistrationFormInputs = withForm({
             );
           }}
         />
-      </FieldGroup>
+      </FieldGroup >
     );
   },
 });

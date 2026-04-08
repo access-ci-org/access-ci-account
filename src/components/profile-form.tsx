@@ -60,6 +60,7 @@ const ProfileForm = withForm({
               <RegistrationFormInputs
                 form={form as any}
                 isRegistration={false}
+                showAccessId={true}
               />
 
               {/* Role field captures the user's role with a single-select checkbox */}
