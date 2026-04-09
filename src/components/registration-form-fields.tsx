@@ -1,13 +1,14 @@
 import { withForm } from "@/hooks/form";
 import { FieldGroup } from "@/components/ui/field";
 // Imports for API interaction
-import { useAtom, useAtomValue } from "jotai";
+import { useAtomValue } from "jotai";
 import {
   countriesAtom,
   academicStatusesAtom,
   domainAtom,
 } from "@/helpers/state";
 import type { Option } from "@/helpers/types";
+import PasswordFormInputs from "./registration-password";
 
 type RegistrationFormInputsProps = {
   isRegistration: boolean;
@@ -25,6 +26,8 @@ const RegistrationFormInputs = withForm({
     citizenshipCountryIds: [] as number[],
     department: "",
     username: "",
+    password: "",
+    confirmPassword: "",
   },
   props: {
     isRegistration: false,
@@ -49,7 +52,7 @@ const RegistrationFormInputs = withForm({
     );
 
     // Fetching domain via atom
-    const [domain] = useAtom(domainAtom);
+    const domain = useAtomValue(domainAtom);
 
     // Domain option generating via id
     const domainOptions: Option<number>[] =
@@ -60,6 +63,9 @@ const RegistrationFormInputs = withForm({
           org.organizationAbbrev ??
           `Organization ${org.organizationId}`,
       })) ?? [];
+
+    // Checking if user has IdP, if not, then password fields will be shown
+    const noIdenitityCheck = (domain?.idps ?? []).length === 0;
 
     return (
       < FieldGroup >
@@ -177,7 +183,8 @@ const RegistrationFormInputs = withForm({
             );
           }}
         />
-      </FieldGroup >
+        <PasswordFormInputs form={form as any} noIdenitity={noIdenitityCheck} />
+      </FieldGroup>
     );
   },
 });
