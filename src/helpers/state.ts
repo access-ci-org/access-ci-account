@@ -362,9 +362,9 @@ export const updateAccountAtom = atom(
     const status =
       "error" in response
         ? {
-            error: response.error.message,
-            saved: false,
-          }
+          error: response.error.message,
+          saved: false,
+        }
         : { error: "", saved: true };
     set(accountUpdateStatusAtom, status);
     return status;

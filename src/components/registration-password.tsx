@@ -15,10 +15,7 @@ const PasswordFormInputs = withForm({
         noIdenitity: false,
     } as PasswordFormInputsProps,
     render: function Render({ form, noIdenitity }) {
-        if (!noIdenitity) {
-            return null;
-        }
-
+        if (!noIdenitity) return null;
         return (
             <FieldGroup>
                 {/* Password field captures user's password*/}

@@ -122,6 +122,8 @@ export type RegistrationForm = {
   residenceCountryId: number;
   citizenshipCountryIds: number[];
   department: string;
+  password?: string;
+  confirmPassword: string;
 };
 
 export type Degree = { degreeId: number; degreeField: string };
