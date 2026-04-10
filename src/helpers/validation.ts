@@ -61,9 +61,14 @@ export const profileFormSchema = z.object({
   department: requiredString("Department"),
 
   username: z.string().optional(),
-  password: z.string().optional(),
-  confirmPassword: z.string(),
-});
+  password: strongPasswordSchema.optional(),
+  confirmPassword: z.string().min(1, "Please confirm your password.")}).refine(
+    (data) => !data.password || data.password === data.confirmPassword,
+    {
+      message: "Passwords don't match",
+      path: ["confirmPassword"],
+    },
+  );
 
 export type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
