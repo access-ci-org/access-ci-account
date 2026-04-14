@@ -1,23 +1,68 @@
-import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
+import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 const alertVariants = cva(
-  "relative w-full rounded-lg border px-4 py-3 text-sm grid has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] grid-cols-[0_1fr] has-[>svg]:gap-x-3 gap-y-0.5 items-start [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current",
+  [
+    "relative w-full rounded-md border px-6 py-5",
+    "grid items-start gap-y-1.5",
+    "grid-cols-[0_1fr] has-[>svg]:grid-cols-[calc(var(--spacing)*5)_1fr]",
+    "has-[>svg]:gap-x-3",
+    "[&>svg]:size-5 [&>svg]:translate-y-0.5 [&>svg]:text-current",
+  ].join(" "),
   {
     variants: {
       variant: {
-        default: "bg-card text-card-foreground",
-        destructive:
-          "text-destructive bg-card [&>svg]:text-current *:data-[slot=alert-description]:text-destructive/90",
+        default: [
+          "border-transparent",
+          "bg-sky-100 text-sky-900",
+          "[&_[data-slot=alert-title]]:text-sky-900",
+          "[&_[data-slot=alert-description]]:text-sky-800",
+          "[&>svg]:text-sky-900",
+        ].join(" "),
+        info: [
+          "border-transparent",
+          "bg-sky-100 text-sky-900",
+          "[&_[data-slot=alert-title]]:text-sky-900",
+          "[&_[data-slot=alert-description]]:text-sky-800",
+          "[&>svg]:text-sky-900",
+        ].join(" "),
+        destructive: [
+          "border-transparent",
+          "bg-red-50 text-red-900",
+          "[&_[data-slot=alert-title]]:text-red-800",
+          "[&_[data-slot=alert-description]]:text-red-700",
+          "[&>svg]:text-red-800",
+        ].join(" "),
+        error: [
+          "border-transparent",
+          "bg-red-50 text-red-900",
+          "[&_[data-slot=alert-title]]:text-red-800",
+          "[&_[data-slot=alert-description]]:text-red-700",
+          "[&>svg]:text-red-800",
+        ].join(" "),
+        success: [
+          "border-transparent",
+          "bg-green-100 text-green-900",
+          "[&_[data-slot=alert-title]]:text-green-800",
+          "[&_[data-slot=alert-description]]:text-green-700",
+          "[&>svg]:text-green-800",
+        ].join(" "),
+        warning: [
+          "border-transparent",
+          "bg-yellow-50 text-yellow-900",
+          "[&_[data-slot=alert-title]]:text-yellow-800",
+          "[&_[data-slot=alert-description]]:text-yellow-700",
+          "[&>svg]:text-yellow-800",
+        ].join(" "),
       },
     },
     defaultVariants: {
       variant: "default",
     },
-  }
-)
+  },
+);
 
 function Alert({
   className,
@@ -31,7 +76,7 @@ function Alert({
       className={cn(alertVariants({ variant }), className)}
       {...props}
     />
-  )
+  );
 }
 
 function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
@@ -39,12 +84,12 @@ function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="alert-title"
       className={cn(
-        "col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight",
-        className
+        "col-start-2 text-[1.125rem] leading-7 font-semibold",
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 function AlertDescription({
@@ -55,12 +100,12 @@ function AlertDescription({
     <div
       data-slot="alert-description"
       className={cn(
-        "text-muted-foreground col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed",
-        className
+        "col-start-2 text-base leading-8 [&_p]:leading-8 [&_ul]:list-disc [&_ul]:pl-6 [&_li]:mb-1",
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
-export { Alert, AlertTitle, AlertDescription }
+export { Alert, AlertTitle, AlertDescription };

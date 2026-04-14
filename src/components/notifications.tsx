@@ -6,19 +6,22 @@ import { notificationsAtom, dismissNotificationAtom } from "@/helpers/state";
 import type { AppNotification } from "@/helpers/types";
 
 import { X } from "lucide-react";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
 
-export function variantClasses(variant: AppNotification["variant"]) {
+function notificationToAlertVariant(
+  variant: AppNotification["variant"],
+): "success" | "error" | "warning" | "info" {
   switch (variant) {
     case "success":
-      return "bg-green-50 border-green-200 text-green-950";
+      return "success";
     case "error":
-      return "bg-red-50 border-red-200 text-red-950";
+      return "error";
     case "warning":
-      return "bg-yellow-50 border-yellow-200 text-yellow-950";
+      return "warning";
     case "info":
     default:
-      return "border-border bg-card text-card-foreground";
+      return "info";
   }
 }
 
@@ -26,7 +29,6 @@ export function NotificationsBar() {
   const notifications = useAtomValue(notificationsAtom);
   const dismiss = useSetAtom(dismissNotificationAtom);
 
-  // Auto-dismiss notifications
   React.useEffect(() => {
     const timers = notifications
       .filter((n) => n.autoCloseMs && n.autoCloseMs > 0)
@@ -43,21 +45,18 @@ export function NotificationsBar() {
     <div className="w-full">
       <div className="space-y-2">
         {notifications.map((n) => (
-          <div
+          <Alert
             key={n.id}
-            className={cn(
-              "relative rounded-xl border p-4 shadow-sm",
-              variantClasses(n.variant),
-            )}
+            variant={notificationToAlertVariant(n.variant)}
             role="status"
             aria-live="polite"
+            className="relative pr-14"
           >
-            <div className="pr-10">
-              {n.title ? (
-                <div className="text-sm font-semibold">{n.title}</div>
-              ) : null}
-              <div className="text-sm">{n.message}</div>
-            </div>
+            {n.title ? <AlertTitle>{n.title}</AlertTitle> : null}
+
+            <AlertDescription className={cn(!n.title && "pt-0")}>
+              {n.message}
+            </AlertDescription>
 
             {n.dismissible !== false ? (
               <button
@@ -69,7 +68,7 @@ export function NotificationsBar() {
                 <X className="h-4 w-4" />
               </button>
             ) : null}
-          </div>
+          </Alert>
         ))}
       </div>
     </div>
