@@ -10,7 +10,7 @@ const requiredString = (label: string) =>
 const requiredNumber = (label: string) =>
   z
     .number(`${label} is required.`)
-    .min(0, { message: `${label} is required.` });
+    .min(1, { message: `${label} is required.` });
 
 export const profileFormSchema = z.object({
   firstName: requiredString("First name"),

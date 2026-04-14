@@ -34,6 +34,7 @@ import {
   type IdentityResponse,
 } from "./types";
 import { profileFormDefault, registrationFormDefault } from "./defaults";
+import { getDomainFromEmail } from "./email";
 
 export const store = createStore();
 
@@ -499,16 +500,6 @@ export const identityDeleteAtom = atom(
 );
 
 // Retrieving Domain information based on email address
-
-// --------- Helper functions for Domain Atom ---------
-// Pulls domain from email address
-const getDomainFromEmail = (email: string) => {
-  if (!email) return null;
-  const email_parts = email.trim().toLowerCase().split("@");
-  if (email_parts.length !== 2 || !email_parts[1]) return null;
-  return email_parts[1];
-};
-
 export const domainAtom = atom(async (get) => {
   const email = get(emailAtom);
   const domain = getDomainFromEmail(email);

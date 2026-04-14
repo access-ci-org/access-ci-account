@@ -10,12 +10,12 @@ import {
   saveProfileAtom,
   sendOtpAtom,
   store,
-  usernameAtom
 } from "@/helpers/state";
 
 import { profileFormSchema } from "@/helpers/validation";
 import { useSetAtom } from "jotai";
 import type { AccountResponse } from "@/helpers/types";
+import { getDomainFromEmail } from "@/helpers/email";
 
 export const Route = createFileRoute("/profile")({
   component: Profile,
@@ -41,14 +41,19 @@ function Profile() {
   const saveProfile = useSetAtom(saveProfileAtom);
   const sendOtp = useSetAtom(sendOtpAtom);
   const navigate = useNavigate();
-  const setUsername = useSetAtom(usernameAtom)
 
   const form = useAppForm({
     defaultValues: account,
     listeners: {
-      onBlur: ({ fieldApi }) => {
-        if (fieldApi.name === "email") setEmail(fieldApi.state.value);
-        if (fieldApi.name === "username") setUsername(fieldApi.state.value);
+      onBlur: ({ fieldApi, formApi }) => {
+        if (fieldApi.name === "email") {
+          if (
+            getDomainFromEmail(account.email) !==
+            getDomainFromEmail(fieldApi.state.value)
+          )
+            formApi.setFieldValue("organizationId", 0);
+          setEmail(fieldApi.state.value);
+        }
       },
     },
     validators: {
