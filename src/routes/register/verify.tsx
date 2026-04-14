@@ -105,7 +105,7 @@ function RegisterVerify() {
         const domain = await store.get(domainAtom);
         const emailDomain = email.split("@")[1].toLowerCase();
 
-        if (domain === null) {
+        if (domain === null || !domain.isEligible) {
           pushNotification({
             variant: "error",
             title: "Ineligible Email Domain",
