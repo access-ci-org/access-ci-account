@@ -1,14 +1,9 @@
 import * as React from "react";
 import { Button } from "@/components/ui/button";
-import type { Degree, Option } from "@/helpers/types";
+import type { Degree } from "@/helpers/types";
 import { degreeOptionsAtom } from "@/helpers/state";
 
-export default function AcademicDegreesSection({
-  form,
-}: {
-  form: any;
-  degreeOptions: Option<number>[];
-}) {
+export default function AcademicDegreesSection({ form }: { form: any }) {
   return (
     <form.AppField name="degrees" mode="array">
       {(degreesField: any) => {
