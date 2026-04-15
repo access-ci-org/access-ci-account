@@ -32,6 +32,7 @@ import {
   type CreateAccountResponse,
   type AppNotification,
   type IdentityResponse,
+  type Option,
 } from "./types";
 import { profileFormDefault, registrationFormDefault } from "./defaults";
 import { getDomainFromEmail } from "./email";
@@ -378,16 +379,38 @@ export const countriesAtom = atom(async () => {
   return "error" in response ? [] : response.countries;
 });
 
+export const countryOptionsAtom = atom<Promise<Option<number>[]>>(async (get) =>
+  (await get(countriesAtom)).map((country) => ({
+    value: country.countryId,
+    label: country.name,
+  })),
+);
+
 export const degreesAtom = atom(async () => {
   const response = await fetchApiJson<DegreesResponse>("/degree");
   return "error" in response ? [] : response.degrees;
 });
+
+export const degreeOptionsAtom = atom<Promise<Option<number>[]>>(async (get) =>
+  (await get(degreesAtom)).map((degree) => ({
+    value: degree.degreeId,
+    label: degree.name,
+  })),
+);
 
 export const academicStatusesAtom = atom(async () => {
   const response =
     await fetchApiJson<AcademicStatusesResponse>("/academic-status");
   return "error" in response ? [] : response.academicStatuses;
 });
+
+export const academicStatusOptionsAtom = atom<Promise<Option<number>[]>>(
+  async (get) =>
+    (await get(academicStatusesAtom)).map((status) => ({
+      value: status.academicStatusId,
+      label: status.name,
+    })),
+);
 
 export const termsAndConditionsAtom = atom(async () => {
   const response = await fetchApiJson<TermsAndConditionsResponse>(
@@ -543,6 +566,17 @@ export const domainAtom = atom(async (get) => {
     isEligible,
   };
 });
+
+export const organizationIdOptionsAtom = atom<Promise<Option<number>[]>>(
+  async (get) =>
+    (await get(domainAtom))?.organizations?.map((org) => ({
+      value: org.organizationId,
+      label:
+        org.organizationName ??
+        org.organizationAbbrev ??
+        `Organization ${org.organizationId}`,
+    })) ?? [],
+);
 
 export const notificationsAtom = atom<AppNotification[]>([]);
 

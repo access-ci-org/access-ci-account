@@ -4,11 +4,14 @@ import { FieldLabel, FieldError } from "@/components/ui/field";
 import type React from "react";
 import { cn } from "@/lib/utils";
 import type { Option } from "@/helpers/types";
+import type { Atom } from "jotai";
+import AwaitAtom from "./await-atom";
 
 type DropdownSelectFieldProps<T, IsMulti extends boolean = boolean> = {
   name: string;
   label?: React.ReactNode;
-  options: Option<T>[];
+  options?: Option<T>[];
+  optionsAtom?: Atom<Promise<Option<T>[]>>;
   placeholder?: string;
   required?: boolean;
 } & (IsMulti extends true
@@ -27,23 +30,12 @@ export default function DropdownSelectField<T>({
   name,
   label,
   options,
+  optionsAtom,
   value,
   onChange,
   placeholder,
   required,
 }: DropdownSelectFieldProps<T, boolean>) {
-  // Returns null if no matching option is found or if the value is undefined.
-  const toOption = (val?: T | T[]): Option<T> | Option<T>[] | null => {
-    if (!val) return null;
-    // Find the option in the options array where the option's value matches the input val.
-    // If no matching option is found, return null.
-    if (Array.isArray(val)) return options.filter((o) => val.includes(o.value));
-    return options.find((o) => o.value === val) ?? null;
-  };
-
-  // Current selection from the value
-  const selectedOption = toOption(value);
-
   // Called when user makes a selection
   // 'next' represents the selected option object or null if selection is cleared.
   const handleChange = (next: Option<T> | MultiValue<Option<T>> | null) => {
@@ -66,43 +58,65 @@ export default function DropdownSelectField<T>({
       >
         {label}
       </FieldLabel>
-      <Select
-        options={options}
-        isSearchable
-        name={field.name}
-        placeholder={placeholder}
-        value={selectedOption}
-        isMulti={Array.isArray(value)}
-        onChange={handleChange}
-        inputId={name}
-        instanceId={name}
-        // Styles for dropdown box, overrides current React-Select styles
-        classNames={{
-          control: ({ isFocused, isDisabled }) =>
-            cn(
-              "bg-white border rounded-none shadow focus:ring-2 focus:ring-input focus:border-input",
-              "flex w-full items-center px-3 py-2 text-sm outline-none",
-              "transition-colors placeholder:text-muted-foreground",
-              "focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-ring",
-              isFocused && "border-ring ring-[3px] ring-ring/50",
-              isDisabled && "opacity-50 cursor-not-allowed",
-              isInvalid ? "border-red-500" : "border-[var(--teal-700)]",
-            ),
-          menu: () => cn("z-50 mt-1 border bg-white shadow-md"),
-          option: ({ isFocused, isSelected }) =>
-            cn(
-              "cursor-pointer px-3 py-2 text-sm transition-colors",
-              isSelected
-                ? "bg-primary/10 text-primary font-medium"
-                : isFocused
-                  ? "bg-accent text-accent-foreground"
-                  : "text-foreground",
-            ),
-          placeholder: () => "text-muted-foreground",
-          singleValue: () => "text-foreground",
+      <AwaitAtom
+        atom={optionsAtom}
+        defaultValue={options}
+        render={(options) => {
+          // Returns null if no matching option is found or if the value is undefined.
+          const toOption = (val?: T | T[]): Option<T> | Option<T>[] | null => {
+            if (!val) return null;
+            // Find the option in the options array where the option's value matches the input val.
+            // If no matching option is found, return null.
+            if (Array.isArray(val))
+              return options.filter((o) => val.includes(o.value));
+            return options.find((o) => o.value === val) ?? null;
+          };
+
+          // Current selection from the value
+          const selectedOption = toOption(value);
+
+          return (
+            <Select
+              options={options}
+              isSearchable
+              name={field.name}
+              placeholder={placeholder}
+              value={selectedOption}
+              isMulti={Array.isArray(value)}
+              onChange={handleChange}
+              inputId={name}
+              instanceId={name}
+              // Styles for dropdown box, overrides current React-Select styles
+              classNames={{
+                control: ({ isFocused, isDisabled }) =>
+                  cn(
+                    "bg-white border rounded-none shadow focus:ring-2 focus:ring-input focus:border-input",
+                    "flex w-full items-center px-3 py-2 text-sm outline-none",
+                    "transition-colors placeholder:text-muted-foreground",
+                    "focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-ring",
+                    isFocused && "border-ring ring-[3px] ring-ring/50",
+                    isDisabled && "opacity-50 cursor-not-allowed",
+                    isInvalid ? "border-red-500" : "border-[var(--teal-700)]",
+                  ),
+                menu: () => cn("z-50 mt-1 border bg-white shadow-md"),
+                option: ({ isFocused, isSelected }) =>
+                  cn(
+                    "cursor-pointer px-3 py-2 text-sm transition-colors",
+                    isSelected
+                      ? "bg-primary/10 text-primary font-medium"
+                      : isFocused
+                        ? "bg-accent text-accent-foreground"
+                        : "text-foreground",
+                  ),
+                placeholder: () => "text-muted-foreground",
+                singleValue: () => "text-foreground",
+              }}
+              unstyled // important: lets Tailwind handle styles instead of default React-Select styles ( Why inline styles was used before because unstyled was not set )
+            />
+          );
         }}
-        unstyled // important: lets Tailwind handle styles instead of default React-Select styles ( Why inline styles was used before because unstyled was not set )
       />
+
       {isInvalid && (
         <FieldError errors={field.state.meta.errors} className="mt-3" />
       )}

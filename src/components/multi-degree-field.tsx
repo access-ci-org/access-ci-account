@@ -1,10 +1,10 @@
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import type { Degree, Option } from "@/helpers/types";
+import { degreeOptionsAtom } from "@/helpers/state";
 
 export default function AcademicDegreesSection({
   form,
-  degreeOptions,
 }: {
   form: any;
   degreeOptions: Option<number>[];
@@ -52,7 +52,7 @@ export default function AcademicDegreesSection({
                         value={field.state.value ?? ""}
                         onChange={(v: string | null) => field.setValue(v ?? "")}
                         placeholder="Select degree level"
-                        options={degreeOptions}
+                        optionsAtom={degreeOptionsAtom}
                       />
                     )}
                   </form.AppField>

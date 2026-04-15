@@ -1,13 +1,11 @@
 import { withForm } from "@/hooks/form";
 import { FieldGroup } from "@/components/ui/field";
 // Imports for API interaction
-import { useAtom, useAtomValue } from "jotai";
 import {
-  countriesAtom,
-  academicStatusesAtom,
-  domainAtom,
+  academicStatusOptionsAtom,
+  countryOptionsAtom,
+  organizationIdOptionsAtom,
 } from "@/helpers/state";
-import type { Option } from "@/helpers/types";
 
 type RegistrationFormInputsProps = {
   isRegistration: boolean;
@@ -31,38 +29,8 @@ const RegistrationFormInputs = withForm({
     showAccessId: false,
   } as RegistrationFormInputsProps,
   render: function Render({ form, isRegistration, showAccessId }) {
-    // Fetching countries and academic status via atoms
-    const academicStatuses = useAtomValue(academicStatusesAtom);
-    const countries = useAtomValue(countriesAtom);
-
-    // Mapping API response to Option
-    const countryOptions: Option<number>[] = countries.map((country) => ({
-      value: country.countryId,
-      label: country.name,
-    }));
-
-    const academicStatusOptions: Option<number>[] = academicStatuses.map(
-      (status) => ({
-        value: status.academicStatusId,
-        label: status.name,
-      }),
-    );
-
-    // Fetching domain via atom
-    const [domain] = useAtom(domainAtom);
-
-    // Domain option generating via id
-    const domainOptions: Option<number>[] =
-      domain?.organizations?.map((org) => ({
-        value: org.organizationId,
-        label:
-          org.organizationName ??
-          org.organizationAbbrev ??
-          `Organization ${org.organizationId}`,
-      })) ?? [];
-
     return (
-      < FieldGroup >
+      <FieldGroup>
         {showAccessId && (
           <form.AppField
             name="username"
@@ -75,7 +43,7 @@ const RegistrationFormInputs = withForm({
             )}
           />
         )}
-        
+
         <form.AppField name="firstName">
           {(field) => (
             <field.TextField label="First Name" placeholder="" required />
@@ -112,7 +80,7 @@ const RegistrationFormInputs = withForm({
                 value={value}
                 onChange={(v: number | null) => field.setValue(v ?? 0)}
                 placeholder="Select your institution"
-                options={domainOptions}
+                optionsAtom={organizationIdOptionsAtom}
                 required
               />
             );
@@ -122,7 +90,11 @@ const RegistrationFormInputs = withForm({
         <form.AppField
           name="department"
           children={(field) => (
-            <field.TextField label="Department" placeholder="Enter your department" required />
+            <field.TextField
+              label="Department"
+              placeholder="Enter your department"
+              required
+            />
           )}
         />
 
@@ -137,12 +109,13 @@ const RegistrationFormInputs = withForm({
                 value={value}
                 onChange={(v: number | null) => field.setValue(v ?? 0)}
                 placeholder="Select your academic status"
-                options={academicStatusOptions}
+                optionsAtom={academicStatusOptionsAtom}
                 required
               />
             );
           }}
         />
+
         <form.AppField
           name="residenceCountryId"
           children={(field) => {
@@ -154,7 +127,7 @@ const RegistrationFormInputs = withForm({
                 value={value}
                 onChange={(v: number | null) => field.setValue(v ?? 0)}
                 placeholder="Select your country of residence"
-                options={countryOptions}
+                optionsAtom={countryOptionsAtom}
                 required
               />
             );
@@ -171,13 +144,13 @@ const RegistrationFormInputs = withForm({
                 value={value}
                 onChange={(v: number[] | null) => field.setValue(v ?? [])}
                 placeholder="Select your country of citizenship"
-                options={countryOptions}
+                optionsAtom={countryOptionsAtom}
                 required
               />
             );
           }}
         />
-      </FieldGroup >
+      </FieldGroup>
     );
   },
 });

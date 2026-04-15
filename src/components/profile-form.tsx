@@ -13,8 +13,6 @@ import { Field, FieldGroup } from "@/components/ui/field";
 // Import Registration Form to include in Profile Form Edit/View
 import RegistrationFormInputs from "./registration-form-fields";
 import AcademicDegreesSection from "./multi-degree-field";
-import { useAtomValue } from "jotai";
-import { degreesAtom } from "@/helpers/state";
 import { profileFormDefault } from "@/helpers/defaults";
 import type { Option } from "@/helpers/types";
 
@@ -35,13 +33,6 @@ const TIMEZONE_OPTIONS: Option<string>[] = Intl.supportedValuesOf(
 const ProfileForm = withForm({
   defaultValues: profileFormDefault,
   render: function Render({ form }) {
-    const degrees = useAtomValue(degreesAtom);
-    // Mapping API response to Option
-    const degreeOptions: Option<number>[] = degrees.map((degree) => ({
-      value: degree.degreeId,
-      label: degree.name,
-    }));
-
     return (
       <form
         onSubmit={(e) => {
@@ -82,10 +73,7 @@ const ProfileForm = withForm({
                 />
               </div>
 
-              <AcademicDegreesSection
-                form={form}
-                degreeOptions={degreeOptions}
-              />
+              <AcademicDegreesSection form={form} />
 
               {/* Time zone field captures the user's time zone with a dropdown select */}
               <form.AppField
