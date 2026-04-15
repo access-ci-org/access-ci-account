@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.3.0](https://github.com/access-ci-org/access-ci-account/compare/v0.2.0...v0.3.0) (2026-04-15)
+
+
+### Features
+
+* suspend select components while options are loading ([2528262](https://github.com/access-ci-org/access-ci-account/commit/25282629bd232381c29bc7c15f3302cb5436cf59))
+
+
+### Bug Fixes
+
+* **multi-degree-field:** fix params type ([2e0c30f](https://github.com/access-ci-org/access-ci-account/commit/2e0c30fa42d561e37fc270b18d3a77368d01f230))
+* **profile:** require a value in select fields ([a752ea4](https://github.com/access-ci-org/access-ci-account/commit/a752ea44bff868a0acc51228ffae7ff877714413))
+* **verify:** fix detection of ineligible domains ([a307d43](https://github.com/access-ci-org/access-ci-account/commit/a307d43976838ae17f20074c395e6b4b9729e803))
+
 ## [0.2.0](https://github.com/access-ci-org/access-ci-account/compare/v0.1.2...v0.2.0) (2026-04-08)
 
 
