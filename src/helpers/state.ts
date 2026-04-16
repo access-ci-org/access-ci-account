@@ -364,9 +364,9 @@ export const updateAccountAtom = atom(
     const status =
       "error" in response
         ? {
-            error: response.error.message,
-            saved: false,
-          }
+          error: response.error.message,
+          saved: false,
+        }
         : { error: "", saved: true };
     set(accountUpdateStatusAtom, status);
     return status;
@@ -567,6 +567,16 @@ export const domainAtom = atom(async (get) => {
   };
 });
 
+export const isDomainEligibleError = (domainResponse: DomainResponse | null) => {
+  if (!domainResponse) return null;
+
+  if (domainResponse.isEligible === false) {
+    return "Please update your email address to an eligible institutional email address that matches your institution.";
+  }
+
+  return null;
+};
+
 export const organizationIdOptionsAtom = atom<Promise<Option<number>[]>>(
   async (get) =>
     (await get(domainAtom))?.organizations?.map((org) => ({
@@ -623,6 +633,19 @@ export const profileFormAtom = atom<AccountResponse>(profileFormDefault);
 
 export const saveProfileAtom = atom(null, async (get, set) => {
   const profileForm = get(profileFormAtom);
+  const domainResponse = await get(domainAtom);
+  const ineligibleEmailError = isDomainEligibleError(domainResponse);
+
+  if (ineligibleEmailError) {
+    set(pushNotificationAtom, {
+      id: "profile-error",
+      title: "Error Saving Profile",
+      message: ineligibleEmailError,
+      variant: "error",
+    });
+
+    return { saved: false, ineligibleEmailError };
+  }
   const { saved, error } = await set(updateAccountAtom, {
     ...profileForm,
     emailOtpToken: get(otpTokensAtom).accessToken,
