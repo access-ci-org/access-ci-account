@@ -36,7 +36,7 @@ import {
 } from "./types";
 import { profileFormDefault, registrationFormDefault } from "./defaults";
 import { getDomainFromEmail } from "./email";
-
+import { checkDomain } from "./domain-notification";
 export const store = createStore();
 
 export const fetchJson = async <T extends object>(
@@ -567,16 +567,6 @@ export const domainAtom = atom(async (get) => {
   };
 });
 
-export const isDomainEligibleError = (domainResponse: DomainResponse | null) => {
-  if (!domainResponse) return null;
-
-  if (domainResponse.isEligible === false) {
-    return "Please update your email address to an eligible institutional email address that matches your institution.";
-  }
-
-  return null;
-};
-
 export const organizationIdOptionsAtom = atom<Promise<Option<number>[]>>(
   async (get) =>
     (await get(domainAtom))?.organizations?.map((org) => ({
@@ -634,18 +624,15 @@ export const profileFormAtom = atom<AccountResponse>(profileFormDefault);
 export const saveProfileAtom = atom(null, async (get, set) => {
   const profileForm = get(profileFormAtom);
   const domainResponse = await get(domainAtom);
-  const ineligibleEmailError = isDomainEligibleError(domainResponse);
 
-  if (ineligibleEmailError) {
-    set(pushNotificationAtom, {
-      id: "profile-error",
-      title: "Error Saving Profile",
-      message: ineligibleEmailError,
-      variant: "error",
-    });
-
-    return { saved: false, ineligibleEmailError };
+  const isValidDomain = checkDomain(domainResponse, (notification) => {
+    set(pushNotificationAtom, notification);
+  });
+  
+  if (!isValidDomain) {
+    return { saved: false, error: "Invalid email domain." };
   }
+
   const { saved, error } = await set(updateAccountAtom, {
     ...profileForm,
     emailOtpToken: get(otpTokensAtom).accessToken,
