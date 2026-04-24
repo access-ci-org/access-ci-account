@@ -8,7 +8,7 @@ import {
   domainAtom,
 } from "@/helpers/state";
 import type { Option } from "@/helpers/types";
-import PasswordFormInputs from "./registration-password";
+import PasswordFormInputs from "./password-form-fields";
 
 type RegistrationFormInputsProps = {
   isRegistration: boolean;

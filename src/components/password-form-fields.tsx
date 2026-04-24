@@ -8,6 +8,7 @@ type PasswordFormInputsProps = {
 
 const PasswordFormInputs = withForm({
     defaultValues: {
+        currentPassword: "",
         password: "",
         confirmPassword: "",
     },
