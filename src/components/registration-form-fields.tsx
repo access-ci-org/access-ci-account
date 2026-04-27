@@ -6,6 +6,7 @@ import {
   countryOptionsAtom,
   organizationIdOptionsAtom,
 } from "@/helpers/state";
+import HelpTicketLink from "./help-ticket-link";
 
 type RegistrationFormInputsProps = {
   isRegistration: boolean;
@@ -74,15 +75,21 @@ const RegistrationFormInputs = withForm({
           children={(field) => {
             const value = field.state.value; // Ensures that value holds a string
             return (
-              <field.DropdownSelectField
-                label="Institution"
-                name="organizationId"
-                value={value}
-                onChange={(v: number | null) => field.setValue(v ?? 0)}
-                placeholder="Select your institution"
-                optionsAtom={organizationIdOptionsAtom}
-                required
-              />
+              <>
+                <field.DropdownSelectField
+                  label="Institution"
+                  name="organizationId"
+                  value={value}
+                  onChange={(v: number | null) => field.setValue(v ?? 0)}
+                  placeholder="Select your institution"
+                  optionsAtom={organizationIdOptionsAtom}
+                  required
+                />
+                <div className="text-sm">
+                  If your organization is not listed, please <HelpTicketLink />{" "}
+                  to have it added to the ACCESS database.
+                </div>
+              </>
             );
           }}
         />
