@@ -19,6 +19,7 @@ import {
 import { Link } from "@tanstack/react-router";
 
 import RegistrationLayout from "@/components/registration-layout";
+import HelpTicketLink from "@/components/help-ticket-link";
 
 export const Route = createFileRoute("/register/verify")({
   component: RegisterVerify,
@@ -32,17 +33,6 @@ export const Route = createFileRoute("/register/verify")({
 const formSchema = z.object({
   otp: z.string().length(6, { message: "OTP code must be 6 characters." }),
 });
-
-const helpTicketLink = (
-  <a
-    href="https://support.access-ci.org/help-ticket"
-    target="_blank"
-    rel="noreferrer"
-    className="underline"
-  >
-    open a help ticket
-  </a>
-);
 
 function RegisterVerify() {
   const [email, setEmail] = useAtom(emailAtom);
@@ -84,7 +74,7 @@ function RegisterVerify() {
           message: isLoggedIn ? (
             <>
               The email address {email} is already associated with ACCESS ID{" "}
-              {status.username}. Please {helpTicketLink} if you have multiple
+              {status.username}. Please <HelpTicketLink /> if you have multiple
               ACCESS IDs and need to have them merged.
             </>
           ) : (
@@ -124,7 +114,7 @@ function RegisterVerify() {
             message: (
               <>
                 The email domain {emailDomain} is not yet registered with
-                ACCESS. Please {helpTicketLink} and ask to have your
+                ACCESS. Please <HelpTicketLink /> and ask to have your
                 organization added to the ACCESS database.
               </>
             ),
