@@ -129,10 +129,11 @@ export type RegistrationForm = {
 export type Degree = { degreeId: number; degreeField: string };
 
 export type AccountResponse = RegistrationForm & {
-  degrees: Degree[];
-  timeZone: string;
-  role: string[];
+  degrees?: Degree[];
+  timeZone?: string;
+  role?: string[];
   username: string;
+  
 };
 
 export type CreateAccountResponse = {

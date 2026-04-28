@@ -13,8 +13,8 @@ function Password() {
   const form = useAppForm({
     defaultValues: {
       currentPassword: "",
-      newPassword: "",
-      repeatedNewPassword: "",
+      password: "",
+      confirmPassword: "",
     },
     validators: {
       onSubmit: changePasswordSchema,

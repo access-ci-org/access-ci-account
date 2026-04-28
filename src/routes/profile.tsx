@@ -41,7 +41,7 @@ function Profile() {
   const saveProfile = useSetAtom(saveProfileAtom);
   const sendOtp = useSetAtom(sendOtpAtom);
   const navigate = useNavigate();
-  const setUsername = useSetAtom(usernameAtom)
+  const setUsername = useSetAtom(usernameAtom);
 
   const form = useAppForm({
     defaultValues: account,
