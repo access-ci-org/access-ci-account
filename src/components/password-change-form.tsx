@@ -42,7 +42,7 @@ const PasswordChangeForm = withForm({
                 )}
               />
 
-              <PasswordFormInputs noIdenitity={true} form={form} />
+              <PasswordFormInputs form={form} />
 
             </FieldGroup>
           </CardContent>

@@ -578,6 +578,11 @@ export const organizationIdOptionsAtom = atom<Promise<Option<number>[]>>(
     })) ?? [],
 );
 
+export const hasIdpsAtom = atom<Promise<boolean>>(async (get) => {
+  const domain = await get(domainAtom);
+  return (domain?.idps ?? []).length > 0;
+});
+
 export const notificationsAtom = atom<AppNotification[]>([]);
 
 // Helper: add a notification

@@ -1,10 +1,12 @@
 import { withForm } from "@/hooks/form";
 import { FieldGroup } from "@/components/ui/field";
 // Imports for API interaction
+import { useAtomValue } from "jotai";
 import {
   academicStatusOptionsAtom,
   countryOptionsAtom,
   organizationIdOptionsAtom,
+  hasIdpsAtom,
 } from "@/helpers/state";
 import HelpTicketLink from "./help-ticket-link";
 import PasswordFormInputs from "./password-form-fields";
@@ -33,19 +35,9 @@ const RegistrationFormInputs = withForm({
     showAccessId: false,
   } as RegistrationFormInputsProps,
   render: function Render({ form, isRegistration, showAccessId }) {
+    const hasIdps = useAtomValue(hasIdpsAtom);
 
-    // Fetching domain via atom
-    const [domain] = useAtom(domainAtom);
-
-    // Domain option generating via id
-    const domainOptions: Option<number>[] =
-      domain?.organizations?.map((org) => ({
-        value: org.organizationId,
-        label:
-          org.organizationName ??
-          org.organizationAbbrev ??
-          `Organization ${org.organizationId}`,
-      })) ?? [];
+    const showPasswordFields = !hasIdps;
 
     return (
       <FieldGroup>
@@ -174,7 +166,7 @@ const RegistrationFormInputs = withForm({
             );
           }}
         />
-        <PasswordFormInputs form={form as any} noIdenitity={noIdenitityCheck} />
+        { showPasswordFields && <PasswordFormInputs form={form as any} /> }
       </FieldGroup>
     );
   },

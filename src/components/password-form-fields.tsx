@@ -2,21 +2,13 @@ import { withForm } from "@/hooks/form";
 import { FieldGroup, FieldDescription } from "@/components/ui/field";
 // Imports for API interaction
 
-type PasswordFormInputsProps = {
-    noIdenitity: boolean;
-};
-
 const PasswordFormInputs = withForm({
     defaultValues: {
         currentPassword: "",
         password: "",
         confirmPassword: "",
     },
-    props: {
-        noIdenitity: false,
-    } as PasswordFormInputsProps,
-    render: function Render({ form, noIdenitity }) {
-        if (!noIdenitity) return null;
+    render: function Render({ form }) {
         return (
             <FieldGroup>
                 {/* Password field captures user's password*/}
