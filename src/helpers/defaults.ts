@@ -9,6 +9,8 @@ export const registrationFormDefault: RegistrationForm = {
   residenceCountryId: 0,
   citizenshipCountryIds: [] as number[],
   department: "",
+  password: "",
+  confirmPassword: "",
 };
 
 export const profileFormDefault = {

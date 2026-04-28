@@ -7,6 +7,7 @@ import {
   organizationIdOptionsAtom,
 } from "@/helpers/state";
 import HelpTicketLink from "./help-ticket-link";
+import PasswordFormInputs from "./password-form-fields";
 
 type RegistrationFormInputsProps = {
   isRegistration: boolean;
@@ -24,12 +25,28 @@ const RegistrationFormInputs = withForm({
     citizenshipCountryIds: [] as number[],
     department: "",
     username: "",
+    password: "",
+    confirmPassword: "",
   },
   props: {
     isRegistration: false,
     showAccessId: false,
   } as RegistrationFormInputsProps,
   render: function Render({ form, isRegistration, showAccessId }) {
+
+    // Fetching domain via atom
+    const [domain] = useAtom(domainAtom);
+
+    // Domain option generating via id
+    const domainOptions: Option<number>[] =
+      domain?.organizations?.map((org) => ({
+        value: org.organizationId,
+        label:
+          org.organizationName ??
+          org.organizationAbbrev ??
+          `Organization ${org.organizationId}`,
+      })) ?? [];
+
     return (
       <FieldGroup>
         {showAccessId && (
@@ -157,6 +174,7 @@ const RegistrationFormInputs = withForm({
             );
           }}
         />
+        <PasswordFormInputs form={form as any} noIdenitity={noIdenitityCheck} />
       </FieldGroup>
     );
   },
