@@ -6,7 +6,7 @@ import {
   academicStatusOptionsAtom,
   countryOptionsAtom,
   organizationIdOptionsAtom,
-  hasIdpsAtom,
+  domainAtom,
 } from "@/helpers/state";
 import HelpTicketLink from "./help-ticket-link";
 import PasswordFormInputs from "./password-form-fields";
@@ -35,9 +35,13 @@ const RegistrationFormInputs = withForm({
     showAccessId: false,
   } as RegistrationFormInputsProps,
   render: function Render({ form, isRegistration, showAccessId }) {
-    const hasIdps = useAtomValue(hasIdpsAtom);
+    const domain = useAtomValue(domainAtom);
+    const domainHasIdps = (domain?.idps ?? []).length > 0;
 
-    const showPasswordFields = !hasIdps;
+    //If IdPs exist, keep password fields hidden.
+    const showPasswordFields =
+      isRegistration &&
+      !domainHasIdps;
 
     return (
       <FieldGroup>
@@ -166,7 +170,7 @@ const RegistrationFormInputs = withForm({
             );
           }}
         />
-        { showPasswordFields && <PasswordFormInputs form={form as any} /> }
+        {showPasswordFields && <PasswordFormInputs form={form as any} />}
       </FieldGroup>
     );
   },
