@@ -200,6 +200,14 @@ li {
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --alert-error-bg: #f1e6e6;
+  --alert-error-text: #8f0000;
+
+  --alert-info-bg: #d1e4fc;
+  --alert-info-text: #004186;
+
+  --alert-success-bg: #d9ecdb;
+  --alert-success-text: #497342;
 }
 
 .dark {
