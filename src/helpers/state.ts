@@ -100,6 +100,15 @@ const doRefresh = async (client: string): Promise<boolean> => {
   return success;
 };
 
+const isTokenUnexpired = (token: string) => {
+  if (!token) return false;
+
+  const jwt = parseJwt(token);
+  if (!jwt?.exp) return false;
+
+  return jwt.exp * 1000 > Date.now();
+};
+
 const fetchApiJson = async <T extends object>(
   relativeUrl: string,
   { accessToken, body, method, refreshToken }: FetchOptions = {},
@@ -647,3 +656,86 @@ export const saveProfileAtom = atom(null, async (get, set) => {
   }
   return { saved, error };
 });
+
+const passwordUpdateStatusAtom = atom({
+  error: "",
+  saved: false,
+});
+
+export const hasOtpTokenAtom = atom((get) =>
+  isTokenUnexpired(get(otpTokensAtom).accessToken),
+);
+
+export const updatePasswordAtom = atom(
+  (get) => get(passwordUpdateStatusAtom),
+  async (
+    get,
+    set,
+    passwordData: {
+      current_password?: string;
+      new_password: string;
+      confirm_password?: string;
+    },
+  ) => {
+    const isLoggedIn = get(isLoggedInAtom);
+    const hasOtpToken = get(hasOtpTokenAtom);
+    const username = get(usernameAtom);
+
+    let response: SuccessResponse | ApiError;
+
+    if (isLoggedIn) {
+      response = await fetchApiJson<SuccessResponse>(
+        `/account/${username}/password`,
+        {
+          method: "POST",
+          body: passwordData,
+          accessToken: get(loginTokensAtom).accessToken,
+        },
+      );
+    } else if (hasOtpToken) {
+      response = await fetchApiJson<SuccessResponse>("/auth/password-reset", {
+        method: "POST",
+        body: passwordData,
+        accessToken: get(otpTokensAtom).accessToken,
+      });
+    } else {
+      const status = {
+        error: "You must be logged in or verify your email before changing your password.",
+        saved: false,
+      };
+      set(passwordUpdateStatusAtom, status);
+      return status;
+    }
+
+    const status =
+      "error" in response
+        ? {
+            error: response.error.message || "Password could not be updated.",
+            saved: false,
+          }
+        : {
+            error: "",
+            saved: true,
+          };
+
+    set(passwordUpdateStatusAtom, status);
+
+    if (status.saved) {
+      set(pushNotificationAtom, {
+        id: "password-updated",
+        title: "Password Updated",
+        message: "Your password has been updated successfully.",
+        variant: "success",
+      });
+    } else {
+      set(pushNotificationAtom, {
+        id: "password-update-error",
+        title: "Error Updating Password",
+        message: status.error,
+        variant: "error",
+      });
+    }
+
+    return status;
+  },
+);

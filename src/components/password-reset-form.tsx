@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldDescription, FieldGroup } from "@/components/ui/field";
 
-const PasswordChangeForm = withForm({
+const PasswordResetForm = withForm({
   defaultValues: {
     currentPassword: "",
     newPassword: "",
@@ -25,22 +25,11 @@ const PasswordChangeForm = withForm({
       >
         <Card className="w-full mb-20">
           <CardHeader>
-            <CardTitle>Change your Password</CardTitle>
+            <CardTitle>Set a New Password</CardTitle>
           </CardHeader>
 
           <CardContent>
             <FieldGroup>
-              <form.AppField
-                name="currentPassword"
-                children={(field) => (
-                  <field.PasswordTextField
-                    label="Current Password"
-                    placeholder="Please enter your current password."
-                    required
-                  />
-                )}
-              />
-
               <form.AppField
                 name="newPassword"
                 children={(field) => (
@@ -65,7 +54,7 @@ const PasswordChangeForm = withForm({
                 children={(field) => (
                   <field.PasswordTextField
                     label="Confirm Password"
-                    placeholder="Please enter your new password."
+                    placeholder="Please re-enter your new password."
                     required
                   />
                 )}
@@ -86,4 +75,4 @@ const PasswordChangeForm = withForm({
   },
 });
 
-export default PasswordChangeForm;
+export default PasswordResetForm;

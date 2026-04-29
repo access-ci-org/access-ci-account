@@ -1,8 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import * as z from "zod";
-import { useAppForm } from "@/hooks/form";
+import { useAtomValue, useSetAtom } from "jotai";
 import { siteTitle } from "@/config";
-import PasswordForm from "@/components/password-change-form";
+import { useAppForm } from "@/hooks/form";
+import PasswordChangeForm from "@/components/password-change-form";
+import PasswordResetFlow from "./password-reset-flow";
+import PasswordResetForm from "@/components/password-reset-form";
+import {
+  hasOtpTokenAtom,
+  isLoggedInAtom,
+  updatePasswordAtom,
+} from "@/helpers/state";
 import { validatePassword } from "@/helpers/password";
 
 export const Route = createFileRoute("/password")({
@@ -17,22 +25,41 @@ const strongPasswordSchema = z.string().superRefine((password, ctx) => {
   }
 });
 
-const registrationSchema = z.object({
-  currentPassword: z.string().min(1, "Current password is required"),
-  newPassword: strongPasswordSchema,
-  repeatedNewPassword: z.string().min(1, "Please re-enter your new password"),
-  // Check if currentPassword is different from newPassword
-}).refine((data) => data.currentPassword !== data.newPassword, {
-  message: "New password must be different from current password",
-  path: ["newPassword"], // Shows error on the newPassword field
-}) .refine((data) => data.newPassword === data.repeatedNewPassword, {
-  message: "Passwords don't match",
-  path: ["repeatedNewPassword"], // Shows error on the repeatedNewPassword field
-});
-// TODO Check if currentPassword is the same as database password, this may need to be done on the server side, but for now there are checks on the client side only.
-
-
 function Password() {
+  const isLoggedIn = useAtomValue(isLoggedInAtom);
+  const hasOtpToken = useAtomValue(hasOtpTokenAtom);
+  const updatePassword = useSetAtom(updatePasswordAtom);
+
+  const passwordSchema = isLoggedIn
+    ? z
+        .object({
+          currentPassword: z.string().min(1, "Current password is required"),
+          newPassword: strongPasswordSchema,
+          repeatedNewPassword: z
+            .string()
+            .min(1, "Please re-enter your new password"),
+        })
+        .refine((data) => data.currentPassword !== data.newPassword, {
+          message: "New password must be different from current password",
+          path: ["newPassword"],
+        })
+        .refine((data) => data.newPassword === data.repeatedNewPassword, {
+          message: "Passwords don't match",
+          path: ["repeatedNewPassword"],
+        })
+    : z
+        .object({
+          currentPassword: z.string(),
+          newPassword: strongPasswordSchema,
+          repeatedNewPassword: z
+            .string()
+            .min(1, "Please re-enter your new password"),
+        })
+        .refine((data) => data.newPassword === data.repeatedNewPassword, {
+          message: "Passwords don't match",
+          path: ["repeatedNewPassword"],
+        });
+
   const form = useAppForm({
     defaultValues: {
       currentPassword: "",
@@ -40,17 +67,41 @@ function Password() {
       repeatedNewPassword: "",
     },
     validators: {
-      onSubmit: registrationSchema,
+      onSubmit: passwordSchema,
     },
     onSubmit: async ({ value }) => {
-      console.log(value);
+      const payload = isLoggedIn
+        ? {
+            current_password: value.currentPassword,
+            new_password: value.newPassword,
+          }
+        : {
+            new_password: value.newPassword,
+          };
+
+      await updatePassword(payload);
     },
   });
 
+  if (!isLoggedIn && !hasOtpToken) {
+    return (
+      <>
+        <h1>Change ACCESS Password</h1>
+        <PasswordResetFlow />
+      </>
+    );
+  }
+
   return (
     <>
-      <h1> Change ACCESS Password  </h1>
-      <PasswordForm form={form} />
+      <h1>Change ACCESS Password</h1>
+      {isLoggedIn ? (
+        <PasswordChangeForm form={form} />
+      ) : (
+        <PasswordResetForm form={form} />
+      )}
     </>
   );
 }
+
+export default Password;
