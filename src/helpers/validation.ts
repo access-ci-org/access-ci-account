@@ -46,7 +46,7 @@ export const profileFormSchema = z.object({
     .array(z.number())
     .min(1, { message: "At least one country of citizenship is required." }),
 
-  role: z.array(z.string()).catch([]).optional(),
+  role: z.array(z.string()).catch([]),
 
   degrees: z
     .array(
@@ -55,22 +55,69 @@ export const profileFormSchema = z.object({
         degreeField: z.string().min(1, "Enter a degree field"),
       }),
     )
-    .catch([]).optional(),
+    .catch([]),
 
-  timeZone: z.string().catch("").optional(),
+  timeZone: z.string().catch(""),
   department: requiredString("Department"),
 
   username: z.string(),
-  password: strongPasswordSchema.optional(),
-  confirmPassword: z.string().min(1, "Please confirm your password.")}).refine(
-    (data) => !data.password || data.password === data.confirmPassword,
-    {
-      message: "Passwords don't match",
-      path: ["confirmPassword"],
-    },
-  );
+  password: z.string(),
+  confirmPassword: z.string(),
+});
 
 export type ProfileFormValues = z.infer<typeof profileFormSchema>;
+
+export const registrationFormSchema = (showPasswordFields: boolean) =>
+  z
+    .object({
+      firstName: requiredString("First name"),
+      lastName: requiredString("Last name"),
+      email: z.string().email({ message: "Invalid email address." }),
+      organizationId: requiredNumber("Institution"),
+      academicStatusId: requiredNumber("Academic status"),
+      residenceCountryId: requiredNumber("Country of residence"),
+
+      citizenshipCountryIds: z
+        .array(z.number())
+        .min(1, { message: "At least one country of citizenship is required." }),
+
+      department: requiredString("Department"),
+
+      password: z.string(),
+      confirmPassword: z.string(),
+    })
+    .refine(
+      (data) => {
+        if (!showPasswordFields) return true;
+        return strongPasswordSchema.safeParse(data.password).success;
+      },
+      {
+        message: "Invalid password",
+        path: ["password"],
+      },
+    )
+    .refine(
+      (data) => {
+        if (!showPasswordFields) return true;
+        return !!data.confirmPassword;
+      },
+      {
+        message: "Please confirm your password.",
+        path: ["confirmPassword"],
+      },
+    )
+    .refine(
+      (data) => {
+        if (!showPasswordFields) return true;
+        return data.password === data.confirmPassword;
+      },
+      {
+        message: "Passwords don't match",
+        path: ["confirmPassword"],
+      },
+    );
+
+export type RegistrationFormValues = z.infer<ReturnType<typeof registrationFormSchema>>;
 
 export const sshKeyFormSchema = z.object({
   sshKey: z.string().min(1, { message: "SSH Key is required." }),

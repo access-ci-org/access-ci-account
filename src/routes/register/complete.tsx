@@ -3,7 +3,7 @@ import { useAppForm } from "@/hooks/form";
 import { siteTitle } from "@/config";
 import CompleteRegistrationForm from "@/components/complete-registration-form";
 import RegistrationLayout from "@/components/registration-layout";
-import { profileFormSchema } from "@/helpers/validation";
+import { registrationFormSchema } from "@/helpers/validation";
 
 import { useAtom } from "jotai";
 import {
@@ -34,11 +34,18 @@ function RegisterComplete() {
   const navigate = useNavigate();
   const [registrationForm, setRegistrationForm] = useAtom(registrationFormAtom);
   const email = useAtomValue(emailAtom);
+  const domain = useAtomValue(domainAtom);
+  const showPasswordFields = domain ? domain.idps.length === 0 : false;
 
   const form = useAppForm({
-    defaultValues: { ...registrationForm, email },
+    defaultValues: {
+      ...registrationForm,
+      email,
+      password: registrationForm.password ?? "",
+      confirmPassword: registrationForm.confirmPassword ?? "",
+    },
     validators: {
-      onSubmit: profileFormSchema,
+      onSubmit: registrationFormSchema(showPasswordFields),
     },
     onSubmit: async ({ value }) => {
       setRegistrationForm(value);

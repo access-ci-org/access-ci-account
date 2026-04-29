@@ -122,18 +122,17 @@ export type RegistrationForm = {
   residenceCountryId: number;
   citizenshipCountryIds: number[];
   department: string;
-  password?: string;
+  password: string;
   confirmPassword: string;
 };
 
 export type Degree = { degreeId: number; degreeField: string };
 
 export type AccountResponse = RegistrationForm & {
-  degrees?: Degree[];
-  timeZone?: string;
-  role?: string[];
+  degrees: Degree[];
+  timeZone: string;
+  role: string[];
   username: string;
-  
 };
 
 export type CreateAccountResponse = {
