@@ -17,7 +17,10 @@ export const profileFormSchema = z.object({
   lastName: requiredString("Last name"),
   email: z.string().email({ message: "Invalid email address." }),
   organizationId: requiredNumber("Institution"),
-  academicStatusId: requiredNumber("Academic status"),
+  academicStatusId: requiredNumber("Academic status").refine(
+    (id) => id !== 14,
+    { message: "Please select a valid academic status." },
+  ),
   residenceCountryId: requiredNumber("Country of residence"),
 
   citizenshipCountryIds: z
