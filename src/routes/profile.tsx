@@ -34,6 +34,7 @@ export const Route = createFileRoute("/profile")({
   },
 });
 
+
 function Profile() {
   const account = Route.useLoaderData() as AccountResponse;
   const setEmail = useSetAtom(emailAtom);
@@ -42,8 +43,18 @@ function Profile() {
   const sendOtp = useSetAtom(sendOtpAtom);
   const navigate = useNavigate();
 
+  const defaultValues = {
+    ...account,
+    role: account.role ?? [],
+    degrees: account.degrees ?? [],
+    timeZone: account.timeZone ?? "",
+    username: account.username ?? "",
+    password: "",
+    confirmPassword: "",
+  };
+
   const form = useAppForm({
-    defaultValues: account,
+    defaultValues,
     listeners: {
       onBlur: ({ fieldApi, formApi }) => {
         if (fieldApi.name === "email") {

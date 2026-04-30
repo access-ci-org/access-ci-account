@@ -5,15 +5,18 @@ import { Input } from "@/components/ui/input";
 import type React from "react";
 import { useState } from "react";
 import { Eye, EyeOff } from 'lucide-react';
+import { cn } from "@/lib/utils";
 
 export default function PasswordTextField({
     label,
     placeholder,
     required = false,
+    className = "",
 }: {
     label: React.ReactNode;
     placeholder: string;
     required?: boolean;
+    className?: string;
 }) {
     const field = useFieldContext<string>();
     const [showPassword, setShowPassword] = useState(false);
@@ -33,7 +36,10 @@ export default function PasswordTextField({
                     placeholder={placeholder}
                     autoComplete="off"
                     type={showPassword ? "text" : "password"}
-                    className="pr-10"
+                    className={cn(
+                        "bg-white border-[var(--teal-700)] rounded-none shadow-none",
+                        className,
+                    )}
                 />
                 <button
                     type="button"

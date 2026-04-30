@@ -1,12 +1,15 @@
 import { withForm } from "@/hooks/form";
 import { FieldGroup } from "@/components/ui/field";
 // Imports for API interaction
+import { useAtomValue } from "jotai";
 import {
   academicStatusOptionsAtom,
   countryOptionsAtom,
   organizationIdOptionsAtom,
+  domainAtom,
 } from "@/helpers/state";
 import HelpTicketLink from "./help-ticket-link";
+import PasswordFormInputs from "./password-form-fields";
 
 type RegistrationFormInputsProps = {
   isRegistration: boolean;
@@ -24,12 +27,22 @@ const RegistrationFormInputs = withForm({
     citizenshipCountryIds: [] as number[],
     department: "",
     username: "",
+    password: "",
+    confirmPassword: "",
   },
   props: {
     isRegistration: false,
     showAccessId: false,
   } as RegistrationFormInputsProps,
   render: function Render({ form, isRegistration, showAccessId }) {
+    const domain = useAtomValue(domainAtom);
+    const domainHasIdps = (domain?.idps ?? []).length > 0;
+
+    //If IdPs exist, keep password fields hidden.
+    const showPasswordFields =
+      isRegistration &&
+      !domainHasIdps;
+
     return (
       <FieldGroup>
         {showAccessId && (
@@ -157,6 +170,7 @@ const RegistrationFormInputs = withForm({
             );
           }}
         />
+        {showPasswordFields && <PasswordFormInputs form={form as any} />}
       </FieldGroup>
     );
   },

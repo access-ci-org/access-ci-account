@@ -373,9 +373,9 @@ export const updateAccountAtom = atom(
     const status =
       "error" in response
         ? {
-            error: response.error.message,
-            saved: false,
-          }
+          error: response.error.message,
+          saved: false,
+        }
         : { error: "", saved: true };
     set(accountUpdateStatusAtom, status);
     return status;
@@ -586,6 +586,11 @@ export const organizationIdOptionsAtom = atom<Promise<Option<number>[]>>(
         `Organization ${org.organizationId}`,
     })) ?? [],
 );
+
+export const hasIdpsAtom = atom<Promise<boolean>>(async (get) => {
+  const domain = await get(domainAtom);
+  return (domain?.idps ?? []).length > 0;
+});
 
 export const notificationsAtom = atom<AppNotification[]>([]);
 
