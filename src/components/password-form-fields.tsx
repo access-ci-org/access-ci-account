@@ -2,7 +2,7 @@ import { withForm } from "@/hooks/form";
 import { FieldGroup, FieldDescription } from "@/components/ui/field";
 // Imports for API interaction
 
-const PasswordFormInputs = withForm({
+const PasswordFormFields = withForm({
     defaultValues: {
         currentPassword: "",
         password: "",
@@ -47,4 +47,4 @@ const PasswordFormInputs = withForm({
     },
 });
 
-export default PasswordFormInputs;
+export default PasswordFormFields;

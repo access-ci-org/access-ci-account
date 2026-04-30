@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Field, FieldGroup } from "@/components/ui/field";
-import PasswordFormInputs from "./password-form-fields";
+import PasswordFormFields from "./password-form-fields";
 
 const PasswordChangeForm = withForm({
   defaultValues: {
@@ -42,7 +42,7 @@ const PasswordChangeForm = withForm({
                 )}
               />
 
-              <PasswordFormInputs form={form} />
+              <PasswordFormFields form={form} />
 
             </FieldGroup>
           </CardContent>

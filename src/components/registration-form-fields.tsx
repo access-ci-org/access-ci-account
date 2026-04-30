@@ -9,7 +9,7 @@ import {
   domainAtom,
 } from "@/helpers/state";
 import HelpTicketLink from "./help-ticket-link";
-import PasswordFormInputs from "./password-form-fields";
+import PasswordFormFields from "./password-form-fields";
 
 type RegistrationFormInputsProps = {
   isRegistration: boolean;
@@ -170,7 +170,7 @@ const RegistrationFormInputs = withForm({
             );
           }}
         />
-        {showPasswordFields && <PasswordFormInputs form={form as any} />}
+        {showPasswordFields && <PasswordFormFields form={form as any} />}
       </FieldGroup>
     );
   },
