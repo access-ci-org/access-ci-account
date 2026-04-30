@@ -8,28 +8,12 @@ import {
   emailAtom,
   organizationIdOptionsAtom,
   store,
-  pushNotificationAtom,
 } from "@/helpers/state";
-import { getDomainValidationResponse } from "@/helpers/profile-validation";
-import { useSetAtom } from "jotai";
-
+import { DomainValidationResponse } from "@/components/domain-validation-response";
 type RegistrationFormInputsProps = {
   isRegistration: boolean;
   showAccessId: boolean;
 };
-
-const helpTicketLink = (
-  <a
-    href="https://support.access-ci.org/help-ticket"
-    target="_blank"
-    rel="noreferrer"
-    className="underline"
-  >
-    open a help ticket
-  </a>
-);
-
-const pushNotification = useSetAtom(pushNotificationAtom)
 
 const RegistrationFormInputs = withForm({
   defaultValues: {
@@ -82,23 +66,10 @@ const RegistrationFormInputs = withForm({
             onBlurAsync: async ({ value }) => {
               store.set(emailAtom, value);
               const domain = await store.get(domainAtom);
-              const message = getDomainValidationResponse(domain);
+              const message = DomainValidationResponse({ domain });
               if (message) {
-                if (message.needsHelpTicket) {
-                  pushNotification({
-                    variant: "error",
-                    title: "Unknown Email Domain",
-                    message: (
-                      <>
-                        The email domain {domain} is not yet registered with
-                        ACCESS. Please {helpTicketLink} and ask to have your
-                        organization added to the ACCESS database.
-                      </>
-                    )
-                  });
-                }
                 return { message };
-              };
+              }
             },
           }}
           children={(field) => (

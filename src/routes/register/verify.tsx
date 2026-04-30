@@ -19,6 +19,18 @@ import {
 import { Link } from "@tanstack/react-router";
 
 import RegistrationLayout from "@/components/registration-layout";
+import { DomainValidationResponse } from "@/components/domain-validation-response";
+
+const helpTicketLink = (
+  <a
+      href="https://support.access-ci.org/help-ticket"
+      target="_blank"
+      rel="noreferrer"
+      className="underline"
+  >
+      open a help ticket
+  </a>
+);
 
 export const Route = createFileRoute("/register/verify")({
   component: RegisterVerify,
@@ -32,17 +44,6 @@ export const Route = createFileRoute("/register/verify")({
 const formSchema = z.object({
   otp: z.string().length(6, { message: "OTP code must be 6 characters." }),
 });
-
-const helpTicketLink = (
-  <a
-    href="https://support.access-ci.org/help-ticket"
-    target="_blank"
-    rel="noreferrer"
-    className="underline"
-  >
-    open a help ticket
-  </a>
-);
 
 function RegisterVerify() {
   const [email, setEmail] = useAtom(emailAtom);
@@ -103,31 +104,20 @@ function RegisterVerify() {
         navigate({ to: existingAccountPath });
       } else {
         const domain = await store.get(domainAtom);
-        const emailDomain = email.split("@")[1].toLowerCase();
+        const message = DomainValidationResponse({ domain });
 
         if (domain === null || !domain.isEligible) {
           pushNotification({
             variant: "error",
             title: "Ineligible Email Domain",
-            message: (
-              <>
-                The email domain {emailDomain} is not eligible for ACCESS.
-                Please try again with your university or work email address.
-              </>
-            ),
+            message,
           });
           navigate({ to: prevPath });
         } else if (domain.isEligible && !domain.organizations.length) {
           pushNotification({
             variant: "error",
             title: "Unknown Email Domain",
-            message: (
-              <>
-                The email domain {emailDomain} is not yet registered with
-                ACCESS. Please {helpTicketLink} and ask to have your
-                organization added to the ACCESS database.
-              </>
-            ),
+            message,
           });
           navigate({ to: prevPath });
         } else {
