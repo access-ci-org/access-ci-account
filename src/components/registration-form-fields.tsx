@@ -4,9 +4,14 @@ import { FieldGroup } from "@/components/ui/field";
 import {
   academicStatusOptionsAtom,
   countryOptionsAtom,
+  domainAtom,
+  emailAtom,
   organizationIdOptionsAtom,
+  store,
 } from "@/helpers/state";
-import HelpTicketLink from "./help-ticket-link";
+
+import HelpTicketLink from "@/components/help-ticket-link";
+import DomainValidationResponse from "@/components/domain-validation-response";
 
 type RegistrationFormInputsProps = {
   isRegistration: boolean;
@@ -60,6 +65,16 @@ const RegistrationFormInputs = withForm({
 
         <form.AppField
           name="email"
+          validators={{
+            onBlurAsync: async ({ value }) => {
+              store.set(emailAtom, value);
+              const domain = await store.get(domainAtom);
+              const message = DomainValidationResponse({ domain });
+              if (message) {
+                return { message };
+              }
+            },
+          }}
           children={(field) => (
             <field.TextField
               label="Email Address"

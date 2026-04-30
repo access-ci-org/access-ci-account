@@ -36,7 +36,6 @@ export const Route = createFileRoute("/profile")({
 
 function Profile() {
   const account = Route.useLoaderData() as AccountResponse;
-  const setEmail = useSetAtom(emailAtom);
   const setProfileForm = useSetAtom(profileFormAtom);
   const saveProfile = useSetAtom(saveProfileAtom);
   const sendOtp = useSetAtom(sendOtpAtom);
@@ -45,14 +44,13 @@ function Profile() {
   const form = useAppForm({
     defaultValues: account,
     listeners: {
-      onBlur: ({ fieldApi, formApi }) => {
+      onBlur: async ({ fieldApi, formApi }) => {
         if (fieldApi.name === "email") {
           if (
             getDomainFromEmail(account.email) !==
             getDomainFromEmail(fieldApi.state.value)
           )
             formApi.setFieldValue("organizationId", 0);
-          setEmail(fieldApi.state.value);
         }
       },
     },

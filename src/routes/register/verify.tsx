@@ -18,8 +18,9 @@ import {
 
 import { Link } from "@tanstack/react-router";
 
-import RegistrationLayout from "@/components/registration-layout";
+import DomainValidationResponse from "@/components/domain-validation-response";
 import HelpTicketLink from "@/components/help-ticket-link";
+import RegistrationLayout from "@/components/registration-layout";
 
 export const Route = createFileRoute("/register/verify")({
   component: RegisterVerify,
@@ -93,31 +94,20 @@ function RegisterVerify() {
         navigate({ to: existingAccountPath });
       } else {
         const domain = await store.get(domainAtom);
-        const emailDomain = email.split("@")[1].toLowerCase();
+        const message = DomainValidationResponse({ domain });
 
         if (domain === null || !domain.isEligible) {
           pushNotification({
             variant: "error",
             title: "Ineligible Email Domain",
-            message: (
-              <>
-                The email domain {emailDomain} is not eligible for ACCESS.
-                Please try again with your university or work email address.
-              </>
-            ),
+            message,
           });
           navigate({ to: prevPath });
         } else if (domain.isEligible && !domain.organizations.length) {
           pushNotification({
             variant: "error",
             title: "Unknown Email Domain",
-            message: (
-              <>
-                The email domain {emailDomain} is not yet registered with
-                ACCESS. Please <HelpTicketLink /> and ask to have your
-                organization added to the ACCESS database.
-              </>
-            ),
+            message,
           });
           navigate({ to: prevPath });
         } else {
