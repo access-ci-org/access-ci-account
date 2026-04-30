@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Field, FieldGroup } from "@/components/ui/field";
-import PasswordFormInputs from "./password-form-fields";
+import PasswordFormInputs from "./password-form-inputs";
 
 const PasswordChangeForm = withForm({
   defaultValues: {
