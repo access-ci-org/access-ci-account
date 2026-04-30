@@ -48,7 +48,12 @@ function RegisterComplete() {
       onSubmit: registrationFormSchema(showPasswordFields),
     },
     onSubmit: async ({ value }) => {
-      setRegistrationForm(value);
+      const { password, confirmPassword, ...registrationValues } = value;
+      setRegistrationForm({
+        ...registrationValues,
+        password: "",
+        confirmPassword: "",
+      });
       navigate({ to: "/register/aup" });
     },
   });
