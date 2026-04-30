@@ -657,24 +657,17 @@ export const saveProfileAtom = atom(null, async (get, set) => {
   return { saved, error };
 });
 
-const passwordUpdateStatusAtom = atom({
-  error: "",
-  saved: false,
-});
-
 export const hasOtpTokenAtom = atom((get) =>
   isTokenUnexpired(get(otpTokensAtom).accessToken),
 );
 
 export const updatePasswordAtom = atom(
-  (get) => get(passwordUpdateStatusAtom),
+  null,
   async (
     get,
     set,
     passwordData: {
-      current_password?: string;
       new_password: string;
-      confirm_password?: string;
     },
   ) => {
     const isLoggedIn = get(isLoggedInAtom);
@@ -699,43 +692,35 @@ export const updatePasswordAtom = atom(
         accessToken: get(otpTokensAtom).accessToken,
       });
     } else {
-      const status = {
-        error: "You must be logged in or verify your email before changing your password.",
-        saved: false,
-      };
-      set(passwordUpdateStatusAtom, status);
-      return status;
-    }
-
-    const status =
-      "error" in response
-        ? {
-            error: response.error.message || "Password could not be updated.",
-            saved: false,
-          }
-        : {
-            error: "",
-            saved: true,
-          };
-
-    set(passwordUpdateStatusAtom, status);
-
-    if (status.saved) {
-      set(pushNotificationAtom, {
-        id: "password-updated",
-        title: "Password Updated",
-        message: "Your password has been updated successfully.",
-        variant: "success",
-      });
-    } else {
       set(pushNotificationAtom, {
         id: "password-update-error",
         title: "Error Updating Password",
-        message: status.error,
+        message:
+          "You must be logged in or verify your email before changing your password.",
         variant: "error",
       });
+
+      return false;
     }
 
-    return status;
+    if ("error" in response) {
+      set(pushNotificationAtom, {
+        id: "password-update-error",
+        title: "Error Updating Password",
+        message: response.error.message || "Password could not be updated.",
+        variant: "error",
+      });
+
+      return false;
+    }
+
+    set(pushNotificationAtom, {
+      id: "password-updated",
+      title: "Password Updated",
+      message: "Your password has been updated successfully.",
+      variant: "success",
+    });
+
+    return true;
   },
 );

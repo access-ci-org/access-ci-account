@@ -4,8 +4,7 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { siteTitle } from "@/config";
 import { useAppForm } from "@/hooks/form";
 import PasswordChangeForm from "@/components/password-change-form";
-import PasswordResetFlow from "./password-reset-flow";
-import PasswordResetForm from "@/components/password-reset-form";
+import PasswordResetFlow from "@/components/email-verification-password-flow";
 import {
   hasOtpTokenAtom,
   isLoggedInAtom,
@@ -25,61 +24,33 @@ const strongPasswordSchema = z.string().superRefine((password, ctx) => {
   }
 });
 
+const passwordSchema = z
+  .object({
+    password: strongPasswordSchema,
+    confirmPassword: z.string().min(1, "Please re-enter your new password"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
+
 function Password() {
   const isLoggedIn = useAtomValue(isLoggedInAtom);
   const hasOtpToken = useAtomValue(hasOtpTokenAtom);
   const updatePassword = useSetAtom(updatePasswordAtom);
 
-  const passwordSchema = isLoggedIn
-    ? z
-        .object({
-          currentPassword: z.string().min(1, "Current password is required"),
-          newPassword: strongPasswordSchema,
-          repeatedNewPassword: z
-            .string()
-            .min(1, "Please re-enter your new password"),
-        })
-        .refine((data) => data.currentPassword !== data.newPassword, {
-          message: "New password must be different from current password",
-          path: ["newPassword"],
-        })
-        .refine((data) => data.newPassword === data.repeatedNewPassword, {
-          message: "Passwords don't match",
-          path: ["repeatedNewPassword"],
-        })
-    : z
-        .object({
-          currentPassword: z.string(),
-          newPassword: strongPasswordSchema,
-          repeatedNewPassword: z
-            .string()
-            .min(1, "Please re-enter your new password"),
-        })
-        .refine((data) => data.newPassword === data.repeatedNewPassword, {
-          message: "Passwords don't match",
-          path: ["repeatedNewPassword"],
-        });
-
   const form = useAppForm({
     defaultValues: {
-      currentPassword: "",
-      newPassword: "",
-      repeatedNewPassword: "",
+      password: "",
+      confirmPassword: "",
     },
     validators: {
       onSubmit: passwordSchema,
     },
     onSubmit: async ({ value }) => {
-      const payload = isLoggedIn
-        ? {
-            current_password: value.currentPassword,
-            new_password: value.newPassword,
-          }
-        : {
-            new_password: value.newPassword,
-          };
-
-      await updatePassword(payload);
+      await updatePassword({
+        new_password: value.password,
+      });
     },
   });
 
@@ -95,11 +66,7 @@ function Password() {
   return (
     <>
       <h1>Change ACCESS Password</h1>
-      {isLoggedIn ? (
-        <PasswordChangeForm form={form} />
-      ) : (
-        <PasswordResetForm form={form} />
-      )}
+      <PasswordChangeForm form={form} />
     </>
   );
 }
