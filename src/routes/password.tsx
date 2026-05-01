@@ -4,7 +4,7 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { siteTitle } from "@/config";
 import { useAppForm } from "@/hooks/form";
 import PasswordChangeForm from "@/components/password-change-form";
-import PasswordResetFlow from "@/components/email-verification-password-flow";
+import PasswordResetFlow from "@/components/password-reset-flow";
 import {
   hasOtpTokenAtom,
   isLoggedInAtom,
