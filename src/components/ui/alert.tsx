@@ -21,7 +21,7 @@ const alertVariants = cva(
         success:
           "bg-[var(--alert-success-bg)] text-[var(--alert-success-text)]",
         warning:
-          "bg-[var(--alert-warning-bg)] text-[var(--alert-warning-text)]",
+          "bg-[var(--alert-error-bg)] text-[var(--alert-error-text)]",
         error:
           "bg-[var(--alert-error-bg)] text-[var(--alert-error-text)]",
         destructive:
