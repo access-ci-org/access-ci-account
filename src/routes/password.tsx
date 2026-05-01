@@ -1,8 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import * as z from "zod";
-import { useAppForm } from "@/hooks/form";
+import { useAtomValue, useSetAtom } from "jotai";
 import { siteTitle } from "@/config";
-import PasswordForm from "@/components/password-change-form";
+import { useAppForm } from "@/hooks/form";
+import PasswordChangeForm from "@/components/password-change-form";
+import PasswordResetFlow from "@/components/password-reset-flow";
+import {
+  hasOtpTokenAtom,
+  isLoggedInAtom,
+  updatePasswordAtom,
+} from "@/helpers/state";
 import { validatePassword } from "@/helpers/password";
 
 export const Route = createFileRoute("/password")({
@@ -17,40 +24,51 @@ const strongPasswordSchema = z.string().superRefine((password, ctx) => {
   }
 });
 
-const registrationSchema = z.object({
-  currentPassword: z.string().min(1, "Current password is required"),
-  newPassword: strongPasswordSchema,
-  repeatedNewPassword: z.string().min(1, "Please re-enter your new password"),
-  // Check if currentPassword is different from newPassword
-}).refine((data) => data.currentPassword !== data.newPassword, {
-  message: "New password must be different from current password",
-  path: ["newPassword"], // Shows error on the newPassword field
-}) .refine((data) => data.newPassword === data.repeatedNewPassword, {
-  message: "Passwords don't match",
-  path: ["repeatedNewPassword"], // Shows error on the repeatedNewPassword field
-});
-// TODO Check if currentPassword is the same as database password, this may need to be done on the server side, but for now there are checks on the client side only.
-
+const passwordSchema = z
+  .object({
+    password: strongPasswordSchema,
+    confirmPassword: z.string().min(1, "Please re-enter your new password"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
 function Password() {
+  const isLoggedIn = useAtomValue(isLoggedInAtom);
+  const hasOtpToken = useAtomValue(hasOtpTokenAtom);
+  const updatePassword = useSetAtom(updatePasswordAtom);
+
   const form = useAppForm({
     defaultValues: {
-      currentPassword: "",
-      newPassword: "",
-      repeatedNewPassword: "",
+      password: "",
+      confirmPassword: "",
     },
     validators: {
-      onSubmit: registrationSchema,
+      onSubmit: passwordSchema,
     },
     onSubmit: async ({ value }) => {
-      console.log(value);
+      await updatePassword({
+        new_password: value.password,
+      });
     },
   });
 
+  if (!isLoggedIn && !hasOtpToken) {
+    return (
+      <>
+        <h1>Change ACCESS Password</h1>
+        <PasswordResetFlow />
+      </>
+    );
+  }
+
   return (
     <>
-      <h1> Change ACCESS Password  </h1>
-      <PasswordForm form={form} />
+      <h1>Change ACCESS Password</h1>
+      <PasswordChangeForm form={form} />
     </>
   );
 }
+
+export default Password;
