@@ -24,7 +24,7 @@ export const profileFormSchema = z.object({
     .array(z.number())
     .min(1, { message: "At least one country of citizenship is required." }),
 
-  role: z.array(z.string()).catch([]).optional(),
+  role: z.array(z.string()).catch([]),
 
   degrees: z
     .array(
@@ -33,11 +33,11 @@ export const profileFormSchema = z.object({
         degreeField: z.string().min(1, "Enter a degree field"),
       }),
     )
-    .catch([]).optional(),
+    .catch([]),
 
   timeZone: z.string().catch(""),
   department: requiredString("Department"),
-  username: z.string().optional(),
+  username: z.string().catch(""),
 });
 
 export type ProfileFormValues = z.infer<typeof profileFormSchema>;
