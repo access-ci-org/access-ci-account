@@ -1,27 +1,34 @@
 import { Button } from "./ui/button";
 import { FieldSeparator } from "./ui/field";
 import { FaKey } from "react-icons/fa";
-import { Link } from "@tanstack/react-router";
 
 // Imports for API Interaction
 import { useSetAtom, useAtomValue } from "jotai";
 import {
+  isImpersonatingAtom,
   pushNotificationAtom,
   sshKeysAtom,
   sshKeysDeleteAtom,
 } from "@/helpers/state";
 import ButtonRow from "@/components/button-row";
+import { useNavigate } from "@tanstack/react-router";
 
 function SSHKeysPage() {
   const sshKeyDetails = useAtomValue(sshKeysAtom);
   const deleteSshKey = useSetAtom(sshKeysDeleteAtom);
   const setNotification = useSetAtom(pushNotificationAtom);
+  const isImpersonating = useAtomValue(isImpersonatingAtom);
+  const navigate = useNavigate();
+
   return (
     <div className="w-full mt-4">
       <div className="flex w-full items-center justify-between gap-4 mb-2">
-        <h1> SSH Keys </h1>
-        <Button asChild>
-          <Link to="/add-ssh-key">Add SSH Key</Link>
+        <h1>SSH Keys</h1>
+        <Button
+          disabled={isImpersonating}
+          onClick={() => navigate({ to: "/add-ssh-key" })}
+        >
+          Add SSH Key
         </Button>
       </div>
 
@@ -29,7 +36,6 @@ function SSHKeysPage() {
 
       <div className="mt-4">
         <p className="text-xs">
-          {" "}
           This is a list of SSH keys associated with your account. Please remove
           any keys that you do not recognize.
         </p>
@@ -62,13 +68,14 @@ function SSHKeysPage() {
 
                 {/* DETAILS */}
                 <div className="text-xs sm:flex-1 sm:ml-4 min-w-0">
-                  <p className="break-words"> {key.hash} </p>
-                  <p className="!text-sm"> Added on {key.created} </p>
+                  <p className="break-words">{key.hash}</p>
+                  <p className="!text-sm">Added on {key.created}</p>
                 </div>
 
                 {/* ACTION */}
                 <div className="flex justify-end sm:justify-end">
                   <ButtonRow
+                    disabled={isImpersonating}
                     label="Delete"
                     variant="destructive"
                     onSubmit={async () => {

@@ -1,10 +1,14 @@
+import { isImpersonatingAtom } from "@/helpers/state";
 import { withForm } from "@/hooks/form";
+import { useAtomValue } from "jotai";
 
 const AddSshKeyForm = withForm({
   defaultValues: {
     sshKey: "",
   },
   render: function Render({ form }) {
+    const isImpersonating = useAtomValue(isImpersonatingAtom);
+
     return (
       <form.AppForm>
         <form
@@ -33,7 +37,7 @@ const AddSshKeyForm = withForm({
           </div>
 
           <div className="mt-4 mb-4">
-            <form.SubmitButton label="Add Key" />
+            <form.SubmitButton disabled={isImpersonating} label="Add Key" />
           </div>
         </form>
       </form.AppForm>

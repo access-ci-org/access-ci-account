@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import * as z from "zod";
 import { useAtomValue, useSetAtom } from "jotai";
 import { siteTitle } from "@/config";
@@ -7,7 +7,10 @@ import PasswordChangeForm from "@/components/password-change-form";
 import PasswordResetFlow from "@/components/password-reset-flow";
 import {
   hasOtpTokenAtom,
+  isImpersonatingAtom,
   isLoggedInAtom,
+  pushNotificationAtom,
+  store,
   updatePasswordAtom,
 } from "@/helpers/state";
 import { validatePassword } from "@/helpers/password";
@@ -15,6 +18,16 @@ import { validatePassword } from "@/helpers/password";
 export const Route = createFileRoute("/password")({
   component: Password,
   head: () => ({ meta: [{ title: `Change Password | ${siteTitle}` }] }),
+  beforeLoad: () => {
+    if (store.get(isImpersonatingAtom)) {
+      store.set(pushNotificationAtom, {
+        id: "impersonating-password",
+        variant: "error",
+        message: "Changing passwords while impersonating is not allowed.",
+      });
+      redirect({ to: "/", throw: true });
+    }
+  },
 });
 
 const strongPasswordSchema = z.string().superRefine((password, ctx) => {
