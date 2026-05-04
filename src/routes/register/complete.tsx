@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useAppForm } from "@/hooks/form";
 import { siteTitle } from "@/config";
 import CompleteRegistrationForm from "@/components/complete-registration-form";
@@ -8,6 +8,7 @@ import { profileFormSchema } from "@/helpers/validation";
 import { useAtom } from "jotai";
 import {
   domainAtom,
+  hasOtpTokenAtom,
   linkTokensAtom,
   registrationFormAtom,
   store,
@@ -20,6 +21,10 @@ export const Route = createFileRoute("/register/complete")({
   component: RegisterComplete,
   head: () => ({ meta: [{ title: `Register | ${siteTitle}` }] }),
   beforeLoad: async () => {
+    // Check to make sure we have a valid OTP token.
+    if (!store.get(hasOtpTokenAtom)) redirect({ to: "/register", throw: true });
+
+    // Check to see whether the email domain has an associated IdP.
     const domain = await store.get(domainAtom);
     const linkTokens = store.get(linkTokensAtom);
 
