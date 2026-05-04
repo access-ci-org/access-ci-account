@@ -3,13 +3,14 @@ import { useAppForm } from "@/hooks/form";
 import ButtonForm from "./button-form";
 
 type RowProps = {
-  onSubmit: () => Promise<unknown>;
+  disabled?: boolean;
   label: string;
+  onSubmit: () => Promise<unknown>;
   variant: "default" | "destructive" | undefined;
 };
 
 // Creates a form component for one row
-function ButtonRow({ label, variant, onSubmit }: RowProps) {
+function ButtonRow({ disabled = false, label, variant, onSubmit }: RowProps) {
   const form = useAppForm({
     defaultValues: {},
     onSubmit,
@@ -18,7 +19,12 @@ function ButtonRow({ label, variant, onSubmit }: RowProps) {
   return (
     <div className="flex justify-end">
       {/* Pass the form too reuse component */}
-      <ButtonForm form={form} label={label} variant={variant} />
+      <ButtonForm
+        disabled={disabled}
+        form={form}
+        label={label}
+        variant={variant}
+      />
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { withForm } from "@/hooks/form";
 import { Field } from "@/components/ui/field";
 
 type ButtonFormProps = {
+  disabled?: boolean;
   label: string;
   variant: "default" | "destructive" | undefined;
 };
@@ -10,7 +11,12 @@ type ButtonFormProps = {
 const ButtonForm = withForm({
   defaultValues: {},
   props: {} as ButtonFormProps,
-  render: function RenderDeleteForm({ form, label, variant }) {
+  render: function RenderDeleteForm({
+    disabled = false,
+    form,
+    label,
+    variant,
+  }) {
     return (
       <form
         onSubmit={(e) => {
@@ -21,7 +27,11 @@ const ButtonForm = withForm({
       >
         <Field orientation="horizontal">
           <form.AppForm>
-            <form.SubmitButton label={label} variant={variant} />
+            <form.SubmitButton
+              disabled={disabled}
+              label={label}
+              variant={variant}
+            />
           </form.AppForm>
         </Field>
       </form>
