@@ -1,5 +1,4 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import * as z from "zod";
 import { useAtomValue, useSetAtom } from "jotai";
 import { siteTitle } from "@/config";
 import { useAppForm } from "@/hooks/form";
@@ -13,7 +12,7 @@ import {
   store,
   updatePasswordAtom,
 } from "@/helpers/state";
-import { validatePassword } from "@/helpers/password";
+import { changePasswordSchema } from "@/helpers/validation";
 
 export const Route = createFileRoute("/password")({
   component: Password,
@@ -30,22 +29,6 @@ export const Route = createFileRoute("/password")({
   },
 });
 
-const strongPasswordSchema = z.string().superRefine((password, ctx) => {
-  const errors = validatePassword(password);
-  for (const message of errors) {
-    ctx.addIssue({ code: z.ZodIssueCode.custom, message });
-  }
-});
-
-const passwordSchema = z
-  .object({
-    password: strongPasswordSchema,
-    confirmPassword: z.string().min(1, "Please re-enter your new password"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
 
 function Password() {
   const isLoggedIn = useAtomValue(isLoggedInAtom);
@@ -58,7 +41,7 @@ function Password() {
       confirmPassword: "",
     },
     validators: {
-      onSubmit: passwordSchema,
+      onSubmit: changePasswordSchema,
     },
     onSubmit: async ({ value }) => {
       await updatePassword({
