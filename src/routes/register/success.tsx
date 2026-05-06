@@ -10,7 +10,7 @@ import RegistrationLayout from "@/components/registration-layout";
 
 export const Route = createFileRoute("/register/success")({
   component: Success,
-  head: () => ({ meta: [{ title: siteTitle }] }),
+  head: () => ({ meta: [{ title: `Your ACCESS ID | ${siteTitle}` }] }),
 });
 
 function Success() {
@@ -23,7 +23,7 @@ function Success() {
 
   return (
     <>
-      <h1>ACCESS Registration</h1>
+      <h1>Your ACCESS ID</h1>
       <RegistrationLayout>
         <Card>
           <div className="p-6">

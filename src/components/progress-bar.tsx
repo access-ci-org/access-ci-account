@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 const registrationSteps = [
   { title: "Verify Email", path: "/register" },
   { title: "Required Registration Information", path: "/register/complete" },
-  { title: "Agree to Acceptable Use Policy", path: "/register/aup" },
+  { title: "Acceptable Use Policy", path: "/register/aup" },
   { title: "Your ACCESS ID", path: "/register/success" },
 ];
 

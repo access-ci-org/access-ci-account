@@ -25,7 +25,9 @@ import FormCompleteRegistration from "@/components/form-complete-registration";
 
 export const Route = createFileRoute("/register/complete")({
   component: RegisterComplete,
-  head: () => ({ meta: [{ title: `Register | ${siteTitle}` }] }),
+  head: () => ({
+    meta: [{ title: `Required Registration Information | ${siteTitle}` }],
+  }),
   beforeLoad: async () => {
     // Check to make sure we have a valid OTP token.
     if (!store.get(hasOtpTokenAtom)) redirect({ to: "/register", throw: true });
@@ -68,7 +70,7 @@ function RegisterComplete() {
 
   return (
     <>
-      <h1>ACCESS Required Registration Information</h1>
+      <h1>Required Registration Information</h1>
       <RegistrationLayout>
         <FormCompleteRegistration form={form} />
       </RegistrationLayout>
