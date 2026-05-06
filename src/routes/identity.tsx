@@ -69,7 +69,7 @@ function IdentityRoute() {
               <div className="min-w-0 space-y-3">
                 {identity.identifiers.map((item) => (
                   <div
-                    key={item.identifier}
+                    key={item.type}
                     className="grid gap-2 md:grid-cols-[minmax(0,1fr)_120px] md:items-center"
                   >
                     <p className="break-words text-sm">{item.identifier}</p>
