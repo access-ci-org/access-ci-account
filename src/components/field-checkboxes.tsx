@@ -4,7 +4,7 @@ import { FieldLabel, FieldError } from "@/components/ui/field";
 import type { Option } from "@/helpers/types";
 
 // Renders a group of checkboxes that supports selecting MULTIPLE options
-export default function MultiSelectCheckboxGroup({
+export default function FieldCheckboxes({
   label,
   name,
   values,

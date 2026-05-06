@@ -2,7 +2,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useAtomValue, useSetAtom } from "jotai";
 import { siteTitle } from "@/config";
 import { useAppForm } from "@/hooks/form";
-import PasswordChangeForm from "@/components/password-change-form";
+import FormChangePassword from "@/components/form-change-password";
 import PasswordResetFlow from "@/components/password-reset-flow";
 import {
   hasOtpTokenAtom,
@@ -12,7 +12,7 @@ import {
   store,
   updatePasswordAtom,
 } from "@/helpers/state";
-import { changePasswordSchema } from "@/helpers/validation";
+import { passwordSchema } from "@/helpers/validation";
 
 export const Route = createFileRoute("/password")({
   component: Password,
@@ -29,7 +29,6 @@ export const Route = createFileRoute("/password")({
   },
 });
 
-
 function Password() {
   const isLoggedIn = useAtomValue(isLoggedInAtom);
   const hasOtpToken = useAtomValue(hasOtpTokenAtom);
@@ -41,7 +40,7 @@ function Password() {
       confirmPassword: "",
     },
     validators: {
-      onSubmit: changePasswordSchema,
+      onSubmit: passwordSchema,
     },
     onSubmit: async ({ value }) => {
       await updatePassword({
@@ -62,7 +61,7 @@ function Password() {
   return (
     <>
       <h1>Change ACCESS Password</h1>
-      <PasswordChangeForm form={form} />
+      <FormChangePassword form={form} />
     </>
   );
 }

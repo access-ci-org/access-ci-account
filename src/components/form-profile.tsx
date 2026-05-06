@@ -1,4 +1,7 @@
 import { withForm } from "@/hooks/form";
+import type { Option } from "@/helpers/types";
+import { profileDefaultValues } from "@/helpers/defaults";
+import { registrationFields } from "@/helpers/fields";
 
 import {
   Card,
@@ -9,12 +12,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Field, FieldGroup } from "@/components/ui/field";
-
-// Import Registration Form to include in Profile Form Edit/View
-import RegistrationFormInputs from "./registration-form-fields";
-import AcademicDegreesSection from "./multi-degree-field";
-import { profileFormDefault } from "@/helpers/defaults";
-import type { Option } from "@/helpers/types";
+import FieldsetDegrees from "@/components/fieldset-degrees";
+import { FieldGroupRegistration } from "@/components/field-group-registration";
 
 // ROLE_OPTIONS defines selectable user roles
 const ROLE_OPTIONS: Option<string>[] = [
@@ -30,8 +29,8 @@ const TIMEZONE_OPTIONS: Option<string>[] = Intl.supportedValuesOf(
   "timeZone",
 ).map((tz) => ({ label: tz, value: tz }));
 
-const ProfileForm = withForm({
-  defaultValues: profileFormDefault,
+const FormProfile = withForm({
+  defaultValues: profileDefaultValues,
   render: function Render({ form }) {
     return (
       <form
@@ -47,13 +46,21 @@ const ProfileForm = withForm({
           </CardHeader>
           <CardContent>
             <FieldGroup>
-              {/* Importing Complete Registration Form fields */}
-              <RegistrationFormInputs
-                form={form as any}
-                isRegistration={false}
-                showAccessId={true}
+              <form.AppField
+                name="username"
+                children={(field) => (
+                  <field.FieldText
+                    label="ACCESS ID"
+                    placeholder="ACCESS ID"
+                    disabled
+                  />
+                )}
               />
+            </FieldGroup>
 
+            <FieldGroupRegistration form={form} fields={registrationFields} />
+
+            <FieldGroup>
               {/* Role field captures the user's role with a single-select checkbox */}
               {/* This field is hidden until a storage backend is implemented. */}
               <div className="hidden">
@@ -61,7 +68,7 @@ const ProfileForm = withForm({
                   name="role"
                   children={(field) => {
                     return (
-                      <field.MultiSelectCheckboxGroup
+                      <field.FieldCheckboxes
                         label="What is your role in ACCESS?"
                         name="role"
                         values={field.state.value ?? []}
@@ -73,7 +80,7 @@ const ProfileForm = withForm({
                 />
               </div>
 
-              <AcademicDegreesSection form={form} />
+              <FieldsetDegrees form={form} />
 
               {/* Time zone field captures the user's time zone with a dropdown select */}
               <form.AppField
@@ -81,7 +88,7 @@ const ProfileForm = withForm({
                 children={(field) => {
                   const value = field.state.value || ""; // Ensures that value holds a string
                   return (
-                    <field.DropdownSelectField
+                    <field.FieldSelect
                       label="Time Zone"
                       name="timeZone"
                       value={value}
@@ -107,4 +114,4 @@ const ProfileForm = withForm({
   },
 });
 
-export default ProfileForm;
+export default FormProfile;

@@ -2,7 +2,7 @@ import { withForm } from "@/hooks/form";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { FieldGroup } from "@/components/ui/field";
 
-const VerifyEmailForm = withForm({
+const FormVerifyEmail = withForm({
   defaultValues: {
     otp: "",
   },
@@ -28,7 +28,7 @@ const VerifyEmailForm = withForm({
               <form.AppField
                 name="otp"
                 children={(field) => (
-                  <field.OTPField
+                  <field.FieldOtp
                     name="otp"
                     label="Enter the 6-digit code"
                     length={6}
@@ -52,4 +52,4 @@ const VerifyEmailForm = withForm({
   },
 });
 
-export default VerifyEmailForm;
+export default FormVerifyEmail;

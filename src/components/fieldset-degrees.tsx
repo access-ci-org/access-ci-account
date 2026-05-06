@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import type { Degree } from "@/helpers/types";
 import { degreeOptionsAtom } from "@/helpers/state";
 
-export default function AcademicDegreesSection({ form }: { form: any }) {
+export default function FieldsetDegrees({ form }: { form: any }) {
   return (
     <form.AppField name="degrees" mode="array">
       {(degreesField: any) => {
@@ -39,9 +39,10 @@ export default function AcademicDegreesSection({ form }: { form: any }) {
                   key={idx}
                   className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_1fr_auto] md:items-start"
                 >
-                  <form.AppField name={`degrees[${idx}].degreeId`}>
-                    {(field: any) => (
-                      <field.DropdownSelectField
+                  <form.AppField
+                    name={`degrees[${idx}].degreeId`}
+                    children={(field: any) => (
+                      <field.FieldSelect
                         label="Degree"
                         name={`degrees[${idx}].degreeId`}
                         value={field.state.value ?? ""}
@@ -50,11 +51,12 @@ export default function AcademicDegreesSection({ form }: { form: any }) {
                         optionsAtom={degreeOptionsAtom}
                       />
                     )}
-                  </form.AppField>
+                  />
 
-                  <form.AppField name={`degrees[${idx}].degreeField`}>
-                    {(field: any) => (
-                      <field.TextField
+                  <form.AppField
+                    name={`degrees[${idx}].degreeField`}
+                    children={(field: any) => (
+                      <field.FieldText
                         label="Degree field"
                         placeholder="Enter degree field"
                         value={field.state.value ?? ""}
@@ -63,7 +65,7 @@ export default function AcademicDegreesSection({ form }: { form: any }) {
                         }
                       />
                     )}
-                  </form.AppField>
+                  />
 
                   <div className="md:mt-8">
                     <Button

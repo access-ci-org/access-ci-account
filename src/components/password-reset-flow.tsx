@@ -11,8 +11,6 @@ import {
   verifyOtpAtom,
 } from "@/helpers/state";
 
-import VerifyEmailForm from "@/components/email-verification-form";
-
 import {
   Card,
   CardContent,
@@ -23,6 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import FormVerifyEmail from "./form-verify-email";
 
 const formSchema = z.object({
   otp: z.string().length(6, { message: "OTP code must be 6 characters." }),
@@ -117,7 +116,7 @@ export default function PasswordResetFlow() {
           <p className="intro">
             Enter the 6-digit verification code sent to {email}.
           </p>
-          <VerifyEmailForm form={form} />
+          <FormVerifyEmail form={form} />
         </>
       )}
     </>

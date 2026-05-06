@@ -1,9 +1,12 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useAppForm } from "@/hooks/form";
 import { siteTitle } from "@/config";
-import CompleteRegistrationForm from "@/components/complete-registration-form";
 import RegistrationLayout from "@/components/registration-layout";
-import { registrationFormSchema } from "@/helpers/validation";
+import {
+  noPasswordSchema,
+  passwordSchema,
+  profileFormSchema,
+} from "@/helpers/validation";
 
 import { useAtom } from "jotai";
 import {
@@ -16,6 +19,9 @@ import {
 import { useAtomValue } from "jotai";
 import { emailAtom } from "@/helpers/state";
 import { startAuth } from "@/helpers/auth";
+import { passwordDefaultValues } from "@/helpers/defaults";
+
+import FormCompleteRegistration from "@/components/form-complete-registration";
 
 export const Route = createFileRoute("/register/complete")({
   component: RegisterComplete,
@@ -46,20 +52,17 @@ function RegisterComplete() {
     defaultValues: {
       ...registrationForm,
       email,
-      password: registrationForm.password ?? "",
-      confirmPassword: registrationForm.confirmPassword ?? "",
+      ...passwordDefaultValues,
     },
     validators: {
-      onSubmit: registrationFormSchema(showPasswordFields),
+      onSubmit: profileFormSchema.and(
+        showPasswordFields ? passwordSchema : noPasswordSchema,
+      ),
     },
     onSubmit: async ({ value }) => {
       const { password, confirmPassword, ...registrationValues } = value;
-      setRegistrationForm({
-        ...registrationValues,
-        password: "",
-        confirmPassword: "",
-      });
-      navigate({ to: "/register/aup"});
+      setRegistrationForm(registrationValues);
+      navigate({ to: "/register/aup" });
     },
   });
 
@@ -67,7 +70,7 @@ function RegisterComplete() {
     <>
       <h1>ACCESS Required Registration Information</h1>
       <RegistrationLayout>
-        <CompleteRegistrationForm form={form} />
+        <FormCompleteRegistration form={form} />
       </RegistrationLayout>
     </>
   );

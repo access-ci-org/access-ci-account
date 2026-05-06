@@ -1,7 +1,4 @@
-import { withForm } from "@/hooks/form";
-import { FieldGroup } from "@/components/ui/field";
-// Imports for API interaction
-import { useAtomValue } from "jotai";
+import { withFieldGroup } from "@/hooks/form";
 import {
   academicStatusOptionsAtom,
   countryOptionsAtom,
@@ -10,72 +7,39 @@ import {
   organizationIdOptionsAtom,
   store,
 } from "@/helpers/state";
+import { registrationDefaultValues } from "@/helpers/defaults";
 
-import HelpTicketLink from "@/components/help-ticket-link";
+import { FieldGroup } from "@/components/ui/field";
 import DomainValidationResponse from "@/components/domain-validation-response";
-import PasswordFormFields from "./password-form-fields";
+import HelpTicketLink from "@/components/help-ticket-link";
 
-type RegistrationFormInputsProps = {
-  isRegistration: boolean;
-  showAccessId: boolean;
+type FieldGroupRegistrationProps = {
+  emailDisabled?: boolean;
 };
 
-const RegistrationFormInputs = withForm({
-  defaultValues: {
-    firstName: "",
-    lastName: "",
-    email: "",
-    organizationId: 0,
-    academicStatusId: 0,
-    residenceCountryId: 0,
-    citizenshipCountryIds: [] as number[],
-    department: "",
-    username: "",
-    password: "",
-    confirmPassword: "",
-  },
+export const FieldGroupRegistration = withFieldGroup({
+  defaultValues: registrationDefaultValues,
   props: {
-    isRegistration: false,
-    showAccessId: false,
-  } as RegistrationFormInputsProps,
-  render: function Render({ form, isRegistration, showAccessId }) {
-    const domain = useAtomValue(domainAtom);
-    const domainHasIdps = (domain?.idps ?? []).length > 0;
-
-    //If IdPs exist, keep password fields hidden.
-    const showPasswordFields =
-      isRegistration &&
-      !domainHasIdps;
-
+    emailDisabled: false,
+  } as FieldGroupRegistrationProps,
+  render: function Render({ group, emailDisabled = false }) {
     return (
       <FieldGroup>
-        {showAccessId && (
-          <form.AppField
-            name="username"
-            children={(field) => (
-              <field.TextField
-                label="ACCESS ID"
-                placeholder="ACCESS ID"
-                disabled
-              />
-            )}
-          />
-        )}
-
-        <form.AppField name="firstName">
-          {(field) => (
-            <field.TextField label="First Name" placeholder="" required />
-          )}
-        </form.AppField>
-
-        <form.AppField
-          name="lastName"
+        <group.AppField
+          name="firstName"
           children={(field) => (
-            <field.TextField label="Last Name" placeholder="" required />
+            <field.FieldText label="First Name" placeholder="" required />
           )}
         />
 
-        <form.AppField
+        <group.AppField
+          name="lastName"
+          children={(field) => (
+            <field.FieldText label="Last Name" placeholder="" required />
+          )}
+        />
+
+        <group.AppField
           name="email"
           validators={{
             onBlurAsync: async ({ value }) => {
@@ -88,22 +52,22 @@ const RegistrationFormInputs = withForm({
             },
           }}
           children={(field) => (
-            <field.TextField
+            <field.FieldText
               label="Email Address"
               placeholder="University or work email address"
               required
-              disabled={isRegistration}
+              disabled={emailDisabled}
             />
           )}
         />
 
-        <form.AppField
+        <group.AppField
           name="organizationId"
           children={(field) => {
             const value = field.state.value; // Ensures that value holds a string
             return (
               <>
-                <field.DropdownSelectField
+                <field.FieldSelect
                   label="Institution"
                   name="organizationId"
                   value={value}
@@ -111,20 +75,23 @@ const RegistrationFormInputs = withForm({
                   placeholder="Select your institution"
                   optionsAtom={organizationIdOptionsAtom}
                   required
+                  description={
+                    <>
+                      If your organization is not listed, please{" "}
+                      <HelpTicketLink /> to have it added to the ACCESS
+                      database.
+                    </>
+                  }
                 />
-                <div className="text-sm">
-                  If your organization is not listed, please <HelpTicketLink />{" "}
-                  to have it added to the ACCESS database.
-                </div>
               </>
             );
           }}
         />
 
-        <form.AppField
+        <group.AppField
           name="department"
           children={(field) => (
-            <field.TextField
+            <field.FieldText
               label="Department"
               placeholder="Enter your department"
               required
@@ -132,12 +99,12 @@ const RegistrationFormInputs = withForm({
           )}
         />
 
-        <form.AppField
+        <group.AppField
           name="academicStatusId"
           children={(field) => {
             const value = field.state.value; // Ensures that value holds a string
             return (
-              <field.DropdownSelectField
+              <field.FieldSelect
                 label="Academic Status"
                 name="academicStatusId"
                 value={value}
@@ -150,12 +117,12 @@ const RegistrationFormInputs = withForm({
           }}
         />
 
-        <form.AppField
+        <group.AppField
           name="residenceCountryId"
           children={(field) => {
             const value = field.state.value; // Ensures that value holds a string
             return (
-              <field.DropdownSelectField
+              <field.FieldSelect
                 label="Country of Residence"
                 name="residenceCountryId"
                 value={value}
@@ -167,12 +134,13 @@ const RegistrationFormInputs = withForm({
             );
           }}
         />
-        <form.AppField
+
+        <group.AppField
           name="citizenshipCountryIds"
           children={(field) => {
             const value: number[] = field.state.value;
             return (
-              <field.DropdownSelectField<number>
+              <field.FieldSelect<number>
                 label="Country of Citizenship"
                 name="citizenshipCountryIds"
                 value={value}
@@ -184,10 +152,7 @@ const RegistrationFormInputs = withForm({
             );
           }}
         />
-        {showPasswordFields && <PasswordFormFields form={form as any} />}
       </FieldGroup>
     );
   },
 });
-
-export default RegistrationFormInputs;

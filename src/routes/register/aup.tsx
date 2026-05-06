@@ -1,10 +1,12 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { siteTitle } from "@/config";
-import RegistrationLayout from "@/components/registration-layout";
-import AcceptAupForm from "@/components/accept-aup-form";
+
 import { useAppForm } from "@/hooks/form";
 import * as z from "zod";
 import { useNavigate } from "@tanstack/react-router";
+
+import RegistrationLayout from "@/components/registration-layout";
+import FormAcceptAup from "@/components/form-accept-aup";
 
 import {
   store,
@@ -62,7 +64,7 @@ function AcceptableUsePolicy() {
     <>
       <h1>Acceptable Use Policy</h1>
       <RegistrationLayout>
-        <AcceptAupForm form={form} />
+        <FormAcceptAup form={form} />
       </RegistrationLayout>
     </>
   );

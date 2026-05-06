@@ -10,7 +10,7 @@ import {
 
 import TermsAndConditionsBox from "@/components/terms-and-conditions-box";
 
-const AcceptAupForm = withForm({
+const FormAcceptAup = withForm({
   defaultValues: { accepted: false },
   onSubmit: async () => {}, // route handles submission
 
@@ -41,7 +41,7 @@ const AcceptAupForm = withForm({
 
               <form.AppField name="accepted">
                 {(field) => (
-                  <field.CheckboxField
+                  <field.FieldCheckbox
                     label="I agree to abide by the ACCESS Acceptable Use Policy."
                     required
                   />
@@ -59,4 +59,4 @@ const AcceptAupForm = withForm({
   },
 });
 
-export default AcceptAupForm;
+export default FormAcceptAup;

@@ -7,10 +7,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Field, FieldGroup } from "@/components/ui/field";
-import PasswordFormFields from "./password-form-fields";
+import { Field } from "@/components/ui/field";
+import { FieldGroupPassword } from "./field-group-password";
+import { passwordFields } from "@/helpers/fields";
 
-const PasswordChangeForm = withForm({
+const FormPasswordChange = withForm({
   defaultValues: {
     password: "",
     confirmPassword: "",
@@ -25,12 +26,10 @@ const PasswordChangeForm = withForm({
       >
         <Card className="w-full mb-20">
           <CardHeader>
-            <CardTitle>Change your Password </CardTitle>
+            <CardTitle>Change your Password</CardTitle>
           </CardHeader>
           <CardContent>
-            <FieldGroup>
-              <PasswordFormFields form={form} />
-            </FieldGroup>
+            <FieldGroupPassword form={form} fields={passwordFields} />
           </CardContent>
           <CardFooter>
             <Field orientation="horizontal">
@@ -45,4 +44,4 @@ const PasswordChangeForm = withForm({
   },
 });
 
-export default PasswordChangeForm;
+export default FormPasswordChange;

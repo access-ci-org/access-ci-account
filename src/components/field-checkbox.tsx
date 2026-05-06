@@ -2,7 +2,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useFieldContext } from "@/hooks/form-context";
 import { FieldLabel, FieldError } from "@/components/ui/field";
 
-export default function CheckboxField({
+export default function FieldCheckbox({
   label,
   required,
 }: {
@@ -17,21 +17,15 @@ export default function CheckboxField({
       <label className="flex items-start gap-3">
         <Checkbox
           checked={Boolean(field.state.value)}
-          onCheckedChange={(checked) =>
-            field.setValue(Boolean(checked))
-          }
+          onCheckedChange={(checked) => field.setValue(Boolean(checked))}
           aria-invalid={isInvalid}
-          className = "border-[var(--teal-700)] bg-white"
+          className="border-[var(--teal-700)] bg-white"
         />
 
-        <FieldLabel required={required}>
-          {label}
-        </FieldLabel>
+        <FieldLabel required={required}>{label}</FieldLabel>
       </label>
 
-      {isInvalid && (
-        <FieldError errors={field.state.meta.errors} />
-      )}
+      {isInvalid && <FieldError errors={field.state.meta.errors} />}
     </div>
   );
 }

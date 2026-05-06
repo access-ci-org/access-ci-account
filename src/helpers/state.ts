@@ -28,13 +28,13 @@ import {
   type FetchOptions,
   type RefreshResponse,
   type AccountResponse,
-  type RegistrationForm,
+  type RegistrationFields,
   type CreateAccountResponse,
   type AppNotification,
   type IdentityResponse,
   type Option,
 } from "./types";
-import { profileFormDefault, registrationFormDefault } from "./defaults";
+import { profileDefaultValues, registrationDefaultValues } from "./defaults";
 import { getDomainFromEmail } from "./email";
 
 export const store = createStore();
@@ -219,8 +219,8 @@ const otpSendStatusAtom = atom({ error: "", sent: false });
 const otpVerifyStatusAtom = atom({ error: "", verified: false });
 const accountUpdateStatusAtom = atom({ error: "", saved: false });
 
-export const registrationFormAtom = atomWithReset<RegistrationForm>(
-  registrationFormDefault,
+export const registrationFormAtom = atomWithReset<RegistrationFields>(
+  registrationDefaultValues,
 );
 
 export const sendOtpAtom = atom(
@@ -373,9 +373,9 @@ export const updateAccountAtom = atom(
     const status =
       "error" in response
         ? {
-          error: response.error.message,
-          saved: false,
-        }
+            error: response.error.message,
+            saved: false,
+          }
         : { error: "", saved: true };
     set(accountUpdateStatusAtom, status);
     return status;
@@ -633,7 +633,7 @@ export const clearNotificationsAtom = atom(null, (_get, set) => {
   set(notificationsAtom, []);
 });
 
-export const profileFormAtom = atom<AccountResponse>(profileFormDefault);
+export const profileFormAtom = atom<AccountResponse>(profileDefaultValues);
 
 export const saveProfileAtom = atom(null, async (get, set) => {
   const profileForm = get(profileFormAtom);

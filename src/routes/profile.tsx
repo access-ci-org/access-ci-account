@@ -1,7 +1,7 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useAppForm } from "@/hooks/form";
 import { siteTitle } from "@/config";
-import ProfileForm from "@/components/profile-form";
+import FormProfile from "@/components/form-profile";
 import {
   accountAtom,
   dismissNotificationAtom,
@@ -12,7 +12,7 @@ import {
   store,
 } from "@/helpers/state";
 
-import { profileFormSchema } from "@/helpers/validation";
+import { profileFormSchema, usernameSchema } from "@/helpers/validation";
 import { useSetAtom } from "jotai";
 import type { AccountResponse } from "@/helpers/types";
 import { getDomainFromEmail } from "@/helpers/email";
@@ -34,7 +34,6 @@ export const Route = createFileRoute("/profile")({
   },
 });
 
-
 function Profile() {
   const account = Route.useLoaderData() as AccountResponse;
   const setProfileForm = useSetAtom(profileFormAtom);
@@ -42,18 +41,8 @@ function Profile() {
   const sendOtp = useSetAtom(sendOtpAtom);
   const navigate = useNavigate();
 
-  const defaultValues = {
-    ...account,
-    role: account.role ?? [],
-    degrees: account.degrees ?? [],
-    timeZone: account.timeZone ?? "",
-    username: account.username ?? "",
-    password: "",
-    confirmPassword: "",
-  };
-
   const form = useAppForm({
-    defaultValues,
+    defaultValues: account,
     listeners: {
       onBlur: async ({ fieldApi, formApi }) => {
         if (fieldApi.name === "email") {
@@ -66,7 +55,7 @@ function Profile() {
       },
     },
     validators: {
-      onSubmit: profileFormSchema,
+      onSubmit: profileFormSchema.and(usernameSchema),
     },
     onSubmit: async ({ value }) => {
       setProfileForm(value);
@@ -90,7 +79,7 @@ function Profile() {
   return (
     <>
       <h1>ACCESS Profile</h1>
-      <ProfileForm form={form} />
+      <FormProfile form={form} />
     </>
   );
 }

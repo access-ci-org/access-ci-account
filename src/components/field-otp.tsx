@@ -8,7 +8,7 @@ import {
   InputOTPSeparator,
 } from "@/components/ui/input-otp";
 
-export default function OTPField({
+export default function FieldOtp({
   label,
   length = 6,
   placeholder,

@@ -113,7 +113,7 @@ export type RefreshResponse = {
   refreshToken: string;
 };
 
-export type RegistrationForm = {
+export type RegistrationFields = {
   firstName: string;
   lastName: string;
   email: string;
@@ -122,13 +122,16 @@ export type RegistrationForm = {
   residenceCountryId: number;
   citizenshipCountryIds: number[];
   department: string;
+};
+
+export type PasswordFields = {
   password: string;
   confirmPassword: string;
 };
 
 export type Degree = { degreeId: number; degreeField: string };
 
-export type AccountResponse = RegistrationForm & {
+export type AccountResponse = RegistrationFields & {
   degrees: Degree[];
   timeZone: string;
   role: string[];

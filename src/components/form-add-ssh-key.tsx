@@ -2,7 +2,7 @@ import { isImpersonatingAtom } from "@/helpers/state";
 import { withForm } from "@/hooks/form";
 import { useAtomValue } from "jotai";
 
-const AddSshKeyForm = withForm({
+const FormAddSshKey = withForm({
   defaultValues: {
     sshKey: "",
   },
@@ -25,7 +25,7 @@ const AddSshKeyForm = withForm({
 
             <form.AppField name="sshKey">
               {(field) => (
-                <field.TextField
+                <field.FieldText
                   label="Public SSH key"
                   placeholder="Begins with 'ssh-rsa', 'ssh-dss', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp384', 'ecdsa-sha2-nistp521', or 'ssh-ed25519'"
                   required
@@ -45,4 +45,4 @@ const AddSshKeyForm = withForm({
   },
 });
 
-export default AddSshKeyForm;
+export default FormAddSshKey;

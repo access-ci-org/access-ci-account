@@ -2,11 +2,11 @@ import { createFileRoute } from "@tanstack/react-router";
 import { siteTitle } from "@/config";
 import { useAppForm } from "@/hooks/form";
 import { sshKeyFormSchema } from "@/helpers/validation";
-import AddSshKeyForm from "@/components/add-ssh-keys-form";
-
 import { useNavigate } from "@tanstack/react-router";
 import { useSetAtom } from "jotai";
 import { pushNotificationAtom, sskKeysAddAtom } from "@/helpers/state";
+
+import FormAddSshKey from "@/components/form-add-ssh-key";
 
 export const Route = createFileRoute("/add-ssh-key")({
   component: AddSshKey,
@@ -53,7 +53,7 @@ function AddSshKey() {
   return (
     <>
       <h1>Add SSH Key</h1>
-      <AddSshKeyForm form={form} />
+      <FormAddSshKey form={form} />
     </>
   );
 }

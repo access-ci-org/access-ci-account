@@ -2,7 +2,6 @@ import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { siteTitle } from "@/config";
 import { useAppForm } from "@/hooks/form";
 import * as z from "zod";
-import VerifyEmailForm from "@/components/email-verification-form";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
   domainAtom,
@@ -17,10 +16,10 @@ import {
 } from "@/helpers/state";
 
 import { Link } from "@tanstack/react-router";
-
 import DomainValidationResponse from "@/components/domain-validation-response";
 import HelpTicketLink from "@/components/help-ticket-link";
 import RegistrationLayout from "@/components/registration-layout";
+import FormVerifyEmail from "@/components/form-verify-email";
 
 export const Route = createFileRoute("/register/verify")({
   component: RegisterVerify,
@@ -125,7 +124,7 @@ function RegisterVerify() {
         Enter the 6-digit verification code sent to {email}.
       </p>
       <RegistrationLayout>
-        <VerifyEmailForm form={form} />
+        <FormVerifyEmail form={form} />
       </RegistrationLayout>
     </>
   );

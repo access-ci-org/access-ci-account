@@ -1,6 +1,11 @@
-import type { RegistrationForm } from "./types";
+import type { PasswordFields, RegistrationFields } from "@/helpers/types";
 
-export const registrationFormDefault: RegistrationForm = {
+export const passwordDefaultValues: PasswordFields = {
+  password: "",
+  confirmPassword: "",
+};
+
+export const registrationDefaultValues: RegistrationFields = {
   firstName: "",
   lastName: "",
   email: "",
@@ -9,14 +14,12 @@ export const registrationFormDefault: RegistrationForm = {
   residenceCountryId: 0,
   citizenshipCountryIds: [] as number[],
   department: "",
-  password: "",
-  confirmPassword: "",
 };
 
-export const profileFormDefault = {
-  ...registrationFormDefault,
+export const profileDefaultValues = {
+  username: "",
+  ...registrationDefaultValues,
   role: [] as string[],
   degrees: [{ degreeId: 0, degreeField: "" }],
   timeZone: "",
-  username: "",
 };

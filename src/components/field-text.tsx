@@ -1,26 +1,33 @@
 import { useFieldContext } from "@/hooks/form-context";
 
-import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import type React from "react";
 import { cn } from "@/lib/utils";
 import { Textarea } from "./ui/textarea";
 
-export default function TextField({
+export default function FieldText({
+  className = "",
+  description = "",
+  disabled = false,
+  fieldType = "input",
   label,
   placeholder,
   required = false,
-  disabled = false,
-  className = "",
-  fieldType = "input",
   rows,
 }: {
+  className?: string;
+  description?: React.ReactNode;
+  disabled?: boolean;
+  fieldType?: "input" | "textarea";
   label: React.ReactNode;
   placeholder: string;
   required?: boolean;
-  disabled?: boolean;
-  className?: string;
-  fieldType?: "input" | "textarea";
   rows?: number;
 }) {
   const field = useFieldContext<string>();
@@ -65,6 +72,7 @@ export default function TextField({
         />
       )}
       {isInvalid && <FieldError errors={field.state.meta.errors} />}
+      {description && <FieldDescription>{description}</FieldDescription>}
     </Field>
   );
 }

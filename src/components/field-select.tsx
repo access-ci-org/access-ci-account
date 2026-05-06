@@ -1,15 +1,22 @@
-import Select, { type MultiValue } from "react-select";
-import { useFieldContext } from "@/hooks/form-context";
-import { FieldLabel, FieldError } from "@/components/ui/field";
 import type React from "react";
+import { useFieldContext } from "@/hooks/form-context";
 import { cn } from "@/lib/utils";
 import type { Option } from "@/helpers/types";
 import type { Atom } from "jotai";
-import AwaitAtom from "./await-atom";
 
-type DropdownSelectFieldProps<T, IsMulti extends boolean = boolean> = {
-  name: string;
+import AwaitAtom from "@/components/await-atom";
+import {
+  FieldLabel,
+  FieldError,
+  FieldDescription,
+  Field,
+} from "@/components/ui/field";
+import Select, { type MultiValue } from "react-select";
+
+type FieldSelectProps<T, IsMulti extends boolean = boolean> = {
+  description?: React.ReactNode;
   label?: React.ReactNode;
+  name: string;
   options?: Option<T>[];
   optionsAtom?: Atom<Promise<Option<T>[]>>;
   placeholder?: string;
@@ -26,16 +33,17 @@ type DropdownSelectFieldProps<T, IsMulti extends boolean = boolean> = {
       onChange?: (value: T | null) => void;
     });
 
-export default function DropdownSelectField<T>({
-  name,
+export default function FieldSelect<T>({
+  description = "",
   label,
+  name,
+  onChange,
   options,
   optionsAtom,
-  value,
-  onChange,
   placeholder,
   required,
-}: DropdownSelectFieldProps<T, boolean>) {
+  value,
+}: FieldSelectProps<T, boolean>) {
   // Called when user makes a selection
   // 'next' represents the selected option object or null if selection is cleared.
   const handleChange = (next: Option<T> | MultiValue<Option<T>> | null) => {
@@ -51,10 +59,10 @@ export default function DropdownSelectField<T>({
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
   return (
-    <div>
+    <Field>
       <FieldLabel
         required={required}
-        className={`mb-3 ${isInvalid ? "text-red-600" : ""}`}
+        className={`${isInvalid ? "text-red-600" : ""}`}
       >
         {label}
       </FieldLabel>
@@ -120,9 +128,8 @@ export default function DropdownSelectField<T>({
         }}
       />
 
-      {isInvalid && (
-        <FieldError errors={field.state.meta.errors} className="mt-3" />
-      )}
-    </div>
+      {isInvalid && <FieldError errors={field.state.meta.errors} />}
+      {description && <FieldDescription>{description}</FieldDescription>}
+    </Field>
   );
 }

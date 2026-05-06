@@ -2,7 +2,6 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import * as z from "zod";
 import { useAppForm } from "@/hooks/form";
 import { siteTitle } from "@/config";
-import StartRegistrationForm from "@/components/start-registration-form";
 import { useAtom, useSetAtom } from "jotai";
 import {
   emailAtom,
@@ -12,6 +11,7 @@ import {
   store,
 } from "@/helpers/state";
 
+import FormStartRegistration from "@/components/form-start-registration";
 import RegistrationLayout from "@/components/registration-layout";
 
 export const Route = createFileRoute("/register/")({
@@ -56,7 +56,7 @@ function RegisterStart() {
         projects.
       </p>
       <RegistrationLayout>
-        <StartRegistrationForm form={form} />
+        <FormStartRegistration form={form} />
       </RegistrationLayout>
     </>
   );

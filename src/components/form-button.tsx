@@ -8,7 +8,7 @@ type ButtonFormProps = {
   variant: "default" | "destructive" | undefined;
 };
 
-const ButtonForm = withForm({
+const FormButton = withForm({
   defaultValues: {},
   props: {} as ButtonFormProps,
   render: function RenderDeleteForm({
@@ -39,4 +39,4 @@ const ButtonForm = withForm({
   },
 });
 
-export default ButtonForm;
+export default FormButton;

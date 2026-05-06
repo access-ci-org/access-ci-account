@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldGroup } from "@/components/ui/field";
 
-const StartRegistrationForm = withForm({
+const FormStartRegistration = withForm({
   defaultValues: {
     email: "",
   },
@@ -27,7 +27,8 @@ const StartRegistrationForm = withForm({
           <CardHeader>
             <CardTitle>Start Registration</CardTitle>
             <CardDescription>
-              Enter your university or work email address to start the registration process.
+              Enter your university or work email address to start the
+              registration process.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -35,7 +36,7 @@ const StartRegistrationForm = withForm({
               <form.AppField
                 name="email"
                 children={(field) => (
-                  <field.TextField
+                  <field.FieldText
                     label="Email Address"
                     placeholder="University or work email address"
                     className="max-w-lg"
@@ -57,4 +58,4 @@ const StartRegistrationForm = withForm({
   },
 });
 
-export default StartRegistrationForm;
+export default FormStartRegistration;

@@ -1,6 +1,7 @@
 // Row logic that creates a delete button for each row
 import { useAppForm } from "@/hooks/form";
-import ButtonForm from "./button-form";
+
+import FormButton from "@/components/form-button";
 
 type RowProps = {
   disabled?: boolean;
@@ -19,7 +20,7 @@ function ButtonRow({ disabled = false, label, variant, onSubmit }: RowProps) {
   return (
     <div className="flex justify-end">
       {/* Pass the form too reuse component */}
-      <ButtonForm
+      <FormButton
         disabled={disabled}
         form={form}
         label={label}
