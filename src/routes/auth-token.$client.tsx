@@ -9,6 +9,7 @@ import {
   pushNotificationAtom,
   registrationFormAtom,
   usernameAtom,
+  identityAddAtom
 } from "@/helpers/state";
 import { useEffect } from "react";
 import { LoaderCircle } from "lucide-react";
@@ -31,6 +32,7 @@ function AuthToken() {
   const setUsername = useSetAtom(usernameAtom);
   const setAdminUsername = useSetAtom(adminUsernameAtom);
   const [registrationForm, setRegistrationForm] = useAtom(registrationFormAtom);
+  const addIdentity = useSetAtom(identityAddAtom);
 
   useEffect(() => {
     const accessToken = popCookie("access_token");
@@ -54,7 +56,11 @@ function AuthToken() {
       if (client === "link") {
         if (isLoggedIn) {
           // The user is linking a new account.
-          // TODO: Link the account using the access token.
+          setLinkTokens({ accessToken, refreshToken });
+          const { added } = await addIdentity();
+          if (added) {
+            navigate({ to: "/identity" });
+          }
         } else {
           // The user is registering with an existing identity.
           if ("given_name" in userInfo && "family_name" in userInfo) {
@@ -91,6 +97,7 @@ function AuthToken() {
     setLoginTokens,
     setRegistrationForm,
     setUsername,
+    addIdentity
   ]);
 
   return <LoaderCircle className="animate-spin" />;

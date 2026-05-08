@@ -490,26 +490,56 @@ export const identityAtom = atomWithRefresh(async (get) => {
 
 export const identityAddAtom = atom(
   null,
-  async (get, set, identity: string) => {
-    const username = get(usernameAtom);
-
-    const trimmed = identity.trim();
-    if (!trimmed) {
-      return { error: { message: "Identity is required." } };
+  async (get, set) => {
+    const linkTokens = get(linkTokensAtom);
+    // Ensure access token is valid before adding identity and attempt refresh if possible.
+    if (linkTokens.refreshToken) {
+      if (!(await doRefresh("link"))) {
+        const status = {
+          error: "Access token is invalid or has expired.",
+          added: false,
+        };
+        return status;
+      }
     }
-
+    
+    // POST identity using CiLogin flow from linkTokenAtom
     const response = await fetchApiJson<IdentityResponse>(
-      `/account/${username}/identity`,
+      `/account/${get(usernameAtom)}/identity`,
       {
         method: "POST",
-        body: { identity: trimmed },
+        body: { cilogonToken: get(linkTokensAtom).accessToken },
       },
     );
 
+    // Profile Save Errors
+    if ("error" in response) {
+      const status = {
+        added: false,
+        error: response.error.message || "Identity could not be added.",
+      };
+      set(pushNotificationAtom, {
+        id: "add-identity-error",
+        title: "Error Adding Identity",
+        message: status.error,
+        variant: "error",
+      });
+      return status;
+    }
+
+    const status = { added: true, error: "" };
+
+    set(pushNotificationAtom, {
+      id: "identity-added",
+      title: "Identity Added",
+      message: "Your identity has been added successfully.",
+      variant: "success",
+    });
+
     // Refresh identities list after addition
     set(identityAtom);
-
-    return response;
+    await get(identityAtom);
+    return status;
   },
 );
 
