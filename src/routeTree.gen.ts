@@ -18,11 +18,11 @@ import { Route as IdentityRouteImport } from './routes/identity'
 import { Route as AddSshKeyRouteImport } from './routes/add-ssh-key'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RegisterIndexRouteImport } from './routes/register/index'
-import { Route as RegisterVerifyRouteImport } from './routes/register/verify'
 import { Route as RegisterSuccessRouteImport } from './routes/register/success'
 import { Route as RegisterCompleteRouteImport } from './routes/register/complete'
 import { Route as RegisterAupRouteImport } from './routes/register/aup'
 import { Route as AuthTokenClientRouteImport } from './routes/auth-token.$client'
+import { Route as FlowVerifyRouteImport } from './routes/$flow/verify'
 
 const SshKeysRoute = SshKeysRouteImport.update({
   id: '/ssh-keys',
@@ -69,11 +69,6 @@ const RegisterIndexRoute = RegisterIndexRouteImport.update({
   path: '/register/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RegisterVerifyRoute = RegisterVerifyRouteImport.update({
-  id: '/register/verify',
-  path: '/register/verify',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const RegisterSuccessRoute = RegisterSuccessRouteImport.update({
   id: '/register/success',
   path: '/register/success',
@@ -94,6 +89,11 @@ const AuthTokenClientRoute = AuthTokenClientRouteImport.update({
   path: '/auth-token/$client',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FlowVerifyRoute = FlowVerifyRouteImport.update({
+  id: '/$flow/verify',
+  path: '/$flow/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -104,11 +104,11 @@ export interface FileRoutesByFullPath {
   '/password': typeof PasswordRoute
   '/profile': typeof ProfileRoute
   '/ssh-keys': typeof SshKeysRoute
+  '/$flow/verify': typeof FlowVerifyRoute
   '/auth-token/$client': typeof AuthTokenClientRoute
   '/register/aup': typeof RegisterAupRoute
   '/register/complete': typeof RegisterCompleteRoute
   '/register/success': typeof RegisterSuccessRoute
-  '/register/verify': typeof RegisterVerifyRoute
   '/register': typeof RegisterIndexRoute
 }
 export interface FileRoutesByTo {
@@ -120,11 +120,11 @@ export interface FileRoutesByTo {
   '/password': typeof PasswordRoute
   '/profile': typeof ProfileRoute
   '/ssh-keys': typeof SshKeysRoute
+  '/$flow/verify': typeof FlowVerifyRoute
   '/auth-token/$client': typeof AuthTokenClientRoute
   '/register/aup': typeof RegisterAupRoute
   '/register/complete': typeof RegisterCompleteRoute
   '/register/success': typeof RegisterSuccessRoute
-  '/register/verify': typeof RegisterVerifyRoute
   '/register': typeof RegisterIndexRoute
 }
 export interface FileRoutesById {
@@ -137,11 +137,11 @@ export interface FileRoutesById {
   '/password': typeof PasswordRoute
   '/profile': typeof ProfileRoute
   '/ssh-keys': typeof SshKeysRoute
+  '/$flow/verify': typeof FlowVerifyRoute
   '/auth-token/$client': typeof AuthTokenClientRoute
   '/register/aup': typeof RegisterAupRoute
   '/register/complete': typeof RegisterCompleteRoute
   '/register/success': typeof RegisterSuccessRoute
-  '/register/verify': typeof RegisterVerifyRoute
   '/register/': typeof RegisterIndexRoute
 }
 export interface FileRouteTypes {
@@ -155,11 +155,11 @@ export interface FileRouteTypes {
     | '/password'
     | '/profile'
     | '/ssh-keys'
+    | '/$flow/verify'
     | '/auth-token/$client'
     | '/register/aup'
     | '/register/complete'
     | '/register/success'
-    | '/register/verify'
     | '/register'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -171,11 +171,11 @@ export interface FileRouteTypes {
     | '/password'
     | '/profile'
     | '/ssh-keys'
+    | '/$flow/verify'
     | '/auth-token/$client'
     | '/register/aup'
     | '/register/complete'
     | '/register/success'
-    | '/register/verify'
     | '/register'
   id:
     | '__root__'
@@ -187,11 +187,11 @@ export interface FileRouteTypes {
     | '/password'
     | '/profile'
     | '/ssh-keys'
+    | '/$flow/verify'
     | '/auth-token/$client'
     | '/register/aup'
     | '/register/complete'
     | '/register/success'
-    | '/register/verify'
     | '/register/'
   fileRoutesById: FileRoutesById
 }
@@ -204,11 +204,11 @@ export interface RootRouteChildren {
   PasswordRoute: typeof PasswordRoute
   ProfileRoute: typeof ProfileRoute
   SshKeysRoute: typeof SshKeysRoute
+  FlowVerifyRoute: typeof FlowVerifyRoute
   AuthTokenClientRoute: typeof AuthTokenClientRoute
   RegisterAupRoute: typeof RegisterAupRoute
   RegisterCompleteRoute: typeof RegisterCompleteRoute
   RegisterSuccessRoute: typeof RegisterSuccessRoute
-  RegisterVerifyRoute: typeof RegisterVerifyRoute
   RegisterIndexRoute: typeof RegisterIndexRoute
 }
 
@@ -277,13 +277,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/register/verify': {
-      id: '/register/verify'
-      path: '/register/verify'
-      fullPath: '/register/verify'
-      preLoaderRoute: typeof RegisterVerifyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/register/success': {
       id: '/register/success'
       path: '/register/success'
@@ -312,6 +305,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthTokenClientRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$flow/verify': {
+      id: '/$flow/verify'
+      path: '/$flow/verify'
+      fullPath: '/$flow/verify'
+      preLoaderRoute: typeof FlowVerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -324,11 +324,11 @@ const rootRouteChildren: RootRouteChildren = {
   PasswordRoute: PasswordRoute,
   ProfileRoute: ProfileRoute,
   SshKeysRoute: SshKeysRoute,
+  FlowVerifyRoute: FlowVerifyRoute,
   AuthTokenClientRoute: AuthTokenClientRoute,
   RegisterAupRoute: RegisterAupRoute,
   RegisterCompleteRoute: RegisterCompleteRoute,
   RegisterSuccessRoute: RegisterSuccessRoute,
-  RegisterVerifyRoute: RegisterVerifyRoute,
   RegisterIndexRoute: RegisterIndexRoute,
 }
 export const routeTree = rootRouteImport
