@@ -512,6 +512,9 @@ export const identityAddAtom = atom(
       },
     );
 
+    // Clear link tokens after the API request
+    set(linkTokensAtom, { ...noTokens });
+
     // Profile Save Errors
     if ("error" in response) {
       const status = {
