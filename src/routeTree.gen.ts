@@ -22,7 +22,7 @@ import { Route as RegisterSuccessRouteImport } from './routes/register/success'
 import { Route as RegisterCompleteRouteImport } from './routes/register/complete'
 import { Route as RegisterAupRouteImport } from './routes/register/aup'
 import { Route as AuthTokenClientRouteImport } from './routes/auth-token.$client'
-import { Route as FlowVerifyRouteImport } from './routes/$flow/verify'
+import { Route as FlowVerifyRouteImport } from './routes/$flow.verify'
 
 const SshKeysRoute = SshKeysRouteImport.update({
   id: '/ssh-keys',

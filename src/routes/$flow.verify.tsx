@@ -28,11 +28,7 @@ function isValidFlow(flow: string): flow is Flow {
 }
 
 const getPrevPath = (flow: Flow) =>
-    flow === "profile"
-      ? "/profile"
-      : flow === "password"
-        ? "/password"
-        : "/register";
+  `/${flow}` as "/register" | "/profile" | "/password";
 
 export const Route = createFileRoute("/$flow/verify")({
   component: VerifyEmail,
@@ -61,7 +57,7 @@ function VerifyEmail() {
     throw redirect({ to: "/register" });
   }
 
-    const flow = flowParam;
+  const flow = flowParam;
 
   const [email, setEmail] = useAtom(emailAtom);
   const [otp, setOtp] = useAtom(otpAtom);
