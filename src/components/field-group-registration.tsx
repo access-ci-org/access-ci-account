@@ -12,6 +12,7 @@ import { registrationDefaultValues } from "@/helpers/defaults";
 import { FieldGroup } from "@/components/ui/field";
 import DomainValidationResponse from "@/components/domain-validation-response";
 import HelpTicketLink from "@/components/help-ticket-link";
+import OrganizationRequestLink from "./organization-request-link";
 
 type FieldGroupRegistrationProps = {
   emailDisabled?: boolean;
@@ -77,9 +78,8 @@ export const FieldGroupRegistration = withFieldGroup({
                   required
                   description={
                     <>
-                      If your organization is not listed, please{" "}
-                      <HelpTicketLink /> to have it added to the ACCESS
-                      database.
+                      If your organization is not listed, please <OrganizationRequestLink /> to have your
+                      organization added to ACCESS. If you have trouble with the form, please <HelpTicketLink />.
                     </>
                   }
                 />

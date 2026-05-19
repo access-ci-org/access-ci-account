@@ -1,6 +1,7 @@
 import { type DomainResponse } from "../helpers/types";
 
 import HelpTicketLink from "@/components/help-ticket-link";
+import OrganizationRequestLink from "./organization-request-link";
 
 export default function DomainValidationResponse({
   domain,
@@ -21,9 +22,8 @@ export default function DomainValidationResponse({
   if (domain?.isEligible && !domain?.organizations.length) {
     return (
       <>
-        The email domain {domain.domain} is not yet registered with ACCESS.
-        Please <HelpTicketLink /> and ask to have your organization added to the
-        ACCESS database.
+        The email domain {domain.domain} is not yet registered with ACCESS. Please <OrganizationRequestLink /> to have
+        your organization added to ACCESS. If you have trouble with the form, please <HelpTicketLink />.
       </>
     );
   }
