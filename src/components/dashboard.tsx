@@ -12,15 +12,31 @@ import {
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { DashboardCard } from "@/components/dashboard-card";
-import { showWelcomeMessageAtom } from "@/helpers/state";
-import { useAtom } from "jotai";
+import { accountAtom, showWelcomeMessageAtom } from "@/helpers/state";
+import { useAtom, useAtomValue } from "jotai";
 import { X } from "lucide-react";
 
 export default function Dashboard() {
   const [showWelcomeMessage, setShowWelcomeMessage] = useAtom(showWelcomeMessageAtom);
+  const account = useAtomValue(accountAtom);
+  const accessId = "username" in account ? account.username : "";
   return (
     <>
-      <h1>My ACCESS Account</h1>
+      <div className="flex items-end justify-between pb-6">
+        <h1>My ACCESS Account</h1>
+
+        {accessId && (
+          <div className="flex items-center gap-3 border-b-2 border-[var(--teal-700)] pb-1">
+            <User className="h-5 w-5 text-[var(--teal-700)]" />
+
+            <div className="flex items-baseline gap-2">
+              <span className="text-lg font-semibold text-[var(--teal-700)]">
+                {accessId}
+              </span>
+            </div>
+          </div>
+        )}
+      </div>
       <div className="min-h-full pt-3">
         {showWelcomeMessage && (
           <Alert className="border-none rounded-none shadow-none bg-transparent bg-[var(--teal-050)] p-4">
