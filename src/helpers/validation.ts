@@ -67,3 +67,8 @@ export const usernameSchema = z.object({ username: z.string().catch("") });
 export const sshKeyFormSchema = z.object({
   sshKey: z.string().min(1, { message: "SSH Key is required." }),
 });
+
+export const authTokenSchema = z.object({
+  code: z.string(),
+  state: z.string(),
+});

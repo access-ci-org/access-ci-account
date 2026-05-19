@@ -24,12 +24,6 @@ export const deleteCookie = (
   document.cookie = cookieString;
 };
 
-export const popCookie = (name: string) => {
-  const value = getCookieValue(name);
-  deleteCookie(name);
-  return value;
-};
-
 export const hasSsoCookie = (): boolean =>
   getCookieValue(ssoCookieName) === ssoCookieValue;
 
