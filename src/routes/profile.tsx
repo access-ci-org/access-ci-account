@@ -71,7 +71,10 @@ function Profile() {
         // The email address has changed. Verify the email address before
         // saving the profile.
         await sendOtp();
-        navigate({ to: "/register/verify" });
+        navigate({
+          to: "/$flow/verify",
+          params: { flow: "profile" },
+        });
       }
     },
   });

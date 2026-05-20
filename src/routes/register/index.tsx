@@ -44,7 +44,12 @@ function RegisterStart() {
     onSubmit: async ({ value }) => {
       setEmail(value.email);
       const status = await sendOtp();
-      if (status.sent) navigate({ to: "/register/verify" });
+      if (status.sent) {
+        navigate({
+          to: "/$flow/verify",
+          params: { flow: "register" },
+        });
+      }
     },
   });
 
