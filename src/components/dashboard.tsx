@@ -22,18 +22,15 @@ export default function Dashboard() {
   const accessId = "username" in account ? account.username : "";
   return (
     <>
-      <div className="flex items-end justify-between pb-6">
+      <div className="flex items-end justify-between">
         <h1>My ACCESS Account</h1>
 
         {accessId && (
-          <div className="flex items-center gap-3 border-b-2 border-[var(--teal-700)] pb-1">
-            <User className="h-5 w-5 text-[var(--teal-700)]" />
-
-            <div className="flex items-baseline gap-2">
-              <span className="text-lg font-semibold text-[var(--teal-700)]">
-                {accessId}
-              </span>
-            </div>
+          <div className="flex items-center gap-3 pb-1">
+            <User className="h-5 w-5 text-black" />
+            <span className="text-lg font-semibold text-black">
+              {accessId}
+            </span>
           </div>
         )}
       </div>
