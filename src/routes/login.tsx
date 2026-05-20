@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { siteTitle } from "@/config";
 import { LoaderCircle } from "lucide-react";
 import { useEffect } from "react";
-import { startAuth } from "@/helpers/auth";
+import { oidcAuthorizeAtom, store } from "@/helpers/state";
 
 export const Route = createFileRoute("/login")({
   component: Login,
@@ -10,7 +10,9 @@ export const Route = createFileRoute("/login")({
 });
 
 function Login() {
-  useEffect(() => startAuth("login"), []);
+  useEffect(() => {
+    store.set(oidcAuthorizeAtom, "login");
+  }, []);
 
   return <LoaderCircle className="animate-spin" />;
 }

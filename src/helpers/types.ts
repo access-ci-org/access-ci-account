@@ -108,11 +108,6 @@ export type FetchOptions = {
   refreshToken?: string | null;
 };
 
-export type RefreshResponse = {
-  accessToken: string;
-  refreshToken: string;
-};
-
 export type RegistrationFields = {
   firstName: string;
   lastName: string;
@@ -155,4 +150,21 @@ export type AppNotification = {
   variant?: NotificationType;
   dismissible?: boolean;
   autoCloseMs?: number; // time in milliseconds to auto close the notification
+};
+
+export type OidcClientType = "link" | "login";
+
+export type OidcClientIds = {
+  link: string;
+  login: string;
+};
+
+export type RefreshResponse = {
+  accessToken: string;
+  refreshToken: string;
+};
+
+export type OidcTokensResponse = RefreshResponse & {
+  idToken?: string | null;
+  isAdmin?: boolean | null;
 };

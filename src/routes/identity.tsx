@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { startAuth } from "@/helpers/auth";
 import { useAtomValue, useSetAtom } from "jotai";
 import {
   identityAtom,
   identityDeleteAtom,
   isImpersonatingAtom,
+  oidcAuthorizeAtom,
   pushNotificationAtom,
 } from "@/helpers/state";
 import { siteTitle } from "@/config";
@@ -24,6 +24,7 @@ function IdentityRoute() {
   const deleteIdentity = useSetAtom(identityDeleteAtom);
   const setNotification = useSetAtom(pushNotificationAtom);
   const isImpersonating = useAtomValue(isImpersonatingAtom);
+  const oidcAuthorize = useSetAtom(oidcAuthorizeAtom);
 
   return (
     <div className="w-full mt-4">
@@ -34,7 +35,7 @@ function IdentityRoute() {
           label="Link an Account"
           variant="default"
           onSubmit={async () => {
-            await startAuth("link");
+            await oidcAuthorize("link");
           }}
         />
       </div>

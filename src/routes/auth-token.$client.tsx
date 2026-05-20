@@ -1,6 +1,5 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { siteTitle } from "@/config";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
   adminUsernameAtom,
   isLoggedInAtom,
@@ -9,96 +8,86 @@ import {
   pushNotificationAtom,
   registrationFormAtom,
   usernameAtom,
-  identityAddAtom
+  identityAddAtom,
+  oidcStateAtom,
+  oidcTokensAtom,
+  store,
 } from "@/helpers/state";
-import { useEffect } from "react";
 import { LoaderCircle } from "lucide-react";
-import { popCookie } from "@/helpers/cookie";
 import { parseJwt } from "@/helpers/jwt";
 import { hasSsoCookie, setSsoCookie } from "@/helpers/cookie";
+import { authTokenSchema } from "@/helpers/validation";
+import type { OidcClientType } from "@/helpers/types";
 
 export const Route = createFileRoute("/auth-token/$client")({
   component: AuthToken,
   head: () => ({ meta: [{ title: `Complete Login | ${siteTitle}` }] }),
-});
+  validateSearch: (search) => authTokenSchema.parse(search),
+  beforeLoad: async ({ params, search }) => {
+    const { client } = params;
+    const { code, state } = search;
 
-function AuthToken() {
-  const { client } = Route.useParams();
-  const navigate = useNavigate();
-  const isLoggedIn = useAtomValue(isLoggedInAtom);
-  const pushNotification = useSetAtom(pushNotificationAtom);
-  const setLinkTokens = useSetAtom(linkTokensAtom);
-  const setLoginTokens = useSetAtom(loginTokensAtom);
-  const setUsername = useSetAtom(usernameAtom);
-  const setAdminUsername = useSetAtom(adminUsernameAtom);
-  const [registrationForm, setRegistrationForm] = useAtom(registrationFormAtom);
-  const addIdentity = useSetAtom(identityAddAtom);
-
-  useEffect(() => {
-    const accessToken = popCookie("access_token");
-    const refreshToken = popCookie("refresh_token");
-    const idToken = popCookie("id_token");
-    const isAdmin = popCookie("is_admin") === "true";
-    if (!accessToken || !refreshToken || !idToken) return;
-
-    const userInfo = parseJwt(idToken);
-
-    const loginError = (id: string, message: string) => {
-      pushNotification({
-        id,
+    const authError = (message: string) => {
+      store.set(pushNotificationAtom, {
+        id: "auth-error",
         message,
         variant: "error",
       });
-      navigate({ to: "/" });
+      throw redirect({ to: "/" });
     };
 
-    (async () => {
-      if (client === "link") {
-        if (isLoggedIn) {
-          // The user is linking a new account.
-          setLinkTokens({ accessToken, refreshToken });
-          const { added } = await addIdentity();
-          if (added) {
-            navigate({ to: "/identity" });
-          }
-        } else {
-          // The user is registering with an existing identity.
-          if ("given_name" in userInfo && "family_name" in userInfo) {
-            const { given_name: firstName, family_name: lastName } = userInfo;
-            setRegistrationForm({ ...registrationForm, firstName, lastName });
-          }
-          setLinkTokens({ accessToken, refreshToken });
-          navigate({ to: "/register/complete" });
-        }
-      } else if (client === "login") {
-        // The user is logging in.
-        if ("sub" in userInfo && userInfo.sub.endsWith("@access-ci.org")) {
-          if (!hasSsoCookie()) {
-            setSsoCookie();
-          }
-          const username = userInfo.sub.replace("@access-ci.org", "");
-          setUsername(username);
-          if (isAdmin) setAdminUsername(username);
-          setLoginTokens({ accessToken, refreshToken });
-          navigate({ to: "/" });
-        } else {
-          loginError("invalid-subject", "Login failed due to invalid subject.");
-        }
-      } else {
-        loginError("unknown-client", "Login failed due to unknown client.");
-      }
-    })();
-  }, [
-    client,
-    isLoggedIn,
-    navigate,
-    pushNotification,
-    setLinkTokens,
-    setLoginTokens,
-    setRegistrationForm,
-    setUsername,
-    addIdentity
-  ]);
+    if (!["link", "login"].includes(client))
+      return authError("Authentication failed due to unknown client.");
 
+    const oidcState = store.get(oidcStateAtom);
+    if (!state.length || !oidcState.length || state !== oidcState)
+      return authError("Authentication failed due to invalid state.");
+
+    const tokens = await store.set(
+      oidcTokensAtom,
+      client as OidcClientType,
+      code,
+    );
+    if ("error" in tokens) return authError(tokens.error.message);
+
+    const { accessToken, idToken, isAdmin, refreshToken } = tokens;
+    const userInfo = parseJwt(idToken as string);
+
+    if (client === "link") {
+      if (store.get(isLoggedInAtom)) {
+        // The user is linking a new account.
+        store.set(linkTokensAtom, { accessToken, refreshToken });
+        const { added } = await store.set(identityAddAtom);
+        if (added) throw redirect({ to: "/identity" });
+      } else {
+        // The user is registering with an existing identity.
+        if ("given_name" in userInfo && "family_name" in userInfo) {
+          const { given_name: firstName, family_name: lastName } = userInfo;
+          store.set(registrationFormAtom, {
+            ...store.get(registrationFormAtom),
+            firstName,
+            lastName,
+          });
+        }
+        store.set(linkTokensAtom, { accessToken, refreshToken });
+        throw redirect({ to: "/register/complete" });
+      }
+    } else if (client === "login") {
+      // The user is logging in.
+      if ("sub" in userInfo && userInfo.sub.endsWith("@access-ci.org")) {
+        if (!hasSsoCookie()) setSsoCookie();
+        const username = userInfo.sub.replace("@access-ci.org", "");
+        store.set(usernameAtom, username);
+        if (isAdmin) store.set(adminUsernameAtom, username);
+        store.set(loginTokensAtom, { accessToken, refreshToken });
+        throw redirect({ to: "/" });
+      } else {
+        authError("Authentication failed due to invalid subject.");
+      }
+    }
+  },
+});
+
+function AuthToken() {
   return <LoaderCircle className="animate-spin" />;
 }

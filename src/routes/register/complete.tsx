@@ -13,12 +13,12 @@ import {
   domainAtom,
   hasOtpTokenAtom,
   linkTokensAtom,
+  oidcAuthorizeAtom,
   registrationFormAtom,
   store,
 } from "@/helpers/state";
 import { useAtomValue } from "jotai";
 import { emailAtom } from "@/helpers/state";
-import { startAuth } from "@/helpers/auth";
 import { passwordDefaultValues } from "@/helpers/defaults";
 
 import FormCompleteRegistration from "@/components/form-complete-registration";
@@ -37,7 +37,11 @@ export const Route = createFileRoute("/register/complete")({
     const linkTokens = store.get(linkTokensAtom);
 
     if (domain && domain.idps.length && !linkTokens.accessToken) {
-      startAuth("link", domain.idps.map((idp) => idp.entityId).join(","));
+      store.set(
+        oidcAuthorizeAtom,
+        "link",
+        domain.idps.map((idp) => idp.entityId).join(","),
+      );
       return new Promise(() => {});
     }
   },

@@ -1,5 +1,6 @@
 import {
   apiBaseUrl,
+  cilogonBaseUrl,
   initEmail,
   initToken,
   initUsername,
@@ -33,6 +34,9 @@ import {
   type AppNotification,
   type IdentityResponse,
   type Option,
+  type OidcClientIds,
+  type OidcClientType,
+  type OidcTokensResponse,
 } from "./types";
 import { profileDefaultValues, registrationDefaultValues } from "./defaults";
 import { getDomainFromEmail } from "./email";
@@ -77,25 +81,26 @@ export const fetchJson = async <T extends object>(
   }
 };
 
-const doRefresh = async (client: string): Promise<boolean> => {
+const doRefresh = async (client: OidcClientType): Promise<boolean> => {
   const clientTokensAtom: WritableAtom<
     { accessToken: string; refreshToken: string },
     [RefreshResponse],
     unknown
   > = client === "link" ? linkTokensAtom : loginTokensAtom;
-  const currentRefreshToken = store.get(clientTokensAtom).refreshToken;
 
-  const refreshResponse = await fetchJson<RefreshResponse>(
-    `${apiBaseUrl}/auth/${client}/refresh`,
-    {
-      accessToken: currentRefreshToken,
-      method: "POST",
-    },
+  const refreshResponse = await store.set(
+    oidcTokensAtom,
+    client,
+    null,
+    store.get(clientTokensAtom).refreshToken,
   );
 
   const success = "accessToken" in refreshResponse;
   if (success) {
-    store.set(clientTokensAtom, refreshResponse);
+    const { accessToken, refreshToken } = refreshResponse;
+    store.set(clientTokensAtom, { accessToken, refreshToken });
+  } else {
+    store.set(clientTokensAtom, { ...noTokens });
   }
   return success;
 };
@@ -191,6 +196,77 @@ export const impersonateAtom = atom(
 export const stopImpersonatingAtom = atom(
   null,
   async (get, set) => await set(impersonateAtom, get(adminUsernameAtom)),
+);
+
+export const oidcClientIdsAtom = atom(async () =>
+  fetchApiJson<OidcClientIds>("/auth/oauth2/client_ids", { accessToken: null }),
+);
+
+export const oidcStateAtom = atomWithStorage("oidcState", "", undefined, {
+  getOnInit: true,
+});
+const generateOidcStateValue = () => {
+  const array = new Uint8Array(128);
+  window.crypto.getRandomValues(array);
+  return Array.from(array, (byte) => byte.toString(36).charAt(0))
+    .join("")
+    .substring(0, 128);
+};
+
+const getRedirectUri = (client: OidcClientType) =>
+  `${window.location.protocol}//${window.location.host}${import.meta.env.BASE_URL}/auth-token/${client}`;
+
+export const oidcAuthorizeAtom = atom(
+  null,
+  async (get, set, client: OidcClientType = "login", idphint: string = "") => {
+    const clientIds = await get(oidcClientIdsAtom);
+    if ("error" in clientIds) return clientIds;
+
+    // Refresh the OIDC state value.
+    set(oidcStateAtom, generateOidcStateValue());
+
+    const params = new URLSearchParams({
+      client_id: clientIds[client],
+      redirect_uri: getRedirectUri(client),
+      response_type: "code",
+      scope: "openid profile email org.cilogon.userinfo",
+      skin: "access",
+      state: get(oidcStateAtom),
+    });
+
+    if (idphint) params.set("idphint", idphint);
+    if (client === "link") params.set("prompt", "consent");
+
+    window.location.href = `${cilogonBaseUrl}/authorize?${params.toString()}`;
+  },
+);
+
+export const oidcTokensAtom = atom(
+  null,
+  async (
+    get,
+    _set,
+    client: OidcClientType = "login",
+    code: string | null = null,
+    refreshToken: string | null = null,
+  ) => {
+    const clientIds = await get(oidcClientIdsAtom);
+    if ("error" in clientIds) return clientIds;
+
+    const body = {
+      clientId: clientIds[client],
+      code,
+      grantType: refreshToken ? "refresh_token" : "authorization_code",
+      redirectUri: getRedirectUri(client),
+      refreshToken,
+    };
+
+    return await fetchApiJson<OidcTokensResponse>("/auth/oauth2/token", {
+      accessToken: null,
+      body,
+      method: "POST",
+    });
+  },
 );
 
 const noTokens = { accessToken: "", refreshToken: "" };
@@ -488,63 +564,60 @@ export const identityAtom = atomWithRefresh(async (get) => {
   return "error" in response ? [] : response.identities;
 });
 
-export const identityAddAtom = atom(
-  null,
-  async (get, set) => {
-    const linkTokens = get(linkTokensAtom);
-    // Ensure access token is valid before adding identity and attempt refresh if possible.
-    if (linkTokens.refreshToken) {
-      if (!(await doRefresh("link"))) {
-        const status = {
-          error: "Access token is invalid or has expired.",
-          added: false,
-        };
-        return status;
-      }
-    }
-    
-    // POST identity using CiLogin flow from linkTokenAtom
-    const response = await fetchApiJson<IdentityResponse>(
-      `/account/${get(usernameAtom)}/identity`,
-      {
-        method: "POST",
-        body: { cilogonToken: get(linkTokensAtom).accessToken },
-      },
-    );
-
-    // Clear link tokens after the API request
-    set(linkTokensAtom, { ...noTokens });
-
-    // Profile Save Errors
-    if ("error" in response) {
+export const identityAddAtom = atom(null, async (get, set) => {
+  const linkTokens = get(linkTokensAtom);
+  // Ensure access token is valid before adding identity and attempt refresh if possible.
+  if (linkTokens.refreshToken) {
+    if (!(await doRefresh("link"))) {
       const status = {
+        error: "Access token is invalid or has expired.",
         added: false,
-        error: response.error.message || "Identity could not be added.",
       };
-      set(pushNotificationAtom, {
-        id: "add-identity-error",
-        title: "Error Adding Identity",
-        message: status.error,
-        variant: "error",
-      });
       return status;
     }
+  }
 
-    const status = { added: true, error: "" };
+  // POST identity using CiLogin flow from linkTokenAtom
+  const response = await fetchApiJson<IdentityResponse>(
+    `/account/${get(usernameAtom)}/identity`,
+    {
+      method: "POST",
+      body: { cilogonToken: get(linkTokensAtom).accessToken },
+    },
+  );
 
+  // Clear link tokens after the API request
+  set(linkTokensAtom, { ...noTokens });
+
+  // Profile Save Errors
+  if ("error" in response) {
+    const status = {
+      added: false,
+      error: response.error.message || "Identity could not be added.",
+    };
     set(pushNotificationAtom, {
-      id: "identity-added",
-      title: "Identity Added",
-      message: "Your identity has been added successfully.",
-      variant: "success",
+      id: "add-identity-error",
+      title: "Error Adding Identity",
+      message: status.error,
+      variant: "error",
     });
-
-    // Refresh identities list after addition
-    set(identityAtom);
-    await get(identityAtom);
     return status;
-  },
-);
+  }
+
+  const status = { added: true, error: "" };
+
+  set(pushNotificationAtom, {
+    id: "identity-added",
+    title: "Identity Added",
+    message: "Your identity has been added successfully.",
+    variant: "success",
+  });
+
+  // Refresh identities list after addition
+  set(identityAtom);
+  await get(identityAtom);
+  return status;
+});
 
 export const identityDeleteAtom = atom(
   null,
