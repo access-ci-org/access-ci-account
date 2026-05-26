@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useAtomValue, useSetAtom } from "jotai";
 import {
   identityAtom,
@@ -6,6 +6,7 @@ import {
   isImpersonatingAtom,
   oidcAuthorizeAtom,
   pushNotificationAtom,
+  store,
 } from "@/helpers/state";
 import { siteTitle } from "@/config";
 
@@ -16,11 +17,20 @@ import ButtonRow from "@/components/button-row";
 export const Route = createFileRoute("/identity")({
   component: IdentityRoute,
   head: () => ({ meta: [{ title: `Linked Accounts | ${siteTitle}` }] }),
+  loader: async () => {
+    const identityDetails = await store.get(identityAtom);
+
+    if ("error" in identityDetails) {
+      redirect({ to: "/login", throw: true });
+    }
+
+    return identityDetails;
+  },
 });
 
 function IdentityRoute() {
   // Fetching Identity details via atoms
-  const identityDetails = useAtomValue(identityAtom);
+  const identityDetails = Route.useLoaderData();
   const deleteIdentity = useSetAtom(identityDeleteAtom);
   const setNotification = useSetAtom(pushNotificationAtom);
   const isImpersonating = useAtomValue(isImpersonatingAtom);
