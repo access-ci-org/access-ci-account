@@ -314,8 +314,10 @@ export const sendOtpAtom = atom(
       if ("error" in response) {
         status = {
           error:
-            response.error.message ||
-            "Verification code could not be sent. Please try again later.",
+            response.error.status === 429
+              ? "You have exceeded the limit for sending verification codes. Please try again in an hour."
+              : response.error.message ||
+                "Verification code could not be sent. Please try again later.",
           sent: false,
         };
       } else {
