@@ -214,7 +214,7 @@ const generateOidcStateValue = () => {
 };
 
 const getRedirectUri = (client: OidcClientType) =>
-  `${window.location.protocol}//${window.location.host}${import.meta.env.BASE_URL}/auth-token/${client}`;
+  `${window.location.protocol}//${window.location.host}${import.meta.env.BASE_URL}auth-token/${client}`;
 
 export const oidcAuthorizeAtom = atom(
   null,
