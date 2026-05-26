@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/access-ci-org/access-ci-account/compare/v0.4.0...v0.4.1) (2026-05-26)
+
+
+### Bug Fixes
+
+* **auth:** remove extra slash from OIDC redirect URI ([dac64ad](https://github.com/access-ci-org/access-ci-account/commit/dac64adc5a69edf4e8b7b43cbfcd4781ab9187ac))
+
 ## [0.4.0](https://github.com/access-ci-org/access-ci-account/compare/v0.3.0...v0.4.0) (2026-05-26)
 
 
