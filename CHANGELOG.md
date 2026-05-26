@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.4.0](https://github.com/access-ci-org/access-ci-account/compare/v0.3.0...v0.4.0) (2026-05-26)
+
+
+### Features
+
+* add disabled prop to button components ([d08184d](https://github.com/access-ci-org/access-ci-account/commit/d08184dc791263139285694ad6c641b60cd4cf31))
+* add help text for institution field ([f550830](https://github.com/access-ci-org/access-ci-account/commit/f550830cd48e7147baa66852053a0749c39d4643))
+* disable changing SSH keys, identities, and passwords while ([8eb3703](https://github.com/access-ci-org/access-ci-account/commit/8eb3703bbb18f1507abc0ff9f4b58f06f9cfc78d))
+* **register:** add state checks to registration fronend routes ([cf10209](https://github.com/access-ci-org/access-ci-account/commit/cf10209b4f2e176104a4dfdd9c27b74ed5c28f8e))
+* **state:** add specific message for rate limit error ([9266ba1](https://github.com/access-ci-org/access-ci-account/commit/9266ba14137abf1bde10523854aff94d9acd2b6f))
+
+
+### Bug Fixes
+
+* added profile validation checks for ineligible email domains ([8e1ae57](https://github.com/access-ci-org/access-ci-account/commit/8e1ae579eafe8888c6cec7285e9c1cb97f3d8c0b))
+* **auth:** prevent token refresh loop ([ad46ba8](https://github.com/access-ci-org/access-ci-account/commit/ad46ba8c5b2d0915bbe1b260dba2473c7211aa6e))
+* **dropdown-select-field:** reset the field value if it is missing from ([a9e6e26](https://github.com/access-ci-org/access-ci-account/commit/a9e6e2661d95caf3d9019bb46f6971068cb78b74))
+* fix TypeScript errors in profile form schema ([0e510b4](https://github.com/access-ci-org/access-ci-account/commit/0e510b4283a0b3ee99760c6eedabfe5f2a7723e0))
+* **identity:** fix duplicate key issue ([bf7a9f3](https://github.com/access-ci-org/access-ci-account/commit/bf7a9f386567d97ea80c8ffbbaa563bf63e766a5))
+* **registration:** make page titles consistent ([69817e6](https://github.com/access-ci-org/access-ci-account/commit/69817e6a921dd980ad6919ea3329bc8b1c347b2a))
+
 ## [0.3.0](https://github.com/access-ci-org/access-ci-account/compare/v0.2.0...v0.3.0) (2026-04-15)
 
 
