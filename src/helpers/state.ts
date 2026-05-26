@@ -265,6 +265,7 @@ export const oidcTokensAtom = atom(
       accessToken: null,
       body,
       method: "POST",
+      refreshToken: null,
     });
   },
 );
