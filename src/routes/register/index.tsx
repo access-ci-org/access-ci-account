@@ -11,7 +11,7 @@ import {
   store,
 } from "@/helpers/state";
 
-import FormStartRegistration from "@/components/form-start-registration";
+import FormEmailVerfication from "@/components/form-email-verfication";
 import RegistrationLayout from "@/components/registration-layout";
 
 export const Route = createFileRoute("/register/")({
@@ -61,7 +61,7 @@ function RegisterStart() {
         projects.
       </p>
       <RegistrationLayout>
-        <FormStartRegistration form={form} />
+        <FormEmailVerfication form={form} />
       </RegistrationLayout>
     </>
   );
