@@ -7,6 +7,7 @@ import {
   oidcAuthorizeAtom,
   pushNotificationAtom,
   store,
+  isLoggedInAtom,
 } from "@/helpers/state";
 import { siteTitle } from "@/config";
 
@@ -18,6 +19,12 @@ export const Route = createFileRoute("/identity")({
   component: IdentityRoute,
   head: () => ({ meta: [{ title: `Linked Accounts | ${siteTitle}` }] }),
   loader: async () => {
+    const isLoggedIn = await store.get(isLoggedInAtom);
+    
+    if (!isLoggedIn) {
+      redirect({ to: "/login", throw: true });
+    }
+
     const identityDetails = await store.get(identityAtom);
 
     if ("error" in identityDetails) {

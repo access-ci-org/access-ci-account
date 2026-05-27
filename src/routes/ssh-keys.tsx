@@ -7,6 +7,7 @@ import {
   sshKeysAtom,
   sshKeysDeleteAtom,
   store,
+  isLoggedInAtom,
 } from "@/helpers/state";
 
 import { FaKey } from "react-icons/fa";
@@ -18,6 +19,12 @@ export const Route = createFileRoute("/ssh-keys")({
   component: SSHKeysRoute,
   head: () => ({ meta: [{ title: `SSH Keys | ${siteTitle}` }] }),
   loader: async () => {
+    const isLoggedIn = await store.get(isLoggedInAtom);
+    
+    if (!isLoggedIn) {
+      redirect({ to: "/login", throw: true });
+    }
+
     const sshKeys = await store.get(sshKeysAtom);
 
     if ("error" in sshKeys) {
