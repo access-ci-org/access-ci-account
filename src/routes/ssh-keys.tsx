@@ -13,6 +13,8 @@ import { FaKey } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { FieldSeparator } from "@/components/ui/field";
 import ButtonRow from "@/components/button-row";
+import CreateShhKeyLink from "@/components/link-create-ssh-key";
+import ShhKeyLink from "@/components/link-ssh-key";
 
 export const Route = createFileRoute("/ssh-keys")({
   component: SSHKeysRoute,
@@ -42,8 +44,8 @@ function SSHKeysRoute() {
 
       <div className="mt-4">
         <p className="text-xs">
-          This is a list of SSH keys associated with your account. Please remove
-          any keys that you do not recognize.
+          <ShhKeyLink /> provide a way to log into the command line interface of some ACCESS resources. This is a list of SSH keys associated with your account. 
+          Please remove any keys that you do not recognize. You can also <CreateShhKeyLink /> and add it to your account.
         </p>
         <h2 className="text-xl font-semibold"> Authentication Keys </h2>
       </div>
