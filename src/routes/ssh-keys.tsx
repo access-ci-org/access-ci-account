@@ -7,24 +7,18 @@ import {
   sshKeysAtom,
   sshKeysDeleteAtom,
   store,
-  isLoggedInAtom,
 } from "@/helpers/state";
 
 import { FaKey } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { FieldSeparator } from "@/components/ui/field";
 import ButtonRow from "@/components/button-row";
+import type { SshKeyResponse } from "@/helpers/types";
 
 export const Route = createFileRoute("/ssh-keys")({
   component: SSHKeysRoute,
   head: () => ({ meta: [{ title: `SSH Keys | ${siteTitle}` }] }),
   loader: async () => {
-    const isLoggedIn = await store.get(isLoggedInAtom);
-    
-    if (!isLoggedIn) {
-      redirect({ to: "/login", throw: true });
-    }
-
     const sshKeys = await store.get(sshKeysAtom);
 
     if ("error" in sshKeys) {
@@ -36,7 +30,7 @@ export const Route = createFileRoute("/ssh-keys")({
 });
 
 function SSHKeysRoute() {
-  const sshKeyDetails = Route.useLoaderData();
+  const sshKeyDetails = Route.useLoaderData() as SshKeyResponse["sshKeys"];
   const deleteSshKey = useSetAtom(sshKeysDeleteAtom);
   const setNotification = useSetAtom(pushNotificationAtom);
   const isImpersonating = useAtomValue(isImpersonatingAtom);

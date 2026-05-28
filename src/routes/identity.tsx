@@ -7,24 +7,18 @@ import {
   oidcAuthorizeAtom,
   pushNotificationAtom,
   store,
-  isLoggedInAtom,
 } from "@/helpers/state";
 import { siteTitle } from "@/config";
 
 import { IoPerson } from "react-icons/io5";
 import { FieldSeparator } from "@/components/ui/field";
 import ButtonRow from "@/components/button-row";
+import type { IdentityResponse } from "@/helpers/types";
 
 export const Route = createFileRoute("/identity")({
   component: IdentityRoute,
   head: () => ({ meta: [{ title: `Linked Accounts | ${siteTitle}` }] }),
   loader: async () => {
-    const isLoggedIn = await store.get(isLoggedInAtom);
-    
-    if (!isLoggedIn) {
-      redirect({ to: "/login", throw: true });
-    }
-
     const identityDetails = await store.get(identityAtom);
 
     if ("error" in identityDetails) {
@@ -37,7 +31,7 @@ export const Route = createFileRoute("/identity")({
 
 function IdentityRoute() {
   // Fetching Identity details via atoms
-  const identityDetails = Route.useLoaderData();
+  const identityDetails = Route.useLoaderData() as IdentityResponse["identities"];
   const deleteIdentity = useSetAtom(identityDeleteAtom);
   const setNotification = useSetAtom(pushNotificationAtom);
   const isImpersonating = useAtomValue(isImpersonatingAtom);
