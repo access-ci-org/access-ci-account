@@ -11,29 +11,31 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldGroup } from "@/components/ui/field";
 
-type RegistrationProps = {
+type FormSendOtpProps = {
   title?: string;
   description?: ReactNode;
   emailPlaceholder?: string;
   submitLabel?: string;
 };
 
-const FormEmailVerfication = withForm({
+const defaultProps = {
+  title: "Start Registration",
+  description: "Enter your university or work email address to start the registration process.",
+  emailPlaceholder: "University or work email address",
+  submitLabel: "Continue",
+};
+
+const FormSendOtp = withForm({
   defaultValues: {
     email: "",
   },
-  props: {
-    title: "Start Registration",
-    description: "Enter your university or work email address to start the registration process.",
-    emailPlaceholder: "University or work email address",
-    submitLabel: "Continue",
-  } as RegistrationProps,
+  props: {} as FormSendOtpProps,
   render: function Render({
     form,
-    title = "Start Registration",
-    description = "Enter your university or work email address to start the registration process.",
-    emailPlaceholder = "University or work email address",
-    submitLabel = "Continue",
+    title = defaultProps.title,
+    description = defaultProps.description,
+    emailPlaceholder = defaultProps.emailPlaceholder,
+    submitLabel = defaultProps.submitLabel,
   }) {
     return (
       <form
@@ -74,4 +76,4 @@ const FormEmailVerfication = withForm({
   },
 });
 
-export default FormEmailVerfication;
+export default FormSendOtp;

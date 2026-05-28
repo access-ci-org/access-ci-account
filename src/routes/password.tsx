@@ -1,14 +1,17 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import * as z from "zod";
 import { useAtomValue, useSetAtom } from "jotai";
 import { siteTitle } from "@/config";
 import { useAppForm } from "@/hooks/form";
 import FormChangePassword from "@/components/form-change-password";
-import PasswordResetFlow from "@/components/password-reset-flow";
+import FormSendOtp from "@/components/form-send-OTP"
 import {
+  emailAtom,
   hasOtpTokenAtom,
   isImpersonatingAtom,
   isLoggedInAtom,
   pushNotificationAtom,
+  sendOtpAtom,
   store,
   updatePasswordAtom,
 } from "@/helpers/state";
@@ -29,10 +32,38 @@ export const Route = createFileRoute("/password")({
   },
 });
 
+const sendOtpFormSchema = z.object({
+  email: z.string().email({ message: "Invalid email address." }),
+});
+
 function Password() {
   const isLoggedIn = useAtomValue(isLoggedInAtom);
   const hasOtpToken = useAtomValue(hasOtpTokenAtom);
   const updatePassword = useSetAtom(updatePasswordAtom);
+  const setEmail = useSetAtom(emailAtom);
+  const sendOtp = useSetAtom(sendOtpAtom);
+  const navigate = useNavigate();
+
+  const sendOtpForm = useAppForm({
+    defaultValues: {
+      email: "",
+    },
+    validators: {
+      onSubmit: sendOtpFormSchema,
+    },
+    onSubmit: async ({ value }) => {
+      setEmail(value.email);
+
+      const result = await sendOtp();
+
+      if (result.sent) {
+        navigate({
+          to: "/$flow/verify",
+          params: { flow: "password" },
+        });
+      }
+    },
+  });
 
   const form = useAppForm({
     defaultValues: {
@@ -53,7 +84,13 @@ function Password() {
     return (
       <>
         <h1>Change ACCESS Password</h1>
-        <PasswordResetFlow />
+        <FormSendOtp
+          form={sendOtpForm}
+          title="Reset your Password"
+          description="Enter your email address and we will send you a verification code."
+          emailPlaceholder="Email address"
+          submitLabel="Send Verification Code"
+        />
       </>
     );
   }

@@ -11,7 +11,7 @@ import {
   store,
 } from "@/helpers/state";
 
-import FormEmailVerfication from "@/components/form-email-verfication";
+import FormSendOtp from "@/components/form-send-OTP";
 import RegistrationLayout from "@/components/registration-layout";
 
 export const Route = createFileRoute("/register/")({
@@ -61,7 +61,7 @@ function RegisterStart() {
         projects.
       </p>
       <RegistrationLayout>
-        <FormEmailVerfication form={form} />
+        <FormSendOtp form={form} />
       </RegistrationLayout>
     </>
   );
