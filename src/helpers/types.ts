@@ -168,3 +168,10 @@ export type OidcTokensResponse = RefreshResponse & {
   idToken?: string | null;
   isAdmin?: boolean | null;
 };
+
+export type CreateAccountStatus = {
+  error: string;
+  created: boolean;
+  username: string;
+  idp: string;
+};

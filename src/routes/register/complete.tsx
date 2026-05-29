@@ -8,13 +8,14 @@ import {
   profileFormSchema,
 } from "@/helpers/validation";
 
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import {
   domainAtom,
   hasOtpTokenAtom,
   linkTokensAtom,
   oidcAuthorizeAtom,
   registrationFormAtom,
+  registrationPasswordAtom,
   store,
 } from "@/helpers/state";
 import { useAtomValue } from "jotai";
@@ -50,6 +51,7 @@ export const Route = createFileRoute("/register/complete")({
 function RegisterComplete() {
   const navigate = useNavigate();
   const [registrationForm, setRegistrationForm] = useAtom(registrationFormAtom);
+  const setRegistrationPassword = useSetAtom(registrationPasswordAtom);
   const email = useAtomValue(emailAtom);
   const domain = useAtomValue(domainAtom);
   const showPasswordFields = domain ? domain.idps.length === 0 : false;
@@ -68,6 +70,7 @@ function RegisterComplete() {
     onSubmit: async ({ value }) => {
       const { password, confirmPassword, ...registrationValues } = value;
       setRegistrationForm(registrationValues);
+      setRegistrationPassword(password);
       navigate({ to: "/register/aup" });
     },
   });

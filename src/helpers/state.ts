@@ -37,6 +37,7 @@ import {
   type OidcClientIds,
   type OidcClientType,
   type OidcTokensResponse,
+  type CreateAccountStatus,
 } from "./types";
 import { profileDefaultValues, registrationDefaultValues } from "./defaults";
 import { getDomainFromEmail } from "./email";
@@ -214,7 +215,7 @@ const generateOidcStateValue = () => {
 };
 
 const getRedirectUri = (client: OidcClientType) =>
-  `${window.location.protocol}//${window.location.host}${import.meta.env.BASE_URL}auth-token/${client}`;
+  `${window.location.protocol}//${window.location.host}${import.meta.env.BASE_URL.replace(/\/$/, "")}/auth-token/${client}`;
 
 export const oidcAuthorizeAtom = atom(
   null,
@@ -374,27 +375,37 @@ export const verifyOtpAtom = atom(
   },
 );
 
-const accountCreateStatusAtom = atom({
+export const accountCreateStatusAtom = atom<CreateAccountStatus>({
   error: "",
   created: false,
   username: "",
+  idp: "",
 });
 
 export const createAccountAtom = atom(
   (get) => get(accountCreateStatusAtom),
   async (get, set) => {
+    const exitWithStatus = (status: CreateAccountStatus) => {
+      // Update the status.
+      set(accountCreateStatusAtom, status);
+      // Show the welcome message if the account was created.
+      set(showWelcomeMessageAtom, status.created);
+      // Reset all inputs and tokens.
+      set(registrationFormAtom, RESET);
+      set(registrationPasswordAtom, "");
+      set(logoutAtom);
+      return status;
+    };
+
     const linkTokens = get(linkTokensAtom);
-    if (linkTokens.refreshToken) {
-      if (!(await doRefresh("link"))) {
-        const status = {
+    if (linkTokens.refreshToken)
+      if (!(await doRefresh("link")))
+        return exitWithStatus({
           error: "Access token is invalid or has expired.",
           created: false,
           username: "",
-        };
-        set(accountCreateStatusAtom, status);
-        return status;
-      }
-    }
+          idp: "",
+        });
 
     const creationResponse = await fetchApiJson<CreateAccountResponse>(
       "/account",
@@ -407,30 +418,29 @@ export const createAccountAtom = atom(
       },
     );
 
-    if ("error" in creationResponse) {
-      const status = {
+    if ("error" in creationResponse)
+      return exitWithStatus({
         error: creationResponse.error.message,
         created: false,
         username: "",
-      };
-      set(accountCreateStatusAtom, status);
-      return status;
-    }
+        idp: "",
+      });
 
-    const username = creationResponse.access_id || "";
-    const status = {
+    const password = get(registrationPasswordAtom);
+    if (password) set(updatePasswordAtom, password);
+
+    const domain = await get(domainAtom);
+    const idp =
+      domain?.idps && domain.idps.length > 0
+        ? domain.idps[0].displayName
+        : "ACCESS CI (XSEDE)";
+
+    return exitWithStatus({
       error: "",
       created: true,
-      username,
-    };
-
-    set(accountCreateStatusAtom, status);
-    if (username) set(usernameAtom, username);
-    if (status.created) {
-      set(showWelcomeMessageAtom, true);
-      set(registrationFormAtom, RESET);
-    }
-    return status;
+      username: creationResponse.access_id,
+      idp,
+    });
   },
 );
 
@@ -774,6 +784,8 @@ export const saveProfileAtom = atom(null, async (get, set) => {
 export const hasOtpTokenAtom = atom((get) =>
   isTokenUnexpired(get(otpTokensAtom).accessToken),
 );
+
+export const registrationPasswordAtom = atom("");
 
 export const updatePasswordAtom = atom(
   null,
