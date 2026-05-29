@@ -777,13 +777,7 @@ export const hasOtpTokenAtom = atom((get) =>
 
 export const updatePasswordAtom = atom(
   null,
-  async (
-    get,
-    set,
-    passwordData: {
-      new_password: string;
-    },
-  ) => {
+  async (get, set, password: string) => {
     const isLoggedIn = get(isLoggedInAtom);
     const hasOtpToken = get(hasOtpTokenAtom);
     const username = get(usernameAtom);
@@ -795,14 +789,14 @@ export const updatePasswordAtom = atom(
         `/account/${username}/password`,
         {
           method: "POST",
-          body: passwordData,
+          body: { password },
           accessToken: get(loginTokensAtom).accessToken,
         },
       );
     } else if (hasOtpToken) {
       response = await fetchApiJson<SuccessResponse>("/auth/password-reset", {
         method: "POST",
-        body: passwordData,
+        body: { password },
         accessToken: get(otpTokensAtom).accessToken,
       });
     } else {

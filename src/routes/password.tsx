@@ -43,9 +43,7 @@ function Password() {
       onSubmit: passwordSchema,
     },
     onSubmit: async ({ value }) => {
-      await updatePassword({
-        new_password: value.password,
-      });
+      await updatePassword(value.password);
     },
   });
 
