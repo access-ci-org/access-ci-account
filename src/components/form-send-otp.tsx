@@ -12,30 +12,28 @@ import {
 import { Field, FieldGroup } from "@/components/ui/field";
 
 type FormSendOtpProps = {
-  title?: string;
-  description?: ReactNode;
-  emailPlaceholder?: string;
-  submitLabel?: string;
-};
-
-const defaultProps = {
-  title: "Start Registration",
-  description: "Enter your university or work email address to start the registration process.",
-  emailPlaceholder: "University or work email address",
-  submitLabel: "Continue",
+  title: string;
+  description: ReactNode;
+  emailPlaceholder: string;
+  submitLabel: string;
 };
 
 const FormSendOtp = withForm({
   defaultValues: {
     email: "",
   },
-  props: {} as FormSendOtpProps,
+  props: {
+    title: "Start Registration",
+    description: "Enter your university or work email address to start the registration process.",
+    emailPlaceholder: "University or work email address",
+    submitLabel: "Continue",
+  } as FormSendOtpProps,
   render: function Render({
     form,
-    title = defaultProps.title,
-    description = defaultProps.description,
-    emailPlaceholder = defaultProps.emailPlaceholder,
-    submitLabel = defaultProps.submitLabel,
+    title,
+    description,
+    emailPlaceholder,
+    submitLabel,
   }) {
     return (
       <form

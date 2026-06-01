@@ -11,7 +11,7 @@ import {
   store,
 } from "@/helpers/state";
 
-import FormSendOtp from "@/components/form-send-OTP";
+import FormSendOtp from "@/components/form-send-otp";
 import RegistrationLayout from "@/components/registration-layout";
 
 export const Route = createFileRoute("/register/")({

@@ -4,7 +4,7 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { siteTitle } from "@/config";
 import { useAppForm } from "@/hooks/form";
 import FormChangePassword from "@/components/form-change-password";
-import FormSendOtp from "@/components/form-send-OTP"
+import FormSendOtp from "@/components/form-send-otp"
 import {
   emailAtom,
   hasOtpTokenAtom,
