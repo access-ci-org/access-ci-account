@@ -11,7 +11,7 @@ import {
   store,
 } from "@/helpers/state";
 
-import FormStartRegistration from "@/components/form-start-registration";
+import FormSendOtp from "@/components/form-send-otp";
 import RegistrationLayout from "@/components/registration-layout";
 
 export const Route = createFileRoute("/register/")({
@@ -61,7 +61,7 @@ function RegisterStart() {
         projects.
       </p>
       <RegistrationLayout>
-        <FormStartRegistration form={form} />
+        <FormSendOtp form={form} />
       </RegistrationLayout>
     </>
   );

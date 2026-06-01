@@ -1,6 +1,6 @@
 "use client";
 import { withForm } from "@/hooks/form";
-
+import type { ReactNode } from "react";
 import {
   Card,
   CardContent,
@@ -11,11 +11,25 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldGroup } from "@/components/ui/field";
 
-const FormStartRegistration = withForm({
+type FormSendOtpProps = {
+  title?: string;
+  description?: ReactNode;
+  emailPlaceholder?: string;
+  submitLabel?: string;
+};
+
+const FormSendOtp = withForm({
   defaultValues: {
     email: "",
   },
-  render: function Render({ form }) {
+  props: {} as FormSendOtpProps,
+  render: function Render({
+    form,
+    title = "Start Registration",
+    description = "Enter your university or work email address to start the registration process.",
+    emailPlaceholder = "University or work email address",
+    submitLabel = "Continue",
+  }) {
     return (
       <form
         onSubmit={(e) => {
@@ -25,11 +39,8 @@ const FormStartRegistration = withForm({
       >
         <Card>
           <CardHeader>
-            <CardTitle>Start Registration</CardTitle>
-            <CardDescription>
-              Enter your university or work email address to start the
-              registration process.
-            </CardDescription>
+            <CardTitle>{title}</CardTitle>
+            <CardDescription>{description}</CardDescription>
           </CardHeader>
           <CardContent>
             <FieldGroup>
@@ -38,7 +49,7 @@ const FormStartRegistration = withForm({
                 children={(field) => (
                   <field.FieldText
                     label="Email Address"
-                    placeholder="University or work email address"
+                    placeholder={emailPlaceholder}
                     className="max-w-lg"
                   />
                 )}
@@ -48,7 +59,7 @@ const FormStartRegistration = withForm({
           <CardFooter>
             <Field orientation="horizontal">
               <form.AppForm>
-                <form.SubmitButton label="Continue" />
+                <form.SubmitButton label={submitLabel} />
               </form.AppForm>
             </Field>
           </CardFooter>
@@ -58,4 +69,4 @@ const FormStartRegistration = withForm({
   },
 });
 
-export default FormStartRegistration;
+export default FormSendOtp;
