@@ -525,7 +525,7 @@ export const sshKeysAtom = atomWithRefresh(async (get) => {
       body: null,
     },
   );
-  return "error" in response ? [] : response.sshKeys;
+  return "error" in response ? response : response.sshKeys;
 });
 
 export const sshKeysDeleteAtom = atom(null, async (get, set, keyId: number) => {
@@ -574,7 +574,7 @@ export const identityAtom = atomWithRefresh(async (get) => {
       body: null,
     },
   );
-  return "error" in response ? [] : response.identities;
+  return "error" in response ? response : response.identities;
 });
 
 export const identityAddAtom = atom(null, async (get, set) => {

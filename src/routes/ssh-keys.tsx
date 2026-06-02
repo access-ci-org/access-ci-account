@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { siteTitle } from "@/config";
 import { useSetAtom, useAtomValue } from "jotai";
 import {
@@ -6,8 +6,8 @@ import {
   pushNotificationAtom,
   sshKeysAtom,
   sshKeysDeleteAtom,
+  store,
 } from "@/helpers/state";
-import { useNavigate } from "@tanstack/react-router";
 
 import { FaKey } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
@@ -15,14 +15,24 @@ import { FieldSeparator } from "@/components/ui/field";
 import ButtonRow from "@/components/button-row";
 import CreateShhKeyLink from "@/components/link-create-ssh-key";
 import ShhKeyLink from "@/components/link-ssh-key";
+import type { SshKeyResponse } from "@/helpers/types";
 
 export const Route = createFileRoute("/ssh-keys")({
   component: SSHKeysRoute,
   head: () => ({ meta: [{ title: `SSH Keys | ${siteTitle}` }] }),
+  loader: async () => {
+    const sshKeys = await store.get(sshKeysAtom);
+
+    if ("error" in sshKeys) {
+      redirect({ to: "/login", throw: true });
+    }
+
+    return sshKeys;
+  },
 });
 
 function SSHKeysRoute() {
-  const sshKeyDetails = useAtomValue(sshKeysAtom);
+  const sshKeyDetails = Route.useLoaderData() as SshKeyResponse["sshKeys"];
   const deleteSshKey = useSetAtom(sshKeysDeleteAtom);
   const setNotification = useSetAtom(pushNotificationAtom);
   const isImpersonating = useAtomValue(isImpersonatingAtom);
