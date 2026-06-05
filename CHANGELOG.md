@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/access-ci-org/access-ci-account/compare/v0.5.1...v0.6.0) (2026-06-05)
+
+
+### Features
+
+* add analytics in production ([d5a7b9c](https://github.com/access-ci-org/access-ci-account/commit/d5a7b9c203fae31cf305365626c6146e009ec87f))
+
 ## [0.5.1](https://github.com/access-ci-org/access-ci-account/compare/v0.5.0...v0.5.1) (2026-06-05)
 
 
