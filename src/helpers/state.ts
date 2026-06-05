@@ -1,6 +1,5 @@
 import {
   apiBaseUrl,
-  cilogonBaseUrl,
   initEmail,
   initToken,
   initUsername,
@@ -17,27 +16,27 @@ import {
 } from "jotai/utils";
 import { parseJwt } from "./jwt";
 import {
-  type ApiError,
-  type SshKeyResponse,
   type AcademicStatusesResponse,
-  type CountriesResponse,
-  type DegreesResponse,
-  type TermsAndConditionsResponse,
-  type SuccessResponse,
-  type DomainResponse,
-  type VerifyOtpResponse,
-  type FetchOptions,
-  type RefreshResponse,
   type AccountResponse,
-  type RegistrationFields,
-  type CreateAccountResponse,
+  type ApiError,
   type AppNotification,
-  type IdentityResponse,
-  type Option,
-  type OidcClientIds,
-  type OidcClientType,
-  type OidcTokensResponse,
+  type CountriesResponse,
+  type CreateAccountResponse,
   type CreateAccountStatus,
+  type DegreesResponse,
+  type DomainResponse,
+  type FetchOptions,
+  type IdentityResponse,
+  type OidcClientType,
+  type OidcInfoResponse,
+  type OidcTokensResponse,
+  type Option,
+  type RefreshResponse,
+  type RegistrationFields,
+  type SshKeyResponse,
+  type SuccessResponse,
+  type TermsAndConditionsResponse,
+  type VerifyOtpResponse,
 } from "./types";
 import { profileDefaultValues, registrationDefaultValues } from "./defaults";
 import { getDomainFromEmail } from "./email";
@@ -199,8 +198,10 @@ export const stopImpersonatingAtom = atom(
   async (get, set) => await set(impersonateAtom, get(adminUsernameAtom)),
 );
 
-export const oidcClientIdsAtom = atom(async () =>
-  fetchApiJson<OidcClientIds>("/auth/oauth2/client_ids", { accessToken: null }),
+export const oidcInfoAtom = atom(async () =>
+  fetchApiJson<OidcInfoResponse>("/auth/info", {
+    accessToken: null,
+  }),
 );
 
 export const oidcStateAtom = atomWithStorage("oidcState", "", undefined, {
@@ -220,14 +221,14 @@ const getRedirectUri = (client: OidcClientType) =>
 export const oidcAuthorizeAtom = atom(
   null,
   async (get, set, client: OidcClientType = "login", idphint: string = "") => {
-    const clientIds = await get(oidcClientIdsAtom);
-    if ("error" in clientIds) return clientIds;
+    const oidcInfo = await get(oidcInfoAtom);
+    if ("error" in oidcInfo) return oidcInfo;
 
     // Refresh the OIDC state value.
     set(oidcStateAtom, generateOidcStateValue());
 
     const params = new URLSearchParams({
-      client_id: clientIds[client],
+      client_id: oidcInfo.clientIds[client],
       redirect_uri: getRedirectUri(client),
       response_type: "code",
       scope: "openid profile email org.cilogon.userinfo",
@@ -238,7 +239,7 @@ export const oidcAuthorizeAtom = atom(
     if (idphint) params.set("idphint", idphint);
     if (client === "link") params.set("prompt", "consent");
 
-    window.location.href = `${cilogonBaseUrl}/authorize?${params.toString()}`;
+    window.location.href = `${oidcInfo.authorizationUrl}?${params.toString()}`;
   },
 );
 
@@ -251,11 +252,11 @@ export const oidcTokensAtom = atom(
     code: string | null = null,
     refreshToken: string | null = null,
   ) => {
-    const clientIds = await get(oidcClientIdsAtom);
-    if ("error" in clientIds) return clientIds;
+    const oidcInfo = await get(oidcInfoAtom);
+    if ("error" in oidcInfo) return oidcInfo;
 
     const body = {
-      clientId: clientIds[client],
+      clientId: oidcInfo.clientIds[client],
       code,
       grantType: refreshToken ? "refresh_token" : "authorization_code",
       redirectUri: getRedirectUri(client),

@@ -1,8 +1,6 @@
 export const siteTitle = "ACCESS Account";
 export const apiBaseUrl =
   import.meta.env.VITE_API_BASE_URL || "https://account.access-ci.org/api/v1";
-export const cilogonBaseUrl =
-  import.meta.env.VITE_CILOGON_BASE_URL || "https://cilogon.org";
 
 export const initEmail = import.meta.env.VITE_INIT_EMAIL || "";
 export const initUsername = import.meta.env.VITE_INIT_USERNAME || "";

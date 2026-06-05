@@ -159,6 +159,11 @@ export type OidcClientIds = {
   login: string;
 };
 
+export type OidcInfoResponse = {
+  authorizationUrl: string;
+  clientIds: OidcClientIds;
+};
+
 export type RefreshResponse = {
   accessToken: string;
   refreshToken: string;
