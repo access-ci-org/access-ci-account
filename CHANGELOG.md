@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.7.1](https://github.com/access-ci-org/access-ci-account/compare/v0.7.0...v0.7.1) (2026-06-05)
+
+
+### Bug Fixes
+
+* add title and description metadata ([bdcd882](https://github.com/access-ci-org/access-ci-account/commit/bdcd882212940c1fd3153d117af353b1b515ef5c))
+* fix error in analytics embed code ([0cc749c](https://github.com/access-ci-org/access-ci-account/commit/0cc749c00b35fec03913221be228d62f3fd02dd6))
+
 ## [0.7.0](https://github.com/access-ci-org/access-ci-account/compare/v0.6.0...v0.7.0) (2026-06-05)
 
 
