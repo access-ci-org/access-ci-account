@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/access-ci-org/access-ci-account/compare/v0.5.0...v0.5.1) (2026-06-05)
+
+
+### Bug Fixes
+
+* **config:** base default API URL on current host ([27f6fdf](https://github.com/access-ci-org/access-ci-account/commit/27f6fdf07a7dbfadcff471f9770740cf632b746d))
+
 ## [0.5.0](https://github.com/access-ci-org/access-ci-account/compare/v0.4.1...v0.5.0) (2026-06-05)
 
 
