@@ -51,6 +51,25 @@ if (rootElement && !rootElement.innerHTML) {
   );
 }
 
+// Add Google Analytics
+declare global {
+  interface Window {
+    dataLayer: any;
+  }
+}
+
+if (!import.meta.env.DEV)
+  (function (w: Window, d: Document, s: string, l: string, i: string) {
+    w.dataLayer = w.dataLayer || [];
+    w.dataLayer.push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+    var f = d.getElementsByTagName(s)[0],
+      j = d.createElement(s) as HTMLScriptElement,
+      dl = l != "dataLayer" ? "&l=" + l : "";
+    j.async = true;
+    j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+    f.parentNode?.insertBefore(j, f);
+  })(window, document, "script", "dataLayer", "GTM-5XV3K7T");
+
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
