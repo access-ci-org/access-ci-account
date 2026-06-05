@@ -1,6 +1,6 @@
 {
   "name": "@access-ci/account",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Account and registration interface for ACCESS CI",
   "repository": "github:access-ci-org/access-ci-account",
   "license": "Apache-2.0",
