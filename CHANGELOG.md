@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.7.0](https://github.com/access-ci-org/access-ci-account/compare/v0.6.0...v0.7.0) (2026-06-05)
+
+
+### Features
+
+* **identity:** hide ACCESS identity in linked accounts ([0ea397d](https://github.com/access-ci-org/access-ci-account/commit/0ea397da9de426398f16b1a0a38a780c9616703d))
+
+
+### Bug Fixes
+
+* **dashboard:** update SSH keys description ([198fcd6](https://github.com/access-ci-org/access-ci-account/commit/198fcd64bbb7e75fda1d3386c5b0b5b985c1e2d5))
+
 ## [0.6.0](https://github.com/access-ci-org/access-ci-account/compare/v0.5.1...v0.6.0) (2026-06-05)
 
 
