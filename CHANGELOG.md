@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.5.0](https://github.com/access-ci-org/access-ci-account/compare/v0.4.1...v0.5.0) (2026-06-05)
+
+
+### Features
+
+* **dashboard:** update text and add links to wecome message ([1569827](https://github.com/access-ci-org/access-ci-account/commit/15698271f483ff5342ac339536fd2ddefef4f925))
+* **state:** read OIDC authorization URL from API ([266e645](https://github.com/access-ci-org/access-ci-account/commit/266e64513b17acea60e24a552f8bcfd8a3088721))
+
+
+### Bug Fixes
+
+* **password:** update request body to match API routes ([a2a40b7](https://github.com/access-ci-org/access-ci-account/commit/a2a40b7be61735735d919d5dab5aefaa739f804a))
+* **registration:** set password when registering without an identity ([84b0546](https://github.com/access-ci-org/access-ci-account/commit/84b0546621adb2434b9ade83e6c4e4355a74f55b))
+* temporarily disable registration and password features ([1228014](https://github.com/access-ci-org/access-ci-account/commit/122801432856dd72c6f9839a17ff01839560abe7))
+
 ## [0.4.1](https://github.com/access-ci-org/access-ci-account/compare/v0.4.0...v0.4.1) (2026-05-26)
 
 
