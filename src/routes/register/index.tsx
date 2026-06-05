@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import * as z from "zod";
 import { useAppForm } from "@/hooks/form";
 import { siteTitle } from "@/config";
@@ -18,6 +18,8 @@ export const Route = createFileRoute("/register/")({
   component: RegisterStart,
   head: () => ({ meta: [{ title: `Register | ${siteTitle}` }] }),
   beforeLoad: () => {
+    // FIXME: Remove once password routes are available.
+    throw redirect({ to: "/" });
     // Reset everything
     store.set(emailAtom, "");
     store.set(linkTokensAtom, { accessToken: "", refreshToken: "" });

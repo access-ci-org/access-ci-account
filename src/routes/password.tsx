@@ -4,7 +4,7 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { siteTitle } from "@/config";
 import { useAppForm } from "@/hooks/form";
 import FormChangePassword from "@/components/form-change-password";
-import FormSendOtp from "@/components/form-send-otp"
+import FormSendOtp from "@/components/form-send-otp";
 import {
   emailAtom,
   hasOtpTokenAtom,
@@ -21,6 +21,8 @@ export const Route = createFileRoute("/password")({
   component: Password,
   head: () => ({ meta: [{ title: `Change Password | ${siteTitle}` }] }),
   beforeLoad: () => {
+    // FIXME: Remove once password routes are available.
+    throw redirect({ to: "/" });
     if (store.get(isImpersonatingAtom)) {
       store.set(pushNotificationAtom, {
         id: "impersonating-password",
