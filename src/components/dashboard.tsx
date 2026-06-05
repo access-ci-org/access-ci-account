@@ -109,7 +109,7 @@ export default function Dashboard() {
             icon={LinkIcon}
             title="Linked Accounts"
             description="Manage the accounts you can use to sign into ACCESS."
-            to="/identity"
+            to="/linked-accounts"
           />
         </div>
       </div>

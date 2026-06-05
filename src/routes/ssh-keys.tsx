@@ -52,13 +52,12 @@ function SSHKeysRoute() {
 
       <FieldSeparator />
 
-      <div className="mt-4">
-        <p className="text-xs">
-          <ShhKeyLink /> provide a way to log into the command line interface of some ACCESS resources. This is a list of SSH keys associated with your account. 
-          Please remove any keys that you do not recognize. You can also <CreateShhKeyLink /> and add it to your account.
-        </p>
-        <h2 className="text-xl font-semibold"> Authentication Keys </h2>
-      </div>
+      <p className="text-xs mt-4!">
+        <ShhKeyLink /> provide a way to log into the command line interface of
+        some ACCESS resources. This is a list of SSH keys associated with your
+        account. Please remove any keys that you do not recognize. You can also{" "}
+        <CreateShhKeyLink /> and add it to your account.
+      </p>
 
       <div className="w-full mb-8 mt-4">
         {sshKeyDetails?.length === 0 && (
@@ -68,10 +67,7 @@ function SSHKeysRoute() {
         )}
         {sshKeyDetails?.map((key) => {
           return (
-            <div
-              key={key.keyId}
-              className="rounded-sm border border-muted overflow-hidden"
-            >
+            <div key={key.keyId} className="rounded-sm border overflow-hidden">
               <div className="flex flex-col gap-3 p-2 m-2 sm:flex-row sm:items-center sm:justify-between">
                 {/* LEFT ICON */}
                 <div className="flex flex-col items-start gap-1 sm:w-auto">

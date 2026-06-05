@@ -58,7 +58,7 @@ export const Route = createFileRoute("/auth-token/$client")({
         // The user is linking a new account.
         store.set(linkTokensAtom, { accessToken, refreshToken });
         const { added } = await store.set(identityAddAtom);
-        if (added) throw redirect({ to: "/identity" });
+        if (added) throw redirect({ to: "/linked-accounts" });
       } else {
         // The user is registering with an existing identity.
         if ("given_name" in userInfo && "family_name" in userInfo) {

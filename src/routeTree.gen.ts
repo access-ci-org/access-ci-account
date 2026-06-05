@@ -14,7 +14,7 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PasswordRouteImport } from './routes/password'
 import { Route as LogoutRouteImport } from './routes/logout'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as IdentityRouteImport } from './routes/identity'
+import { Route as LinkedAccountsRouteImport } from './routes/linked-accounts'
 import { Route as AddSshKeyRouteImport } from './routes/add-ssh-key'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RegisterIndexRouteImport } from './routes/register/index'
@@ -49,9 +49,9 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IdentityRoute = IdentityRouteImport.update({
-  id: '/identity',
-  path: '/identity',
+const LinkedAccountsRoute = LinkedAccountsRouteImport.update({
+  id: '/linked-accounts',
+  path: '/linked-accounts',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AddSshKeyRoute = AddSshKeyRouteImport.update({
@@ -98,7 +98,7 @@ const FlowVerifyRoute = FlowVerifyRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/add-ssh-key': typeof AddSshKeyRoute
-  '/identity': typeof IdentityRoute
+  '/linked-accounts': typeof LinkedAccountsRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/password': typeof PasswordRoute
@@ -114,7 +114,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/add-ssh-key': typeof AddSshKeyRoute
-  '/identity': typeof IdentityRoute
+  '/linked-accounts': typeof LinkedAccountsRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/password': typeof PasswordRoute
@@ -131,7 +131,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/add-ssh-key': typeof AddSshKeyRoute
-  '/identity': typeof IdentityRoute
+  '/linked-accounts': typeof LinkedAccountsRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/password': typeof PasswordRoute
@@ -149,7 +149,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/add-ssh-key'
-    | '/identity'
+    | '/linked-accounts'
     | '/login'
     | '/logout'
     | '/password'
@@ -165,7 +165,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/add-ssh-key'
-    | '/identity'
+    | '/linked-accounts'
     | '/login'
     | '/logout'
     | '/password'
@@ -181,7 +181,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/add-ssh-key'
-    | '/identity'
+    | '/linked-accounts'
     | '/login'
     | '/logout'
     | '/password'
@@ -198,7 +198,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AddSshKeyRoute: typeof AddSshKeyRoute
-  IdentityRoute: typeof IdentityRoute
+  LinkedAccountsRoute: typeof LinkedAccountsRoute
   LoginRoute: typeof LoginRoute
   LogoutRoute: typeof LogoutRoute
   PasswordRoute: typeof PasswordRoute
@@ -249,11 +249,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/identity': {
-      id: '/identity'
-      path: '/identity'
-      fullPath: '/identity'
-      preLoaderRoute: typeof IdentityRouteImport
+    '/linked-accounts': {
+      id: '/linked-accounts'
+      path: '/linked-accounts'
+      fullPath: '/linked-accounts'
+      preLoaderRoute: typeof LinkedAccountsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/add-ssh-key': {
@@ -318,7 +318,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AddSshKeyRoute: AddSshKeyRoute,
-  IdentityRoute: IdentityRoute,
+  LinkedAccountsRoute: LinkedAccountsRoute,
   LoginRoute: LoginRoute,
   LogoutRoute: LogoutRoute,
   PasswordRoute: PasswordRoute,

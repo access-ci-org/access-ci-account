@@ -15,23 +15,27 @@ import { FieldSeparator } from "@/components/ui/field";
 import ButtonRow from "@/components/button-row";
 import type { IdentityResponse } from "@/helpers/types";
 
-export const Route = createFileRoute("/identity")({
-  component: IdentityRoute,
+export const Route = createFileRoute("/linked-accounts")({
+  component: LinkedAccountsRoute,
   head: () => ({ meta: [{ title: `Linked Accounts | ${siteTitle}` }] }),
   loader: async () => {
-    const identityDetails = await store.get(identityAtom);
+    const identitiesResponse = await store.get(identityAtom);
 
-    if ("error" in identityDetails) {
-      redirect({ to: "/login", throw: true });
-    }
+    if ("error" in identitiesResponse) throw redirect({ to: "/login" });
 
-    return identityDetails;
+    return identitiesResponse.filter(
+      (identity) =>
+        !identity.identifiers.some((item) =>
+          item.identifier.includes("@access-ci.org"),
+        ),
+    );
   },
 });
 
-function IdentityRoute() {
+function LinkedAccountsRoute() {
   // Fetching Identity details via atoms
-  const identityDetails = Route.useLoaderData() as IdentityResponse["identities"];
+  const identityDetails =
+    Route.useLoaderData() as IdentityResponse["identities"];
   const deleteIdentity = useSetAtom(identityDeleteAtom);
   const setNotification = useSetAtom(pushNotificationAtom);
   const isImpersonating = useAtomValue(isImpersonatingAtom);
@@ -53,13 +57,10 @@ function IdentityRoute() {
 
       <FieldSeparator />
 
-      <div className="mt-4">
-        <p className="text-xs">
-          This is a list of accounts associated with your ACCESS account. Please
-          remove any accounts that you do not recognize.
-        </p>
-        <h2 className="text-xl font-semibold">Linked Accounts</h2>
-      </div>
+      <p className="text-xs mt-4!">
+        This is a list of accounts associated with your ACCESS account. Please
+        remove any accounts that you do not recognize.
+      </p>
 
       <div className="w-full mb-8 mt-4">
         {identityDetails.length === 0 && (
@@ -71,7 +72,7 @@ function IdentityRoute() {
         {identityDetails.map((identity) => (
           <div
             key={identity.identityId}
-            className="mb-3 overflow-hidden rounded-sm border border-muted"
+            className="mb-3 overflow-hidden rounded-sm border"
           >
             <div className="grid gap-4 p-4 md:grid-cols-[56px_minmax(0,1fr)_120px_180px_auto] md:items-center">
               <div className="flex items-center justify-center self-center">
@@ -79,17 +80,20 @@ function IdentityRoute() {
               </div>
 
               <div className="min-w-0 space-y-3">
-                {identity.identifiers.map((item) => (
-                  <div
-                    key={item.type}
-                    className="grid gap-2 md:grid-cols-[minmax(0,1fr)_120px] md:items-center"
-                  >
-                    <p className="break-words text-sm">{item.identifier}</p>
-                    <p className="w-fit rounded-sm border bg-muted px-2 py-0.5 text-center text-xs md:justify-self-start">
-                      {item.type}
-                    </p>
-                  </div>
-                ))}
+                {identity.identifiers
+                  .sort((a, b) => (a.type < b.type ? -1 : 1))
+                  .map((item, i) => (
+                    <>
+                      {i === 0 && (
+                        <h2 className="font-bold text-[1.375rem]">
+                          {item.identifier}
+                        </h2>
+                      )}
+                      <p className="break-words text-sm mb-0!">
+                        <strong>{item.type}:</strong> {item.identifier}
+                      </p>
+                    </>
+                  ))}
               </div>
 
               <div className="flex items-center text-sm md:justify-center">
@@ -101,31 +105,25 @@ function IdentityRoute() {
               </div>
 
               <div className="flex items-center md:justify-end">
-                {!identity.identifiers.some((item) =>
-                  item.identifier.includes("@access-ci.org"),
-                ) ? (
-                  <ButtonRow
-                    disabled={isImpersonating}
-                    label="Delete"
-                    variant="destructive"
-                    onSubmit={async () => {
-                      try {
-                        await deleteIdentity(identity.identityId);
-                        setNotification({
-                          variant: "success",
-                          message: "Identity deleted successfully.",
-                        });
-                      } catch (error) {
-                        setNotification({
-                          variant: "error",
-                          message: "Unable to delete identity.",
-                        });
-                      }
-                    }}
-                  />
-                ) : (
-                  <div className="h-8 w-[88px]" />
-                )}
+                <ButtonRow
+                  disabled={isImpersonating}
+                  label="Delete"
+                  variant="destructive"
+                  onSubmit={async () => {
+                    try {
+                      await deleteIdentity(identity.identityId);
+                      setNotification({
+                        variant: "success",
+                        message: "Identity deleted successfully.",
+                      });
+                    } catch (error) {
+                      setNotification({
+                        variant: "error",
+                        message: "Unable to delete identity.",
+                      });
+                    }
+                  }}
+                />
               </div>
             </div>
           </div>
