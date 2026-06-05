@@ -1,6 +1,6 @@
 export const siteTitle = "ACCESS Account";
 export const apiBaseUrl =
-  import.meta.env.VITE_API_BASE_URL || "https://account.access-ci.org/api/v1";
+  import.meta.env.VITE_API_BASE_URL || `https://${window.location.host}/api/v1`;
 
 export const initEmail = import.meta.env.VITE_INIT_EMAIL || "";
 export const initUsername = import.meta.env.VITE_INIT_USERNAME || "";
