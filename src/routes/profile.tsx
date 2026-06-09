@@ -20,6 +20,7 @@ import { getDomainFromEmail } from "@/helpers/email";
 
 export const Route = createFileRoute("/profile")({
   component: Profile,
+  gcTime: 0, // Prevent the route from showing stale data while the loader resolves.
   head: () => ({ meta: [{ title: `Profile | ${siteTitle}` }] }),
   beforeLoad: () => {
     store.set(dismissNotificationAtom, ["profile-saved", "profile-error"]);

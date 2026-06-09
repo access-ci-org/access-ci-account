@@ -47,16 +47,12 @@ export const FieldGroupRegistration = withFieldGroup({
               store.set(emailAtom, value);
               const newDomain = await store.get(domainAtom);
               const message = DomainValidationResponse({ domain: newDomain });
-              if (message) {
-                return { message };
-              }
+              if (message) return { message };
             },
             onMount: () => {
               if (domain) {
                 const message = DomainValidationResponse({ domain });
-                if (message) {
-                  return { message };
-                }
+                if (message) return { message };
               }
             },
           }}
