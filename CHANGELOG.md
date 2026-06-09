@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.7.2](https://github.com/access-ci-org/access-ci-account/compare/v0.7.1...v0.7.2) (2026-06-09)
+
+
+### Bug Fixes
+
+* **profile:** prevent the route from showing stale data ([7b9769e](https://github.com/access-ci-org/access-ci-account/commit/7b9769e6d3f5813b11e67b36d4d5e8c57aa49763))
+* **profile:** show email validation error on load ([2b576f4](https://github.com/access-ci-org/access-ci-account/commit/2b576f4c704a7eacc4b8b9e27c05ca6ba47158c5))
+
 ## [0.7.1](https://github.com/access-ci-org/access-ci-account/compare/v0.7.0...v0.7.1) (2026-06-05)
 
 
