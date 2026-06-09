@@ -1,5 +1,5 @@
 import { withForm } from "@/hooks/form";
-import type { Option } from "@/helpers/types";
+import type { DomainResponse, Option } from "@/helpers/types";
 import { profileDefaultValues } from "@/helpers/defaults";
 import { registrationFields } from "@/helpers/fields";
 
@@ -29,9 +29,14 @@ const TIMEZONE_OPTIONS: Option<string>[] = Intl.supportedValuesOf(
   "timeZone",
 ).map((tz) => ({ label: tz, value: tz }));
 
+type FormProfileProps = {
+  domain?: DomainResponse | null;
+};
+
 const FormProfile = withForm({
   defaultValues: profileDefaultValues,
-  render: function Render({ form }) {
+  props: {} as FormProfileProps,
+  render: function Render({ form, domain = null }) {
     return (
       <form
         onSubmit={(e) => {
@@ -58,7 +63,11 @@ const FormProfile = withForm({
               />
             </FieldGroup>
 
-            <FieldGroupRegistration form={form} fields={registrationFields} />
+            <FieldGroupRegistration
+              form={form}
+              fields={registrationFields}
+              domain={domain}
+            />
 
             <FieldGroup>
               {/* Role field captures the user's role with a single-select checkbox */}

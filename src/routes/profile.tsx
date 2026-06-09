@@ -5,6 +5,7 @@ import FormProfile from "@/components/form-profile";
 import {
   accountAtom,
   dismissNotificationAtom,
+  domainAtom,
   emailAtom,
   profileFormAtom,
   saveProfileAtom,
@@ -14,7 +15,7 @@ import {
 
 import { profileFormSchema, usernameSchema } from "@/helpers/validation";
 import { useSetAtom } from "jotai";
-import type { AccountResponse } from "@/helpers/types";
+import type { DomainResponse } from "@/helpers/types";
 import { getDomainFromEmail } from "@/helpers/email";
 
 export const Route = createFileRoute("/profile")({
@@ -25,17 +26,19 @@ export const Route = createFileRoute("/profile")({
   },
   loader: async () => {
     const account = await store.get(accountAtom);
+    let domain: DomainResponse | null = null;
     if ("error" in account) {
-      redirect({ to: "/login", throw: true });
+      throw redirect({ to: "/login" });
     } else {
       store.set(emailAtom, account.email);
+      domain = await store.get(domainAtom);
     }
-    return account;
+    return { account, domain };
   },
 });
 
 function Profile() {
-  const account = Route.useLoaderData() as AccountResponse;
+  const { account, domain } = Route.useLoaderData();
   const setProfileForm = useSetAtom(profileFormAtom);
   const saveProfile = useSetAtom(saveProfileAtom);
   const sendOtp = useSetAtom(sendOtpAtom);
@@ -82,7 +85,7 @@ function Profile() {
   return (
     <>
       <h1>ACCESS Profile</h1>
-      <FormProfile form={form} />
+      <FormProfile form={form} domain={domain} />
     </>
   );
 }

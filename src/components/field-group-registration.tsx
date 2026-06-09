@@ -8,22 +8,22 @@ import {
   store,
 } from "@/helpers/state";
 import { registrationDefaultValues } from "@/helpers/defaults";
+import type { DomainResponse } from "@/helpers/types";
 
 import { FieldGroup } from "@/components/ui/field";
 import DomainValidationResponse from "@/components/domain-validation-response";
 import HelpTicketLink from "@/components/help-ticket-link";
-import OrganizationRequestLink from "./organization-request-link";
+import OrganizationRequestLink from "@/components/organization-request-link";
 
 type FieldGroupRegistrationProps = {
+  domain?: DomainResponse | null;
   emailDisabled?: boolean;
 };
 
 export const FieldGroupRegistration = withFieldGroup({
   defaultValues: registrationDefaultValues,
-  props: {
-    emailDisabled: false,
-  } as FieldGroupRegistrationProps,
-  render: function Render({ group, emailDisabled = false }) {
+  props: {} as FieldGroupRegistrationProps,
+  render: function Render({ group, emailDisabled = false, domain = null }) {
     return (
       <FieldGroup>
         <group.AppField
@@ -43,12 +43,20 @@ export const FieldGroupRegistration = withFieldGroup({
         <group.AppField
           name="email"
           validators={{
-            onBlurAsync: async ({ value }) => {
+            onBlurAsync: async ({ value }: { value: string }) => {
               store.set(emailAtom, value);
-              const domain = await store.get(domainAtom);
-              const message = DomainValidationResponse({ domain });
+              const newDomain = await store.get(domainAtom);
+              const message = DomainValidationResponse({ domain: newDomain });
               if (message) {
                 return { message };
+              }
+            },
+            onMount: () => {
+              if (domain) {
+                const message = DomainValidationResponse({ domain });
+                if (message) {
+                  return { message };
+                }
               }
             },
           }}
@@ -78,8 +86,10 @@ export const FieldGroupRegistration = withFieldGroup({
                   required
                   description={
                     <>
-                      If your organization is not listed, please <OrganizationRequestLink /> to have your
-                      organization added to ACCESS. If you have trouble with the form, please <HelpTicketLink />.
+                      If your organization is not listed, please{" "}
+                      <OrganizationRequestLink /> to have your organization
+                      added to ACCESS. If you have trouble with the form, please{" "}
+                      <HelpTicketLink />.
                     </>
                   }
                 />

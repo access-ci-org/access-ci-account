@@ -31,7 +31,9 @@ export default function FieldText({
   rows?: number;
 }) {
   const field = useFieldContext<string>();
-  const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+  const hasMountError = !!field.state.meta.errorMap.onMount;
+  const isInvalid =
+    (field.state.meta.isTouched || hasMountError) && !field.state.meta.isValid;
   return (
     <Field data-invalid={isInvalid}>
       <FieldLabel required={required} htmlFor={field.name}>
