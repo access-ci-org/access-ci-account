@@ -540,6 +540,7 @@ export const sshKeysDeleteAtom = atom(null, async (get, set, keyId: number) => {
 
   // Refresh SSH Key list after deletion
   set(sshKeysAtom);
+  await get(sshKeysAtom);
 
   return response;
 });
@@ -562,6 +563,7 @@ export const sskKeysAddAtom = atom(
 
     // Refresh SSH Key list after addition
     set(sshKeysAtom);
+    await get(sshKeysAtom);
 
     return response;
   },

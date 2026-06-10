@@ -1,4 +1,9 @@
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  redirect,
+  useNavigate,
+  useRouter,
+} from "@tanstack/react-router";
 import { siteTitle } from "@/config";
 import { useSetAtom, useAtomValue } from "jotai";
 import {
@@ -32,6 +37,7 @@ export const Route = createFileRoute("/ssh-keys")({
 });
 
 function SSHKeysRoute() {
+  const router = useRouter();
   const sshKeyDetails = Route.useLoaderData() as SshKeyResponse["sshKeys"];
   const deleteSshKey = useSetAtom(sshKeysDeleteAtom);
   const setNotification = useSetAtom(pushNotificationAtom);
@@ -95,6 +101,9 @@ function SSHKeysRoute() {
                     onSubmit={async () => {
                       try {
                         await deleteSshKey(key.keyId);
+                        router.invalidate({
+                          filter: (match) => match.routeId === "/ssh-keys",
+                        });
                         setNotification({
                           variant: "success",
                           message: "SSH key deleted successfully.",
