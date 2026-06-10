@@ -55,14 +55,11 @@ function LinkedAccountsRoute() {
           }}
         />
       </div>
-
       <FieldSeparator />
-
       <p className="text-xs mt-4!">
-        This is a list of accounts associated with your ACCESS account. Please
-        remove any accounts that you do not recognize.
+        This is a list of accounts you can use to log into your ACCESS account.
+        Please remove any accounts that you do not recognize.
       </p>
-
       <div className="w-full mb-8 mt-4">
         {identityDetails.length === 0 && (
           <p className="text-sm text-muted-foreground mt-4">
@@ -133,6 +130,13 @@ function LinkedAccountsRoute() {
           </div>
         ))}
       </div>
+      Adding ORCID as a linked account for login does not automatically allow
+      ACCESS to post updates to ORCID. To allow ACCESS to post updates about
+      your projects, visit the{" "}
+      <a href="https://allocations.access-ci.org/orcid" target="_blank">
+        Share with ORCID page
+      </a>
+      .
     </div>
   );
 }
