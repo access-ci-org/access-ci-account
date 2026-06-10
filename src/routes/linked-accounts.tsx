@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useAtomValue, useSetAtom } from "jotai";
 import {
@@ -83,7 +84,7 @@ function LinkedAccountsRoute() {
                 {identity.identifiers
                   .sort((a, b) => (a.type < b.type ? -1 : 1))
                   .map((item, i) => (
-                    <>
+                    <Fragment key={item.type}>
                       {i === 0 && (
                         <h2 className="font-bold text-[1.375rem]">
                           {identity.organization || item.identifier}
@@ -92,7 +93,7 @@ function LinkedAccountsRoute() {
                       <p className="break-words text-sm mb-0!">
                         <strong>{item.type}:</strong> {item.identifier}
                       </p>
-                    </>
+                    </Fragment>
                   ))}
               </div>
 
