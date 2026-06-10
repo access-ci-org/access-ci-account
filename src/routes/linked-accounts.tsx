@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { useAtomValue, useSetAtom } from "jotai";
 import {
   identityAtom,
@@ -34,7 +34,7 @@ export const Route = createFileRoute("/linked-accounts")({
 });
 
 function LinkedAccountsRoute() {
-  // Fetching Identity details via atoms
+  const router = useRouter();
   const identityDetails =
     Route.useLoaderData() as IdentityResponse["identities"];
   const deleteIdentity = useSetAtom(identityDeleteAtom);
@@ -113,14 +113,17 @@ function LinkedAccountsRoute() {
                   onSubmit={async () => {
                     try {
                       await deleteIdentity(identity.identityId);
+                      router.invalidate({
+                        filter: (match) => match.routeId === "/linked-accounts",
+                      });
                       setNotification({
                         variant: "success",
-                        message: "Identity deleted successfully.",
+                        message: "Linked account deleted successfully.",
                       });
                     } catch (error) {
                       setNotification({
                         variant: "error",
-                        message: "Unable to delete identity.",
+                        message: "Unable to delete linked account.",
                       });
                     }
                   }}

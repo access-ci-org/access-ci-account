@@ -607,11 +607,11 @@ export const identityAddAtom = atom(null, async (get, set) => {
   if ("error" in response) {
     const status = {
       added: false,
-      error: response.error.message || "Identity could not be added.",
+      error: response.error.message || "Linked account could not be added.",
     };
     set(pushNotificationAtom, {
       id: "add-identity-error",
-      title: "Error Adding Identity",
+      title: "Error Adding Linked Account",
       message: status.error,
       variant: "error",
     });
@@ -622,8 +622,8 @@ export const identityAddAtom = atom(null, async (get, set) => {
 
   set(pushNotificationAtom, {
     id: "identity-added",
-    title: "Identity Added",
-    message: "Your identity has been added successfully.",
+    title: "Linked Account Added",
+    message: "Your linked account has been added successfully.",
     variant: "success",
   });
 
@@ -646,6 +646,7 @@ export const identityDeleteAtom = atom(
 
     // Refresh identities list after deletion
     set(identityAtom);
+    await get(identityAtom);
 
     return response;
   },
