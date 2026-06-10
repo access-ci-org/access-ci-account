@@ -86,7 +86,7 @@ function LinkedAccountsRoute() {
                     <>
                       {i === 0 && (
                         <h2 className="font-bold text-[1.375rem]">
-                          {item.identifier}
+                          {identity.organization || item.identifier}
                         </h2>
                       )}
                       <p className="break-words text-sm mb-0!">
