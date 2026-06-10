@@ -57,7 +57,7 @@ function LinkedAccountsRoute() {
       </div>
       <FieldSeparator />
       <p className="text-xs mt-4!">
-        This is a list of accounts you can use to log into your ACCESS account.
+        This is a list of accounts you can use to sign into your ACCESS account.
         Please remove any accounts that you do not recognize.
       </p>
       <div className="w-full mb-8 mt-4">
