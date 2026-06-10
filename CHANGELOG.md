@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.8.0](https://github.com/access-ci-org/access-ci-account/compare/v0.7.3...v0.8.0) (2026-06-10)
+
+
+### Features
+
+* **linked-accounts:** add link to Share with ORCID page ([fefa210](https://github.com/access-ci-org/access-ci-account/commit/fefa2107f7e65a0e43d364c123fa9ecc61025271))
+
+
+### Bug Fixes
+
+* **linked-accounts:** add missing key prop ([b6dd60f](https://github.com/access-ci-org/access-ci-account/commit/b6dd60f797a3a8c6126e92204aa38958b739f048))
+* **linked-accounts:** fix list refresh after delete ([422f7e6](https://github.com/access-ci-org/access-ci-account/commit/422f7e6a205a0407237e2b7e17e81b17b9c2f240))
+* **linked-accounts:** make description consistent with dashboard ([3bc3737](https://github.com/access-ci-org/access-ci-account/commit/3bc3737d02219b88be3aefdcd4aa0a62ddd002a1))
+* **ssh-keys:** fix list refresh after delete ([9999f34](https://github.com/access-ci-org/access-ci-account/commit/9999f34e83173a8bdfb1017a8364f04d3779e552))
+
 ## [0.7.3](https://github.com/access-ci-org/access-ci-account/compare/v0.7.2...v0.7.3) (2026-06-10)
 
 
