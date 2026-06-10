@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.3](https://github.com/access-ci-org/access-ci-account/compare/v0.7.2...v0.7.3) (2026-06-10)
+
+
+### Bug Fixes
+
+* **linked-accounts:** show organization name if available ([573d3ac](https://github.com/access-ci-org/access-ci-account/commit/573d3acb08ef5b79108945f64dc1f21cbebeba7e))
+
 ## [0.7.2](https://github.com/access-ci-org/access-ci-account/compare/v0.7.1...v0.7.2) (2026-06-09)
 
 
