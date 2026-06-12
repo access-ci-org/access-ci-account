@@ -428,7 +428,7 @@ export const createAccountAtom = atom(
       });
 
     const password = get(registrationPasswordAtom);
-    if (password) set(updatePasswordAtom, password);
+    if (password) await set(updatePasswordAtom, password, false);
 
     const domain = await get(domainAtom);
     const idp =
@@ -793,7 +793,7 @@ export const registrationPasswordAtom = atom("");
 
 export const updatePasswordAtom = atom(
   null,
-  async (get, set, password: string) => {
+  async (get, set, password: string, notifySuccess: boolean = true) => {
     const isLoggedIn = get(isLoggedInAtom);
     const hasOtpToken = get(hasOtpTokenAtom);
     const username = get(usernameAtom);
@@ -838,12 +838,13 @@ export const updatePasswordAtom = atom(
       return false;
     }
 
-    set(pushNotificationAtom, {
-      id: "password-updated",
-      title: "Password Updated",
-      message: "Your password has been updated successfully.",
-      variant: "success",
-    });
+    if (notifySuccess)
+      set(pushNotificationAtom, {
+        id: "password-updated",
+        title: "Password Updated",
+        message: "Your password has been updated successfully.",
+        variant: "success",
+      });
 
     return true;
   },
