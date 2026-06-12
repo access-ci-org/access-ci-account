@@ -76,7 +76,9 @@ function Password() {
       onSubmit: passwordSchema,
     },
     onSubmit: async ({ value }) => {
-      await updatePassword(value.password);
+      const success = await updatePassword(value.password);
+      form.reset();
+      if (success) navigate({ to: "/" });
     },
   });
 
