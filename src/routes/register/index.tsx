@@ -1,4 +1,4 @@
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import * as z from "zod";
 import { useAppForm } from "@/hooks/form";
 import { siteTitle } from "@/config";
