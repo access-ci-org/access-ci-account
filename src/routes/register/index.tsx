@@ -18,8 +18,6 @@ export const Route = createFileRoute("/register/")({
   component: RegisterStart,
   head: () => ({ meta: [{ title: `Register | ${siteTitle}` }] }),
   beforeLoad: () => {
-    // FIXME: Remove once password routes are available.
-    throw redirect({ to: "/" });
     // Reset everything
     store.set(emailAtom, "");
     store.set(linkTokensAtom, { accessToken: "", refreshToken: "" });

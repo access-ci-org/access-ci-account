@@ -30,9 +30,14 @@ export default function Dashboard() {
         <h1>My ACCESS Account</h1>
 
         {accessId && (
-          <div className="flex items-center gap-3 pb-1">
-            <User className="h-5 w-5 text-black" />
-            <span className="text-lg font-semibold text-black">{accessId}</span>
+          <div className="flex flex-col items-end">
+            <div className="flex items-center gap-3">
+              <User className="h-5 w-5 text-black" />
+              <span className="text-lg font-bold text-black">{accessId}</span>
+            </div>
+            <Link to="/password" className="text-sm">
+              Change password
+            </Link>
           </div>
         )}
       </div>

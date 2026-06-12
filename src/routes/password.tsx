@@ -21,8 +21,6 @@ export const Route = createFileRoute("/password")({
   component: Password,
   head: () => ({ meta: [{ title: `Change Password | ${siteTitle}` }] }),
   beforeLoad: () => {
-    // FIXME: Remove once password routes are available.
-    throw redirect({ to: "/" });
     if (store.get(isImpersonatingAtom)) {
       store.set(pushNotificationAtom, {
         id: "impersonating-password",
