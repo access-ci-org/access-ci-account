@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.9.0](https://github.com/access-ci-org/access-ci-account/compare/v0.8.0...v0.9.0) (2026-06-12)
+
+
+### Features
+
+* **registration:** enable registration and password change ([71870c6](https://github.com/access-ci-org/access-ci-account/commit/71870c62c8eac0a7b95e088365ff0ce7edf433b2))
+
+
+### Bug Fixes
+
+* **password:** navigate to home after successful change ([5661696](https://github.com/access-ci-org/access-ci-account/commit/5661696be3d44a46411bc3ce3c4d5ac520209eb1))
+* **registration:** await password set and do not notify on success ([e7cb1cd](https://github.com/access-ci-org/access-ci-account/commit/e7cb1cd84468942d464bcf97dd5bd4d18a7ca76a))
+
 ## [0.8.0](https://github.com/access-ci-org/access-ci-account/compare/v0.7.3...v0.8.0) (2026-06-10)
 
 
