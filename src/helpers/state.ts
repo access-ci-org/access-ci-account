@@ -831,7 +831,9 @@ export const updatePasswordAtom = atom(
       set(pushNotificationAtom, {
         id: "password-update-error",
         title: "Error Updating Password",
-        message: response.error.message || "Password could not be updated.",
+        message: response.error.message.includes("previous password")
+          ? "The password you entered matches a previous password. Please choose a new password and try again."
+          : response.error.message || "Password could not be updated.",
         variant: "error",
       });
 
