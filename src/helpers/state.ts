@@ -12,6 +12,7 @@ import {
   atomWithRefresh,
   atomWithReset,
   atomWithStorage,
+  createJSONStorage,
   RESET,
 } from "jotai/utils";
 import { parseJwt } from "./jwt";
@@ -42,6 +43,20 @@ import { profileDefaultValues, registrationDefaultValues } from "./defaults";
 import { getDomainFromEmail } from "./email";
 
 export const store = createStore();
+
+// Like atomWithStorage, but reads the value from localStorage once on init
+// without subscribing to the `storage` event, so atoms don't sync across tabs.
+function atomWithLocalStorage<Value>(
+  key: string,
+  initialValue: Value,
+  options?: { getOnInit?: boolean },
+) {
+  const { subscribe, ...storage } = createJSONStorage<Value>();
+  return atomWithStorage(key, initialValue, storage, {
+    getOnInit: true,
+    ...options,
+  });
+}
 
 export const fetchJson = async <T extends object>(
   absoluteUrl: string,
@@ -154,30 +169,15 @@ if (initUsername)
   localStorage.setItem("username", JSON.stringify(initUsername));
 if (initToken) localStorage.setItem("token", JSON.stringify(initToken));
 
-export const showWelcomeMessageAtom = atomWithStorage(
+export const showWelcomeMessageAtom = atomWithLocalStorage(
   "showWelcomeMessage",
   false,
-  undefined,
-  {
-    getOnInit: true,
-  },
 );
-export const emailAtom = atomWithStorage("email", "", undefined, {
-  getOnInit: true,
-});
-export const usernameAtom = atomWithStorage("username", "", undefined, {
-  getOnInit: true,
-});
+export const emailAtom = atomWithLocalStorage("email", "");
+export const usernameAtom = atomWithLocalStorage("username", "");
 // If the user is an admin, adminUsernameAtom contains their real username,
 // while usernameAtom contains the username of the user they are acting as.
-export const adminUsernameAtom = atomWithStorage(
-  "adminUsername",
-  "",
-  undefined,
-  {
-    getOnInit: true,
-  },
-);
+export const adminUsernameAtom = atomWithLocalStorage("adminUsername", "");
 
 export const isAdminAtom = atom((get) => get(adminUsernameAtom) !== "");
 export const isImpersonatingAtom = atom(
@@ -204,9 +204,7 @@ export const oidcInfoAtom = atom(async () =>
   }),
 );
 
-export const oidcStateAtom = atomWithStorage("oidcState", "", undefined, {
-  getOnInit: true,
-});
+export const oidcStateAtom = atomWithLocalStorage("oidcState", "");
 const generateOidcStateValue = () => {
   const array = new Uint8Array(128);
   window.crypto.getRandomValues(array);
@@ -273,10 +271,7 @@ export const oidcTokensAtom = atom(
 );
 
 const noTokens = { accessToken: "", refreshToken: "" };
-const tokensAtom = (key: string) =>
-  atomWithStorage(key, { ...noTokens }, undefined, {
-    getOnInit: true,
-  });
+const tokensAtom = (key: string) => atomWithLocalStorage(key, { ...noTokens });
 export const linkTokensAtom = tokensAtom("linkTokens");
 export const loginTokensAtom = tokensAtom("loginTokens");
 export const otpTokensAtom = tokensAtom("otpTokensAtom");
