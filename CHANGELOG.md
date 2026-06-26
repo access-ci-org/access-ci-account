@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.10.0](https://github.com/access-ci-org/access-ci-account/compare/v0.9.1...v0.10.0) (2026-06-26)
+
+
+### Features
+
+* **password:** show a friendly message for previously used passwords ([7baa32e](https://github.com/access-ci-org/access-ci-account/commit/7baa32e6b7516cb9e00fffdf9d455808d583c7ac))
+* **register:** add message before redirecting to IdP ([5b5bef2](https://github.com/access-ci-org/access-ci-account/commit/5b5bef29d7a10e8b2d054d2ab0863e8a996b4674))
+
+
+### Bug Fixes
+
+* **state:** don't subscribe to localStorage updates ([aae6887](https://github.com/access-ci-org/access-ci-account/commit/aae688732b063985374348986c9ad41410334fed))
+
 ## [0.9.1](https://github.com/access-ci-org/access-ci-account/compare/v0.9.0...v0.9.1) (2026-06-12)
 
 
