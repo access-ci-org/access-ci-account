@@ -13,7 +13,6 @@ import {
   domainAtom,
   hasOtpTokenAtom,
   linkTokensAtom,
-  oidcAuthorizeAtom,
   registrationFormAtom,
   registrationPasswordAtom,
   store,
@@ -23,6 +22,7 @@ import { emailAtom } from "@/helpers/state";
 import { passwordDefaultValues } from "@/helpers/defaults";
 
 import FormCompleteRegistration from "@/components/form-complete-registration";
+import RedirectToIdp from "@/components/redirect-to-idp";
 
 export const Route = createFileRoute("/register/complete")({
   component: RegisterComplete,
@@ -32,19 +32,6 @@ export const Route = createFileRoute("/register/complete")({
   beforeLoad: async () => {
     // Check to make sure we have a valid OTP token.
     if (!store.get(hasOtpTokenAtom)) redirect({ to: "/register", throw: true });
-
-    // Check to see whether the email domain has an associated IdP.
-    const domain = await store.get(domainAtom);
-    const linkTokens = store.get(linkTokensAtom);
-
-    if (domain && domain.idps.length && !linkTokens.accessToken) {
-      store.set(
-        oidcAuthorizeAtom,
-        "link",
-        domain.idps.map((idp) => idp.entityId).join(","),
-      );
-      return new Promise(() => {});
-    }
   },
 });
 
@@ -54,7 +41,13 @@ function RegisterComplete() {
   const setRegistrationPassword = useSetAtom(registrationPasswordAtom);
   const email = useAtomValue(emailAtom);
   const domain = useAtomValue(domainAtom);
+  const linkTokens = useAtomValue(linkTokensAtom);
   const showPasswordFields = domain ? domain.idps.length === 0 : false;
+  const needsIdpSignIn = !!(
+    domain &&
+    domain.idps.length &&
+    !linkTokens.accessToken
+  );
 
   const form = useAppForm({
     defaultValues: {
@@ -74,6 +67,18 @@ function RegisterComplete() {
       navigate({ to: "/register/aup" });
     },
   });
+
+  if (needsIdpSignIn) {
+    return (
+      <RegistrationLayout>
+        <h1>Sign In Required</h1>
+        <RedirectToIdp
+          idpName={domain.idps[0].displayName}
+          idpHint={domain.idps.map((idp) => idp.entityId).join(",")}
+        />
+      </RegistrationLayout>
+    );
+  }
 
   return (
     <>

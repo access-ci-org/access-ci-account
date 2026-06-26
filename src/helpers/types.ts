@@ -78,6 +78,7 @@ export type Organization = {
   state: string | null;
   country: string | null;
   orgType: string | null;
+  ignoreIdp: boolean | null;
 };
 
 export type IdentifierResponse = {
