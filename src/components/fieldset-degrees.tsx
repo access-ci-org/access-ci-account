@@ -58,7 +58,7 @@ export default function FieldsetDegrees({ form }: { form: any }) {
                     name={`degrees[${idx}].degreeField`}
                     children={(field: any) => (
                       <field.FieldText
-                        label="Degree field"
+                        label="Degree Field"
                         placeholder="Enter degree field"
                         value={field.state.value ?? ""}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
