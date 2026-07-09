@@ -53,11 +53,10 @@ export const profileFormSchema = z.object({
   degrees: z
     .array(
       z.object({
-        degreeId: z.number().min(1, "Select a degree"),
-        degreeField: z.string().min(1, "Enter a degree field"),
+        degreeId: requiredNumber("Degree"),
+        degreeField: requiredString("Degree field"),
       }),
-    )
-    .catch([]),
+    ),
 
   timeZone: z.string().catch(""),
 });

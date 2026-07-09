@@ -49,6 +49,7 @@ export default function FieldsetDegrees({ form }: { form: any }) {
                         onChange={(v: string | null) => field.setValue(v ?? "")}
                         placeholder="Select degree level"
                         optionsAtom={degreeOptionsAtom}
+                        required={true}
                       />
                     )}
                   />
@@ -63,6 +64,7 @@ export default function FieldsetDegrees({ form }: { form: any }) {
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                           field.setValue(e.target.value)
                         }
+                        required={true}
                       />
                     )}
                   />
