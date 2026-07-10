@@ -9,11 +9,9 @@ import {
   otpAtom,
   profileFormAtom,
   pushNotificationAtom,
-  saveProfileAtom,
   sendOtpAtom,
   store,
   usernameAtom,
-  verifyIntentAtom,
   verifyOtpAtom,
 } from "@/helpers/state";
 import type { RecoveryEmail } from "@/helpers/types";
@@ -67,9 +65,7 @@ function VerifyEmail() {
   const [otp, setOtp] = useAtom(otpAtom);
   const verifyOtp = useSetAtom(verifyOtpAtom);
   const pushNotification = useSetAtom(pushNotificationAtom);
-  const saveProfile = useSetAtom(saveProfileAtom);
   const currentUsername = useAtomValue(usernameAtom);
-  const verifyIntent = useAtomValue(verifyIntentAtom);
   const navigate = useNavigate();
 
   const prevPath = getPrevPath(flow);
@@ -134,25 +130,25 @@ function VerifyEmail() {
           return;
         }
 
-        // The OTP token is now recorded (keyed by address) by verifyOtp. Either
-        // commit the whole profile now (primary-email change) or return to the
-        // profile form to keep editing (recovery email added).
-        if (verifyIntent === "save") {
-          await saveProfile();
-          navigate({ to: nextPath });
+        // The OTP token is now recorded (keyed by address) by verifyOtp.
+        // Ownership is verified — only now does the address join the form.
+        // If the user had instead abandoned verification (e.g. via the
+        // browser back button), nothing would have been added. An account
+        // must always have exactly one primary once it has any address, so
+        // the very first address added becomes primary; every address after
+        // that starts as a recovery address.
+        const current = store.get(profileFormAtom);
+        if (!current.email) {
+          store.set(profileFormAtom, { ...current, email });
         } else {
-          // Ownership is now verified — only now does the address join the
-          // recovery list. If the user had instead abandoned verification (e.g.
-          // via the browser back button), nothing would have been added.
-          const current = store.get(profileFormAtom);
           const recoveryEmails = (current.recoveryEmails ??
             []) as RecoveryEmail[];
           store.set(profileFormAtom, {
             ...current,
             recoveryEmails: [...recoveryEmails, { email, verified: true }],
           });
-          navigate({ to: "/profile" });
         }
+        navigate({ to: "/profile" });
         return;
       }
 

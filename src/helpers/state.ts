@@ -791,11 +791,6 @@ export const clearNotificationsAtom = atom(null, (_get, set) => {
 
 export const profileFormAtom = atom<AccountResponse>(profileDefaultValues);
 
-// Whether a profile-side OTP verification should commit the profile on success
-// ("save", e.g. a primary-email change) or just collect the token and return to
-// the profile form ("collect", e.g. adding a recovery email).
-export const verifyIntentAtom = atom<"save" | "collect">("save");
-
 export const saveProfileAtom = atom(null, async (get, set) => {
   const profileForm = get(profileFormAtom);
   const tokens = get(emailOtpTokensAtom);

@@ -7,12 +7,9 @@ import {
   dismissNotificationAtom,
   domainAtom,
   emailAtom,
-  emailOtpTokensAtom,
   profileFormAtom,
   saveProfileAtom,
-  sendOtpAtom,
   store,
-  verifyIntentAtom,
 } from "@/helpers/state";
 
 import {
@@ -21,7 +18,6 @@ import {
 } from "@/helpers/validation";
 import { useSetAtom } from "jotai";
 import type { DomainResponse } from "@/helpers/types";
-import { getDomainFromEmail } from "@/helpers/email";
 
 export const Route = createFileRoute("/profile")({
   component: Profile,
@@ -50,52 +46,18 @@ export const Route = createFileRoute("/profile")({
 });
 
 function Profile() {
-  const { account, initial, domain } = Route.useLoaderData();
+  const { initial, domain } = Route.useLoaderData();
   const setProfileForm = useSetAtom(profileFormAtom);
   const saveProfile = useSetAtom(saveProfileAtom);
-  const sendOtp = useSetAtom(sendOtpAtom);
-  const setVerifyIntent = useSetAtom(verifyIntentAtom);
-  const setEmail = useSetAtom(emailAtom);
   const navigate = useNavigate();
 
   const form = useAppForm({
     defaultValues: initial,
-    listeners: {
-      onBlur: async ({ fieldApi, formApi }) => {
-        if (fieldApi.name === "email") {
-          if (
-            getDomainFromEmail(account.email) !==
-            getDomainFromEmail(fieldApi.state.value)
-          )
-            formApi.setFieldValue("organizationId", 0);
-        }
-      },
-    },
     validators: {
       onSubmit: profileFormSchemaWithRecoveries.and(usernameSchema),
     },
     onSubmit: async ({ value }) => {
       setProfileForm(value);
-
-      // Is the primary email new to the account (needs OTP verification)? A
-      // primary that is unchanged or promoted from an existing recovery address does not.
-      const accountEmails = new Set(
-        [account.email, ...account.recoveryEmails.map((b) => b.email)].map((e) =>
-          e.trim().toLowerCase(),
-        ),
-      );
-      const primaryLc = value.email.trim().toLowerCase();
-      const primaryIsNew = !accountEmails.has(primaryLc);
-      const hasToken = !!store.get(emailOtpTokensAtom)[primaryLc];
-
-      if (primaryIsNew && !hasToken) {
-        // Verify ownership of the new primary email, then commit on return.
-        setVerifyIntent("save");
-        setEmail(value.email);
-        await sendOtp();
-        navigate({ to: "/$flow/verify", params: { flow: "profile" } });
-        return;
-      }
 
       const { saved } = await saveProfile();
       if (saved) {

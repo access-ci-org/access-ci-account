@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldGroup } from "@/components/ui/field";
 import FieldsetDegrees from "@/components/fieldset-degrees";
-import FieldsetRecoveryEmails from "@/components/fieldset-recovery-emails";
+import FieldEmailTokens from "@/components/field-email-tokens";
 import { FieldGroupRegistration } from "@/components/field-group-registration";
 
 // ROLE_OPTIONS defines selectable user roles
@@ -72,6 +72,7 @@ const FormProfile = withForm({
               form={form}
               fields={registrationFields}
               domain={domain}
+              emailSlot={<FieldEmailTokens form={form} />}
             />
 
             <FieldGroup>
@@ -114,10 +115,6 @@ const FormProfile = withForm({
                 }}
               />
             </FieldGroup>
-
-            {/* Recovery email management — profile only, outside the shared
-                FieldGroupRegistration so it never appears on registration. */}
-            <FieldsetRecoveryEmails form={form} />
           </CardContent>
           <CardFooter>
             <Field orientation="horizontal">
