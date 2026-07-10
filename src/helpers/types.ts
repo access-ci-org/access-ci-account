@@ -109,6 +109,8 @@ export type FetchOptions = {
   refreshToken?: string | null;
 };
 
+export type Degree = { degreeId: number; degreeField: string };
+
 export type RegistrationFields = {
   firstName: string;
   lastName: string;
@@ -118,6 +120,7 @@ export type RegistrationFields = {
   residenceCountryId: number;
   citizenshipCountryIds: number[];
   department: string;
+  degrees: Degree[];
 };
 
 export type PasswordFields = {
@@ -125,10 +128,7 @@ export type PasswordFields = {
   confirmPassword: string;
 };
 
-export type Degree = { degreeId: number; degreeField: string };
-
 export type AccountResponse = RegistrationFields & {
-  degrees: Degree[];
   timeZone: string;
   role: string[];
   username: string;
