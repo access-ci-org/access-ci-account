@@ -1,5 +1,5 @@
 import type {
-  BackupEmail,
+  RecoveryEmail,
   PasswordFields,
   RegistrationFields,
 } from "@/helpers/types";
@@ -24,7 +24,7 @@ export const registrationDefaultValues: RegistrationFields = {
 export const profileDefaultValues = {
   username: "",
   ...registrationDefaultValues,
-  backupEmails: [] as BackupEmail[],
+  recoveryEmails: [] as RecoveryEmail[],
   role: [] as string[],
   timeZone: "",
 };

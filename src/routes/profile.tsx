@@ -16,7 +16,7 @@ import {
 } from "@/helpers/state";
 
 import {
-  profileFormSchemaWithBackups,
+  profileFormSchemaWithRecoveries,
   usernameSchema,
 } from "@/helpers/validation";
 import { useSetAtom } from "jotai";
@@ -37,7 +37,7 @@ export const Route = createFileRoute("/profile")({
       throw redirect({ to: "/login" });
     }
     // Restore in-flight edits when returning from the OTP verification page
-    // (e.g. after adding a backup email); otherwise start fresh from the account.
+    // (e.g. after adding a recovery email); otherwise start fresh from the account.
     const pending = store.get(profileFormAtom);
     const initial =
       pending.username && pending.username === account.username
@@ -72,15 +72,15 @@ function Profile() {
       },
     },
     validators: {
-      onSubmit: profileFormSchemaWithBackups.and(usernameSchema),
+      onSubmit: profileFormSchemaWithRecoveries.and(usernameSchema),
     },
     onSubmit: async ({ value }) => {
       setProfileForm(value);
 
       // Is the primary email new to the account (needs OTP verification)? A
-      // primary that is unchanged or promoted from an existing backup does not.
+      // primary that is unchanged or promoted from an existing recovery address does not.
       const accountEmails = new Set(
-        [account.email, ...account.backupEmails.map((b) => b.email)].map((e) =>
+        [account.email, ...account.recoveryEmails.map((b) => b.email)].map((e) =>
           e.trim().toLowerCase(),
         ),
       );

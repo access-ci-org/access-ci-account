@@ -128,14 +128,14 @@ export type PasswordFields = {
 
 export type Degree = { degreeId: number; degreeField: string };
 
-export type BackupEmail = { email: string; verified: boolean };
+export type RecoveryEmail = { email: string; verified: boolean };
 
 // A single entry in the profile-update `emails` list. `otpToken` is only needed
 // for an address that is new to the account.
 export type EmailEntry = { email: string; primary: boolean; otpToken?: string };
 
 export type AccountResponse = RegistrationFields & {
-  backupEmails: BackupEmail[];
+  recoveryEmails: RecoveryEmail[];
   degrees: Degree[];
   timeZone: string;
   role: string[];

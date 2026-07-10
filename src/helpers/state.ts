@@ -278,7 +278,7 @@ export const otpTokensAtom = tokensAtom("otpTokensAtom");
 
 // Map of lowercased email address -> OTP JWT proving ownership of that address.
 // Accumulates a token per newly verified email so the profile form can save its
-// whole email set (primary + backups) in a single atomic update.
+// whole email set (primary + recoveries) in a single atomic update.
 export const emailOtpTokensAtom = atomWithLocalStorage<Record<string, string>>(
   "emailOtpTokensAtom",
   {},
@@ -374,7 +374,7 @@ export const verifyOtpAtom = atom(
         status = { error: "", verified: true, username: jwt?.uid || null };
         set(otpTokensAtom, { accessToken: response.jwt, refreshToken: "" });
         // Also record the token keyed by address so the profile form can commit
-        // multiple verified emails (primary + backups) in one save.
+        // multiple verified emails (primary + recoveries) in one save.
         set(emailOtpTokensAtom, {
           ...get(emailOtpTokensAtom),
           [email.trim().toLowerCase()]: response.jwt,
@@ -770,7 +770,7 @@ export const profileFormAtom = atom<AccountResponse>(profileDefaultValues);
 
 // Whether a profile-side OTP verification should commit the profile on success
 // ("save", e.g. a primary-email change) or just collect the token and return to
-// the profile form ("collect", e.g. adding a backup email).
+// the profile form ("collect", e.g. adding a recovery email).
 export const verifyIntentAtom = atom<"save" | "collect">("save");
 
 export const saveProfileAtom = atom(null, async (get, set) => {
@@ -778,12 +778,12 @@ export const saveProfileAtom = atom(null, async (get, set) => {
   const tokens = get(emailOtpTokensAtom);
   const tokenFor = (email: string) => tokens[email.trim().toLowerCase()];
 
-  // Assemble the full desired email set (one primary + backups). A per-address
+  // Assemble the full desired email set (one primary + recoveries). A per-address
   // OTP token is attached when we have one; the backend only requires it for
   // addresses that are new to the account and ignores it for existing ones.
   const emails = [
     { email: profileForm.email, primary: true, otpToken: tokenFor(profileForm.email) },
-    ...(profileForm.backupEmails ?? []).map((b) => ({
+    ...(profileForm.recoveryEmails ?? []).map((b) => ({
       email: b.email,
       primary: false,
       otpToken: tokenFor(b.email),

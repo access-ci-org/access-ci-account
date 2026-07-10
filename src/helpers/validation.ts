@@ -62,14 +62,14 @@ export const profileFormSchema = z.object({
 
 export const usernameSchema = z.object({ username: z.string().catch("") });
 
-// The profile form additionally carries the backup email list. Kept separate
+// The profile form additionally carries the recovery email list. Kept separate
 // from profileFormSchema so the registration forms (which reuse
-// profileFormSchema and have no backup emails) are unaffected.
-export const profileFormSchemaWithBackups = profileFormSchema.extend({
-  backupEmails: z.array(z.object({ email: z.string(), verified: z.boolean() })),
+// profileFormSchema and have no recovery emails) are unaffected.
+export const profileFormSchemaWithRecoveries = profileFormSchema.extend({
+  recoveryEmails: z.array(z.object({ email: z.string(), verified: z.boolean() })),
 });
 
-export const backupEmailSchema = z
+export const recoveryEmailSchema = z
   .string()
   .trim()
   .email({ message: "Invalid email address." });

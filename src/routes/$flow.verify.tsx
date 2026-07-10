@@ -108,8 +108,8 @@ function VerifyEmail() {
         return;
       }
 
-      // Profile flow: the verified address is a primary or backup email for the
-      // profile form. Backups are exempt from eligibility, so there is no domain
+      // Profile flow: the verified address is a primary or recovery email for the
+      // profile form. Recovery emails are exempt from eligibility, so there is no domain
       // gate here (primary eligibility is enforced at save via the organization).
       if (flow === "profile") {
         // Only block if the address belongs to a DIFFERENT ACCESS account; an
@@ -134,7 +134,7 @@ function VerifyEmail() {
 
         // The OTP token is now recorded (keyed by address) by verifyOtp. Either
         // commit the whole profile now (primary-email change) or return to the
-        // profile form to keep editing (backup email added).
+        // profile form to keep editing (recovery email added).
         if (verifyIntent === "save") {
           await saveProfile();
           navigate({ to: nextPath });
