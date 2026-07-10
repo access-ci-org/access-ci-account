@@ -129,12 +129,13 @@ export const FieldGroupRegistration = withFieldGroup({
             const value = field.state.value; // Ensures that value holds a string
             return (
               <field.FieldSelect
-                label="Country of Residence"
+                label="Country of Residence (Where You Currently Live)"
                 name="residenceCountryId"
                 value={value}
                 onChange={(v: number | null) => field.setValue(v ?? 0)}
                 placeholder="Select your country of residence"
                 optionsAtom={countryOptionsAtom}
+                description="Please enter the country where you live today, not your permanent residence or legal status."
                 required
               />
             );
