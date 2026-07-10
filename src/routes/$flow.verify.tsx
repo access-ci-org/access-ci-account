@@ -2,7 +2,7 @@ import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { siteTitle } from "@/config";
 import { useAppForm } from "@/hooks/form";
 import * as z from "zod";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
   domainAtom,
   emailAtom,
@@ -11,6 +11,8 @@ import {
   saveProfileAtom,
   sendOtpAtom,
   store,
+  usernameAtom,
+  verifyIntentAtom,
   verifyOtpAtom,
 } from "@/helpers/state";
 
@@ -64,6 +66,8 @@ function VerifyEmail() {
   const verifyOtp = useSetAtom(verifyOtpAtom);
   const pushNotification = useSetAtom(pushNotificationAtom);
   const saveProfile = useSetAtom(saveProfileAtom);
+  const currentUsername = useAtomValue(usernameAtom);
+  const verifyIntent = useAtomValue(verifyIntentAtom);
   const navigate = useNavigate();
 
   const prevPath = getPrevPath(flow);
@@ -104,31 +108,59 @@ function VerifyEmail() {
         return;
       }
 
-      const shouldCheckExistingAccount = flow !== "password";
+      // Profile flow: the verified address is a primary or backup email for the
+      // profile form. Backups are exempt from eligibility, so there is no domain
+      // gate here (primary eligibility is enforced at save via the organization).
+      if (flow === "profile") {
+        // Only block if the address belongs to a DIFFERENT ACCESS account; an
+        // address that resolves to the user's own account is legitimate (e.g. one
+        // of their existing emails) and must not be blocked.
+        if (status.username && status.username !== currentUsername) {
+          setEmail("");
+          pushNotification({
+            title: "Existing Account",
+            message: (
+              <>
+                The email address {email} is already associated with ACCESS ID{" "}
+                {status.username}. Please <HelpTicketLink /> if you have multiple
+                ACCESS IDs and need to have them merged.
+              </>
+            ),
+            variant: "error",
+          });
+          navigate({ to: existingAccountPath });
+          return;
+        }
 
-      if (shouldCheckExistingAccount && status.username) {
+        // The OTP token is now recorded (keyed by address) by verifyOtp. Either
+        // commit the whole profile now (primary-email change) or return to the
+        // profile form to keep editing (backup email added).
+        if (verifyIntent === "save") {
+          await saveProfile();
+          navigate({ to: nextPath });
+        } else {
+          navigate({ to: "/profile" });
+        }
+        return;
+      }
+
+      // Registration / password flows (unchanged).
+      if (flow !== "password" && status.username) {
         setEmail("");
 
         pushNotification({
           title: "Existing Account",
-          message:
-            flow === "profile" ? (
-              <>
-                The email address {email} is already associated with ACCESS ID{" "}
-                {status.username}. Please <HelpTicketLink /> if you have
-                multiple ACCESS IDs and need to have them merged.
-              </>
-            ) : (
-              <>
-                You already have an ACCESS account. Your ACCESS ID is{" "}
-                <strong>{status.username}</strong>. You can{" "}
-                <Link to="/login">login</Link> or{" "}
-                <a href="https://identity.access-ci.org/password-reset">
-                  reset your password
-                </a>
-                .
-              </>
-            ),
+          message: (
+            <>
+              You already have an ACCESS account. Your ACCESS ID is{" "}
+              <strong>{status.username}</strong>. You can{" "}
+              <Link to="/login">login</Link> or{" "}
+              <a href="https://identity.access-ci.org/password-reset">
+                reset your password
+              </a>
+              .
+            </>
+          ),
           variant: "error",
         });
 
@@ -159,10 +191,6 @@ function VerifyEmail() {
 
         navigate({ to: prevPath });
         return;
-      }
-
-      if (flow === "profile") {
-        await saveProfile();
       }
 
       navigate({ to: nextPath });

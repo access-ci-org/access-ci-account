@@ -7,13 +7,18 @@ import {
   dismissNotificationAtom,
   domainAtom,
   emailAtom,
+  emailOtpTokensAtom,
   profileFormAtom,
   saveProfileAtom,
   sendOtpAtom,
   store,
+  verifyIntentAtom,
 } from "@/helpers/state";
 
-import { profileFormSchema, usernameSchema } from "@/helpers/validation";
+import {
+  profileFormSchemaWithBackups,
+  usernameSchema,
+} from "@/helpers/validation";
 import { useSetAtom } from "jotai";
 import type { DomainResponse } from "@/helpers/types";
 import { getDomainFromEmail } from "@/helpers/email";
@@ -30,23 +35,31 @@ export const Route = createFileRoute("/profile")({
     let domain: DomainResponse | null = null;
     if ("error" in account) {
       throw redirect({ to: "/login" });
-    } else {
-      store.set(emailAtom, account.email);
-      domain = await store.get(domainAtom);
     }
-    return { account, domain };
+    // Restore in-flight edits when returning from the OTP verification page
+    // (e.g. after adding a backup email); otherwise start fresh from the account.
+    const pending = store.get(profileFormAtom);
+    const initial =
+      pending.username && pending.username === account.username
+        ? pending
+        : account;
+    store.set(emailAtom, initial.email);
+    domain = await store.get(domainAtom);
+    return { account, initial, domain };
   },
 });
 
 function Profile() {
-  const { account, domain } = Route.useLoaderData();
+  const { account, initial, domain } = Route.useLoaderData();
   const setProfileForm = useSetAtom(profileFormAtom);
   const saveProfile = useSetAtom(saveProfileAtom);
   const sendOtp = useSetAtom(sendOtpAtom);
+  const setVerifyIntent = useSetAtom(verifyIntentAtom);
+  const setEmail = useSetAtom(emailAtom);
   const navigate = useNavigate();
 
   const form = useAppForm({
-    defaultValues: account,
+    defaultValues: initial,
     listeners: {
       onBlur: async ({ fieldApi, formApi }) => {
         if (fieldApi.name === "email") {
@@ -59,26 +72,36 @@ function Profile() {
       },
     },
     validators: {
-      onSubmit: profileFormSchema.and(usernameSchema),
+      onSubmit: profileFormSchemaWithBackups.and(usernameSchema),
     },
     onSubmit: async ({ value }) => {
       setProfileForm(value);
-      if (value.email === account.email) {
-        // The email address has not changed. Save the profile now.
-        const { saved } = await saveProfile();
-        if (saved) {
-          navigate({ to: "/" });
-        } else {
-          window.scrollTo({ top: 0 });
-        }
-      } else {
-        // The email address has changed. Verify the email address before
-        // saving the profile.
+
+      // Is the primary email new to the account (needs OTP verification)? A
+      // primary that is unchanged or promoted from an existing backup does not.
+      const accountEmails = new Set(
+        [account.email, ...account.backupEmails.map((b) => b.email)].map((e) =>
+          e.trim().toLowerCase(),
+        ),
+      );
+      const primaryLc = value.email.trim().toLowerCase();
+      const primaryIsNew = !accountEmails.has(primaryLc);
+      const hasToken = !!store.get(emailOtpTokensAtom)[primaryLc];
+
+      if (primaryIsNew && !hasToken) {
+        // Verify ownership of the new primary email, then commit on return.
+        setVerifyIntent("save");
+        setEmail(value.email);
         await sendOtp();
-        navigate({
-          to: "/$flow/verify",
-          params: { flow: "profile" },
-        });
+        navigate({ to: "/$flow/verify", params: { flow: "profile" } });
+        return;
+      }
+
+      const { saved } = await saveProfile();
+      if (saved) {
+        navigate({ to: "/" });
+      } else {
+        window.scrollTo({ top: 0 });
       }
     },
   });

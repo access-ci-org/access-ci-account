@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldGroup } from "@/components/ui/field";
 import FieldsetDegrees from "@/components/fieldset-degrees";
+import FieldsetBackupEmails from "@/components/fieldset-backup-emails";
 import { FieldGroupRegistration } from "@/components/field-group-registration";
 
 // ROLE_OPTIONS defines selectable user roles
@@ -109,6 +110,10 @@ const FormProfile = withForm({
                 }}
               />
             </FieldGroup>
+
+            {/* Backup email management — profile only, outside the shared
+                FieldGroupRegistration so it never appears on registration. */}
+            <FieldsetBackupEmails form={form} />
           </CardContent>
           <CardFooter>
             <Field orientation="horizontal">

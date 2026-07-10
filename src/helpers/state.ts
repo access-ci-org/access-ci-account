@@ -275,6 +275,14 @@ const tokensAtom = (key: string) => atomWithLocalStorage(key, { ...noTokens });
 export const linkTokensAtom = tokensAtom("linkTokens");
 export const loginTokensAtom = tokensAtom("loginTokens");
 export const otpTokensAtom = tokensAtom("otpTokensAtom");
+
+// Map of lowercased email address -> OTP JWT proving ownership of that address.
+// Accumulates a token per newly verified email so the profile form can save its
+// whole email set (primary + backups) in a single atomic update.
+export const emailOtpTokensAtom = atomWithLocalStorage<Record<string, string>>(
+  "emailOtpTokensAtom",
+  {},
+);
 export const isLoggedInAtom = atom(
   (get) => get(loginTokensAtom).accessToken != "",
 );
@@ -285,6 +293,7 @@ export const logoutAtom = atom(null, (_get, set) => {
   set(linkTokensAtom, { ...noTokens });
   set(loginTokensAtom, { ...noTokens });
   set(otpTokensAtom, { ...noTokens });
+  set(emailOtpTokensAtom, {});
   document.cookie = `${ssoCookieName}=; Max-Age=0; Path=${ssoCookiePath}; Domain=${ssoCookieDomain};`;
 });
 
@@ -364,6 +373,12 @@ export const verifyOtpAtom = atom(
         const jwt = parseJwt(response.jwt);
         status = { error: "", verified: true, username: jwt?.uid || null };
         set(otpTokensAtom, { accessToken: response.jwt, refreshToken: "" });
+        // Also record the token keyed by address so the profile form can commit
+        // multiple verified emails (primary + backups) in one save.
+        set(emailOtpTokensAtom, {
+          ...get(emailOtpTokensAtom),
+          [email.trim().toLowerCase()]: response.jwt,
+        });
       }
     }
     set(otpVerifyStatusAtom, status);
@@ -753,13 +768,36 @@ export const clearNotificationsAtom = atom(null, (_get, set) => {
 
 export const profileFormAtom = atom<AccountResponse>(profileDefaultValues);
 
+// Whether a profile-side OTP verification should commit the profile on success
+// ("save", e.g. a primary-email change) or just collect the token and return to
+// the profile form ("collect", e.g. adding a backup email).
+export const verifyIntentAtom = atom<"save" | "collect">("save");
+
 export const saveProfileAtom = atom(null, async (get, set) => {
   const profileForm = get(profileFormAtom);
+  const tokens = get(emailOtpTokensAtom);
+  const tokenFor = (email: string) => tokens[email.trim().toLowerCase()];
+
+  // Assemble the full desired email set (one primary + backups). A per-address
+  // OTP token is attached when we have one; the backend only requires it for
+  // addresses that are new to the account and ignores it for existing ones.
+  const emails = [
+    { email: profileForm.email, primary: true, otpToken: tokenFor(profileForm.email) },
+    ...(profileForm.backupEmails ?? []).map((b) => ({
+      email: b.email,
+      primary: false,
+      otpToken: tokenFor(b.email),
+    })),
+  ];
+
   const { saved, error } = await set(updateAccountAtom, {
     ...profileForm,
-    emailOtpToken: get(otpTokensAtom).accessToken,
+    emails,
   });
   if (saved) {
+    // Consumed the OTP tokens and in-flight edits on a successful save.
+    set(emailOtpTokensAtom, {});
+    set(profileFormAtom, profileDefaultValues);
     set(pushNotificationAtom, {
       id: "profile-saved",
       title: "Profile Saved",

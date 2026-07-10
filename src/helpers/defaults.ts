@@ -1,4 +1,8 @@
-import type { PasswordFields, RegistrationFields } from "@/helpers/types";
+import type {
+  BackupEmail,
+  PasswordFields,
+  RegistrationFields,
+} from "@/helpers/types";
 
 export const passwordDefaultValues: PasswordFields = {
   password: "",
@@ -19,6 +23,7 @@ export const registrationDefaultValues: RegistrationFields = {
 export const profileDefaultValues = {
   username: "",
   ...registrationDefaultValues,
+  backupEmails: [] as BackupEmail[],
   role: [] as string[],
   degrees: [{ degreeId: 0, degreeField: "" }],
   timeZone: "",
