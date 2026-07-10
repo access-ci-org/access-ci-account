@@ -7,7 +7,7 @@ import {
   ssoCookieName,
   ssoCookiePath,
 } from "@/config";
-import { atom, createStore, type WritableAtom } from "jotai";
+import { atom, createStore, type Atom, type WritableAtom } from "jotai";
 import {
   atomWithRefresh,
   atomWithReset,
@@ -664,12 +664,12 @@ export const identityDeleteAtom = atom(
   },
 );
 
-// Retrieving Domain information based on email address
-export const domainAtom = atom(async (get) => {
-  const email = get(emailAtom);
-  const domain = getDomainFromEmail(email);
-  if (!domain) return null;
-
+// Fetches eligibility info for a single domain (shared by domainAtom, which
+// resolves it for the current primary email, and domainInfoAtomFamily, which
+// resolves it for an arbitrary domain such as a recovery email's).
+const fetchDomainInfo = async (
+  domain: string,
+): Promise<DomainResponse | null> => {
   const response = await fetchApiJson<DomainResponse>(`/domain/${domain}`);
   // Handle backend errors
   if ("error" in response) {
@@ -707,7 +707,30 @@ export const domainAtom = atom(async (get) => {
     idps: data.idps || [],
     isEligible,
   };
+};
+
+// Retrieving Domain information based on email address
+export const domainAtom = atom(async (get) => {
+  const email = get(emailAtom);
+  const domain = getDomainFromEmail(email);
+  if (!domain) return null;
+  return fetchDomainInfo(domain);
 });
+
+// Per-domain eligibility lookup, keyed by domain rather than the current
+// primary email, so callers (e.g. recovery emails) can check eligibility for
+// addresses other than the current primary. A plain cache (rather than
+// jotai/utils's atomFamily, which is deprecated) since the key set is small
+// and bounded by the number of distinct domains on the account.
+const domainInfoAtomCache = new Map<string, Atom<Promise<DomainResponse | null>>>();
+export const getDomainInfoAtom = (domain: string) => {
+  let domainInfoAtom = domainInfoAtomCache.get(domain);
+  if (!domainInfoAtom) {
+    domainInfoAtom = atom(async () => fetchDomainInfo(domain));
+    domainInfoAtomCache.set(domain, domainInfoAtom);
+  }
+  return domainInfoAtom;
+};
 
 export const organizationIdOptionsAtom = atom<Promise<Option<number>[]>>(
   async (get) =>

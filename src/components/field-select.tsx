@@ -83,9 +83,6 @@ export default function FieldSelect<T>({
           // Current selection from the value
           const selectedOption = toOption(value);
 
-          // Reset the value if it isn't in the available options.
-          if (value && !selectedOption) handleChange(null);
-
           return (
             <Select
               options={options}

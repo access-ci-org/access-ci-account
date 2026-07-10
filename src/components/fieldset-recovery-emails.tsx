@@ -1,13 +1,13 @@
-import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
+import { loadable } from "jotai/utils";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useAppForm } from "@/hooks/form";
 import type { RecoveryEmail } from "@/helpers/types";
 import {
   emailAtom,
+  getDomainInfoAtom,
   profileFormAtom,
-  pushNotificationAtom,
   sendOtpAtom,
   store,
   verifyIntentAtom,
@@ -15,61 +15,84 @@ import {
 import { getDomainFromEmail } from "@/helpers/email";
 import { recoveryEmailSchema } from "@/helpers/validation";
 
+// Shows "Make Primary" only once we know the recovery address's domain is
+// eligible and has at least one organization to select on promotion.
+function RecoveryEmailRow({
+  row,
+  onMakePrimary,
+  onRemove,
+}: {
+  row: RecoveryEmail;
+  onMakePrimary: () => void;
+  onRemove: () => void;
+}) {
+  const domain = getDomainFromEmail(row.email);
+  const domainInfo = useAtomValue(loadable(getDomainInfoAtom(domain ?? "")));
+  const canMakePrimary =
+    domainInfo.state === "hasData" &&
+    !!domainInfo.data?.isEligible &&
+    (domainInfo.data?.organizations.length ?? 0) > 0;
+
+  return (
+    <div className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto_auto] md:items-center">
+      <span className="break-all">{row.email}</span>
+      {canMakePrimary ? (
+        <Button
+          type="button"
+          size="lg"
+          onClick={onMakePrimary}
+          className="bg-[var(--teal-700)] border-[var(--teal-700)] text-white hover:bg-white hover:text-[var(--teal-700)]"
+        >
+          Make Primary
+        </Button>
+      ) : (
+        <span />
+      )}
+      <Button
+        type="button"
+        variant="destructive"
+        size="lg"
+        className="border-red-600 hover:bg-white hover:border-red-600"
+        onClick={onRemove}
+        aria-label={`Remove recovery email ${row.email}`}
+      >
+        Remove
+      </Button>
+    </div>
+  );
+}
+
 // FieldsetRecoveryEmails renders the profile-only recovery email manager. It lives
 // OUTSIDE the shared FieldGroupRegistration so recovery emails never appear on the
 // registration form. Adds route through the existing OTP verification flow;
 // removes and "make primary" are staged in the form and committed on Save.
 export default function FieldsetRecoveryEmails({ form }: { form: any }) {
-  const [newEmail, setNewEmail] = useState("");
   const navigate = useNavigate();
   const sendOtp = useSetAtom(sendOtpAtom);
-  const pushNotification = useSetAtom(pushNotificationAtom);
 
-  const addRecoveryEmail = async () => {
-    const email = newEmail.trim();
-    const parsed = recoveryEmailSchema.safeParse(email);
-    if (!parsed.success) {
-      pushNotification({
-        id: "recovery-email-invalid",
-        title: "Invalid Email Address",
-        message: "Please enter a valid email address.",
-        variant: "error",
-      });
-      return;
-    }
+  // A standalone form for the "add a recovery email" input only, so it can render
+  // through field.FieldText (which needs a form.AppField context) without staging
+  // its value in the profile form itself. Its own onSubmit only runs once the
+  // "newEmail" field's validators (below) pass, so invalid/duplicate addresses
+  // never reach here — they show as an inline field error instead.
+  const addEmailForm = useAppForm({
+    defaultValues: { newEmail: "" },
+    onSubmit: async ({ value }) => {
+      const email = value.newEmail.trim();
 
-    const values = form.state.values;
-    const existing = [
-      values.email,
-      ...((values.recoveryEmails ?? []) as RecoveryEmail[]).map((b) => b.email),
-    ].map((e: string) => e.trim().toLowerCase());
-    if (existing.includes(email.toLowerCase())) {
-      pushNotification({
-        id: "recovery-email-invalid",
-        title: "Email Already Added",
-        message: "That email address is already on your account.",
-        variant: "error",
-      });
-      return;
-    }
-
-    // Stash the in-flight form (with the pending recovery email) so it survives the
-    // verification round-trip, then send the OTP and go verify ownership. On
-    // return, the profile loader restores this value and the recovery email is listed.
-    const nextValues = {
-      ...values,
-      recoveryEmails: [
-        ...((values.recoveryEmails ?? []) as RecoveryEmail[]),
-        { email, verified: false },
-      ],
-    };
-    store.set(profileFormAtom, nextValues);
-    store.set(verifyIntentAtom, "collect");
-    store.set(emailAtom, email);
-    setNewEmail("");
-    await sendOtp();
-    navigate({ to: "/$flow/verify", params: { flow: "profile" } });
-  };
+      // Stash the in-flight form so other edits survive the verification round trip,
+      // without adding the pending address to recoveryEmails yet — it's only added
+      // once ownership is actually verified (see $flow.verify.tsx's "collect"
+      // handling). Otherwise navigating away without completing the OTP (e.g. the
+      // browser back button) would leave an unverified address in the list.
+      store.set(profileFormAtom, form.state.values);
+      store.set(verifyIntentAtom, "collect");
+      store.set(emailAtom, email);
+      addEmailForm.setFieldValue("newEmail", "");
+      await sendOtp();
+      navigate({ to: "/$flow/verify", params: { flow: "profile" } });
+    },
+  });
 
   return (
     <form.AppField name="recoveryEmails" mode="array">
@@ -106,60 +129,64 @@ export default function FieldsetRecoveryEmails({ form }: { form: any }) {
           <fieldset className="space-y-4 border border-slate-300 p-4">
             <legend
               data-slot="field-label"
-              className="mb-3 flex w-fit items-center gap-2 text-sm leading-snug font-semibold select-none"
+              className="mb-0 flex w-fit items-center gap-2 text-sm leading-snug font-semibold select-none"
             >
               Recovery Email Addresses
             </legend>
 
-            <p className="text-sm text-slate-600">
+            <p className="text-sm! text-muted-foreground">
               Recovery email addresses are used for account recovery and
-              notifications. You can make an eligible recovery address your primary
-              address; you will be asked to choose a matching organization.
+              notifications.
             </p>
 
             {rows.length > 0 && (
               <div className="space-y-2">
                 {rows.map((row, idx) => (
-                  <div
+                  <RecoveryEmailRow
                     key={idx}
-                    className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto_auto] md:items-center"
-                  >
-                    <span className="break-all">{row.email}</span>
-                    <Button
-                      type="button"
-                      size="lg"
-                      onClick={() => makePrimary(idx)}
-                      className="bg-[var(--teal-700)] border-[var(--teal-700)] text-white hover:bg-white hover:text-[var(--teal-700)]"
-                    >
-                      Make Primary
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="lg"
-                      className="border-red-600 hover:bg-white hover:border-red-600"
-                      onClick={() => removeRow(idx)}
-                      aria-label={`Remove recovery email ${row.email}`}
-                    >
-                      Remove
-                    </Button>
-                  </div>
+                    row={row}
+                    onMakePrimary={() => makePrimary(idx)}
+                    onRemove={() => removeRow(idx)}
+                  />
                 ))}
               </div>
             )}
 
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto] md:items-center">
-              <Input
-                type="email"
-                placeholder="Add a recovery email address"
-                value={newEmail}
-                onChange={(e) => setNewEmail(e.target.value)}
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto] md:items-start">
+              <addEmailForm.AppField
+                name="newEmail"
+                validators={{
+                  onSubmit: ({ value }: { value: string }) => {
+                    const email = value.trim();
+                    const parsed = recoveryEmailSchema.safeParse(email);
+                    if (!parsed.success)
+                      return { message: "Please enter a valid email address." };
+
+                    const values = form.state.values;
+                    const existing = [
+                      values.email,
+                      ...((values.recoveryEmails ?? []) as RecoveryEmail[]).map(
+                        (b) => b.email,
+                      ),
+                    ].map((e: string) => e.trim().toLowerCase());
+                    if (existing.includes(email.toLowerCase()))
+                      return {
+                        message: "That email address is already on your account.",
+                      };
+                  },
+                }}
+                children={(field) => (
+                  <field.FieldText
+                    label="Recovery Email Address"
+                    placeholder="Add a recovery email address"
+                  />
+                )}
               />
               <Button
                 type="button"
                 size="lg"
-                onClick={addRecoveryEmail}
-                className="bg-[var(--teal-700)] border-[var(--teal-700)] text-white hover:bg-white hover:text-[var(--teal-700)]"
+                onClick={() => addEmailForm.handleSubmit()}
+                className="bg-[var(--teal-700)] border-[var(--teal-700)] text-white hover:bg-white hover:text-[var(--teal-700)] md:mt-8"
               >
                 Add Recovery Email
               </Button>

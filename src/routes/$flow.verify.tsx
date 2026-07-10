@@ -7,6 +7,7 @@ import {
   domainAtom,
   emailAtom,
   otpAtom,
+  profileFormAtom,
   pushNotificationAtom,
   saveProfileAtom,
   sendOtpAtom,
@@ -15,6 +16,7 @@ import {
   verifyIntentAtom,
   verifyOtpAtom,
 } from "@/helpers/state";
+import type { RecoveryEmail } from "@/helpers/types";
 
 import { Link } from "@tanstack/react-router";
 import DomainValidationResponse from "@/components/domain-validation-response";
@@ -139,6 +141,16 @@ function VerifyEmail() {
           await saveProfile();
           navigate({ to: nextPath });
         } else {
+          // Ownership is now verified — only now does the address join the
+          // recovery list. If the user had instead abandoned verification (e.g.
+          // via the browser back button), nothing would have been added.
+          const current = store.get(profileFormAtom);
+          const recoveryEmails = (current.recoveryEmails ??
+            []) as RecoveryEmail[];
+          store.set(profileFormAtom, {
+            ...current,
+            recoveryEmails: [...recoveryEmails, { email, verified: true }],
+          });
           navigate({ to: "/profile" });
         }
         return;

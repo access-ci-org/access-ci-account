@@ -40,9 +40,13 @@ const FormProfile = withForm({
   render: function Render({ form, domain = null }) {
     return (
       <form
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
-          form.handleSubmit();
+          await form.handleSubmit();
+          // If validation blocked submission (so the route's onSubmit never ran),
+          // scroll up so the field errors above — otherwise easy to miss with
+          // "Save Profile" at the bottom of a long form — are visible.
+          if (!form.state.isSubmitSuccessful) window.scrollTo({ top: 0 });
         }}
       >
         <Card className="w-full">
