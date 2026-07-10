@@ -18,6 +18,7 @@ export const registrationDefaultValues: RegistrationFields = {
   residenceCountryId: 0,
   citizenshipCountryIds: [] as number[],
   department: "",
+  degrees: [],
 };
 
 export const profileDefaultValues = {
@@ -25,6 +26,5 @@ export const profileDefaultValues = {
   ...registrationDefaultValues,
   backupEmails: [] as BackupEmail[],
   role: [] as string[],
-  degrees: [{ degreeId: 0, degreeField: "" }],
   timeZone: "",
 };

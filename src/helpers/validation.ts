@@ -50,13 +50,12 @@ export const profileFormSchema = z.object({
 
   role: z.array(z.string()).catch([]),
 
-  degrees: z
-    .array(
-      z.object({
-        degreeId: requiredNumber("Degree"),
-        degreeField: requiredString("Degree field"),
-      }),
-    ),
+  degrees: z.array(
+    z.object({
+      degreeId: requiredNumber("Degree"),
+      degreeField: requiredString("Degree field"),
+    }),
+  ),
 
   timeZone: z.string().catch(""),
 });

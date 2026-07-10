@@ -118,6 +118,7 @@ export type RegistrationFields = {
   residenceCountryId: number;
   citizenshipCountryIds: number[];
   department: string;
+  degrees: Degree[];
 };
 
 export type PasswordFields = {
