@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.2](https://github.com/access-ci-org/access-ci-account/compare/v0.10.1...v0.10.2) (2026-07-13)
+
+
+### Bug Fixes
+
+* **validation:** ignore leading and trailing spaces in email field ([7a278c9](https://github.com/access-ci-org/access-ci-account/commit/7a278c92916bd18de2e730984bfecd403162bac7))
+
 ## [0.10.1](https://github.com/access-ci-org/access-ci-account/compare/v0.10.0...v0.10.1) (2026-07-10)
 
 
