@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.10.1](https://github.com/access-ci-org/access-ci-account/compare/v0.10.0...v0.10.1) (2026-07-10)
+
+
+### Bug Fixes
+
+* **profile:** update country of residence label and description ([be3059e](https://github.com/access-ci-org/access-ci-account/commit/be3059e87a680011572516aea91093c88eae224d))
+* **profile:** use title case for degree field label ([9f3b0fb](https://github.com/access-ci-org/access-ci-account/commit/9f3b0fb044c02a617de0d46e41fec443f97b3b6e))
+* **validation:** allow registration to proceed without degrees ([9180a29](https://github.com/access-ci-org/access-ci-account/commit/9180a29b6b56230e230f1c0bbe44a4eed4a61086))
+* **validation:** require degree and field for every degree row ([8407e11](https://github.com/access-ci-org/access-ci-account/commit/8407e119c8ae68b2e446c6586ea533509ffa283c))
+
 ## [0.10.0](https://github.com/access-ci-org/access-ci-account/compare/v0.9.1...v0.10.0) (2026-06-26)
 
 
