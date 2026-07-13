@@ -26,7 +26,7 @@ export const Route = createFileRoute("/register/")({
 });
 
 const formSchema = z.object({
-  email: z.string().email({ message: "Invalid email address." }),
+  email: z.string().trim().pipe(z.email({ message: "Invalid email address." })),
 });
 
 function RegisterStart() {
@@ -42,7 +42,7 @@ function RegisterStart() {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
-      setEmail(value.email);
+      setEmail(value.email.trim());
       const status = await sendOtp();
       if (status.sent) {
         navigate({

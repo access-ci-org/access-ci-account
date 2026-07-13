@@ -33,7 +33,7 @@ export const Route = createFileRoute("/password")({
 });
 
 const sendOtpFormSchema = z.object({
-  email: z.string().email({ message: "Invalid email address." }),
+  email: z.string().trim().pipe(z.email({ message: "Invalid email address." })),
 });
 
 function Password() {
@@ -52,7 +52,7 @@ function Password() {
       onSubmit: sendOtpFormSchema,
     },
     onSubmit: async ({ value }) => {
-      setEmail(value.email);
+      setEmail(value.email.trim());
 
       const result = await sendOtp();
 

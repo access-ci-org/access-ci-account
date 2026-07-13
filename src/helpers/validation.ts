@@ -38,7 +38,7 @@ export const noPasswordSchema = z.object({
 export const profileFormSchema = z.object({
   firstName: requiredString("First name"),
   lastName: requiredString("Last name"),
-  email: z.string().email({ message: "Invalid email address." }),
+  email: z.string().trim().pipe(z.email({ message: "Invalid email address." })),
   organizationId: requiredNumber("Institution"),
   department: requiredString("Department"),
   academicStatusId: requiredNumber("Academic status"),
