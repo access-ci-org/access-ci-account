@@ -29,6 +29,9 @@ jobs:
       - name: Run tests with coverage
         run: npm run test:coverage
 
+      - name: Run browser smoke tests
+        run: npm run test:smoke
+
       - name: Upload coverage report
         if: always()
         uses: actions/upload-artifact@v4
