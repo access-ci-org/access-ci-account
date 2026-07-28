@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig, configDefaults } from "vitest/config";
 import viteReact from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 
@@ -18,6 +18,25 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
+    },
+  },
+  test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: ["./src/test/setup.ts"],
+    css: false,
+    coverage: {
+      provider: "v8",
+      reportsDirectory: "./coverage",
+      exclude: [
+        ...(configDefaults.coverage.exclude ?? []),
+        "src/routeTree.gen.ts",
+        "src/components/ui/**",
+        "src/main.tsx",
+        "src/reportWebVitals.ts",
+        "src/test/**",
+        "**/*.gen.ts",
+      ],
     },
   },
 });
