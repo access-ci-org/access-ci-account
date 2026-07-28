@@ -1,8 +1,17 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, afterEach } from "vitest";
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useAppForm } from "@/hooks/form";
 import { renderWithProviders } from "@/test/utils";
+
+// input-otp schedules uncleared setTimeout(0/10/50ms) timers on value/focus
+// changes. This file-level afterEach runs before the global cleanup() unmount
+// (afterEach is LIFO), so draining ~60ms of real time here lets those timers
+// fire while the component is still mounted — otherwise they run after jsdom
+// teardown and throw "window is not defined".
+afterEach(async () => {
+  await new Promise((resolve) => setTimeout(resolve, 60));
+});
 
 // Note: FieldOtp renders per-slot <input data-otp-index> children, but the
 // shadcn InputOTPSlot overrides them with {char}, so the real input is the

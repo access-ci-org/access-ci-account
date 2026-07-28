@@ -150,6 +150,7 @@ export const FieldGroupRegistration = withFieldGroup({
               <field.FieldSelect<number>
                 label="Country of Citizenship"
                 name="citizenshipCountryIds"
+                isMulti
                 value={value}
                 onChange={(v: number[] | null) => field.setValue(v ?? [])}
                 placeholder="Select your country of citizenship"

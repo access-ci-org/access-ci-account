@@ -1,12 +1,5 @@
-import {
-  apiBaseUrl,
-  initEmail,
-  initToken,
-  initUsername,
-  ssoCookieDomain,
-  ssoCookieName,
-  ssoCookiePath,
-} from "@/config";
+import { apiBaseUrl, initEmail, initToken, initUsername } from "@/config";
+import { deleteSsoCookie } from "./cookie";
 import { atom, createStore, type WritableAtom } from "jotai";
 import {
   atomWithRefresh,
@@ -285,7 +278,7 @@ export const logoutAtom = atom(null, (_get, set) => {
   set(linkTokensAtom, { ...noTokens });
   set(loginTokensAtom, { ...noTokens });
   set(otpTokensAtom, { ...noTokens });
-  document.cookie = `${ssoCookieName}=; Max-Age=0; Path=${ssoCookiePath}; Domain=${ssoCookieDomain};`;
+  deleteSsoCookie();
 });
 
 export const otpAtom = atom("");
@@ -540,7 +533,7 @@ export const sshKeysDeleteAtom = atom(null, async (get, set, keyId: number) => {
   return response;
 });
 
-export const sskKeysAddAtom = atom(
+export const sshKeysAddAtom = atom(
   null,
   async (get, set, publicKey: string) => {
     const username = get(usernameAtom);

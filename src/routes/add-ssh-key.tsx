@@ -4,7 +4,7 @@ import { useAppForm } from "@/hooks/form";
 import { sshKeyFormSchema } from "@/helpers/validation";
 import { useNavigate } from "@tanstack/react-router";
 import { useSetAtom } from "jotai";
-import { pushNotificationAtom, sskKeysAddAtom } from "@/helpers/state";
+import { pushNotificationAtom, sshKeysAddAtom } from "@/helpers/state";
 
 import FormAddSshKey from "@/components/form-add-ssh-key";
 
@@ -15,7 +15,7 @@ export const Route = createFileRoute("/add-ssh-key")({
 
 function AddSshKey() {
   const navigate = useNavigate();
-  const addSshKey = useSetAtom(sskKeysAddAtom);
+  const addSshKey = useSetAtom(sshKeysAddAtom);
   const setNotification = useSetAtom(pushNotificationAtom);
   const form = useAppForm({
     defaultValues: {

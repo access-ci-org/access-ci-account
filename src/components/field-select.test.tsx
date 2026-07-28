@@ -27,9 +27,9 @@ describe("FieldSelect", () => {
     expect(onChange).not.toHaveBeenCalled();
   });
 
-  it("resets to null during render when the value is missing from options", () => {
-    // Pins the render-time handleChange(null) behavior at field-select.tsx:87 —
-    // historically the source of silent select-field zeroing.
+  it("resets to null (via effect) when the value is missing from options", () => {
+    // The reset now runs in a post-render effect rather than during render,
+    // but the observable contract is unchanged: an unknown single value clears.
     const { onChange } = renderSelect({ label: "Pick", options: OPTIONS, value: 999 });
     expect(onChange).toHaveBeenCalledWith(null);
   });
@@ -51,8 +51,13 @@ describe("FieldSelect", () => {
     expect(screen.getByText("Beta")).toBeInTheDocument();
   });
 
-  it("does not reset a multi-select with unknown values (single/multi asymmetry)", () => {
+  it("prunes unknown values from a multi-select", () => {
     const { onChange } = renderSelect({ label: "Pick", options: OPTIONS, value: [999] });
+    expect(onChange).toHaveBeenCalledWith([]);
+  });
+
+  it("does not prune a multi-select whose values are all valid", () => {
+    const { onChange } = renderSelect({ label: "Pick", options: OPTIONS, value: [1, 2] });
     expect(onChange).not.toHaveBeenCalled();
   });
 

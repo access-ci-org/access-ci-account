@@ -20,13 +20,19 @@ describe("parseJwt", () => {
     expect(parseJwt(token).name).toBe("José Ólafur");
   });
 
-  // The implementation has no guard for malformed input; these tests pin the
-  // current throwing behavior so any future hardening is a conscious change.
-  it("throws on a token with no payload segment", () => {
-    expect(() => parseJwt("not-a-jwt")).toThrow();
+  // parseJwt guards malformed input by returning null so callers degrade
+  // gracefully rather than throwing out of a route guard.
+  it("returns null for a token with no payload segment", () => {
+    expect(parseJwt("not-a-jwt")).toBeNull();
   });
 
-  it("throws on an empty string", () => {
-    expect(() => parseJwt("")).toThrow();
+  it("returns null for empty or nullish input", () => {
+    expect(parseJwt("")).toBeNull();
+    expect(parseJwt(null)).toBeNull();
+    expect(parseJwt(undefined)).toBeNull();
+  });
+
+  it("returns null when the payload segment cannot be decoded", () => {
+    expect(parseJwt("a.!!!.c")).toBeNull();
   });
 });

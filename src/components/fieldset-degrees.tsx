@@ -45,8 +45,8 @@ export default function FieldsetDegrees({ form }: { form: any }) {
                       <field.FieldSelect
                         label="Degree"
                         name={`degrees[${idx}].degreeId`}
-                        value={field.state.value ?? ""}
-                        onChange={(v: string | null) => field.setValue(v ?? "")}
+                        value={field.state.value ?? 0}
+                        onChange={(v: number | null) => field.setValue(v ?? 0)}
                         placeholder="Select degree level"
                         optionsAtom={degreeOptionsAtom}
                         required={true}

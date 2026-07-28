@@ -51,7 +51,9 @@ export const Route = createFileRoute("/auth-token/$client")({
     if ("error" in tokens) return authError(tokens.error.message);
 
     const { accessToken, idToken, isAdmin, refreshToken } = tokens;
-    const userInfo = parseJwt(idToken as string);
+    const userInfo = parseJwt(idToken);
+    if (!userInfo)
+      return authError("Authentication failed due to an invalid token.");
 
     if (client === "link") {
       if (store.get(isLoggedInAtom)) {
