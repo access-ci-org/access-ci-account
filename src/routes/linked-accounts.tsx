@@ -12,7 +12,6 @@ import {
 import { siteTitle } from "@/config";
 
 import { IoPerson } from "react-icons/io5";
-import { FieldSeparator } from "@/components/ui/field";
 import ButtonRow from "@/components/button-row";
 import type { IdentityResponse } from "@/helpers/types";
 
@@ -43,9 +42,9 @@ function LinkedAccountsRoute() {
   const oidcAuthorize = useSetAtom(oidcAuthorizeAtom);
 
   return (
-    <div className="w-full mt-4">
-      <div className="flex w-full items-center justify-between gap-4 mb-2">
-        <h1>Linked Accounts</h1>
+    <>
+      <div className="flex w-full items-center justify-between gap-4 mb-9">
+        <h1 className="mb-0!">Linked Accounts</h1>
         <ButtonRow
           disabled={isImpersonating}
           label="Link an Account"
@@ -55,7 +54,6 @@ function LinkedAccountsRoute() {
           }}
         />
       </div>
-      <FieldSeparator />
       <p className="text-xs mt-4!">
         This is a list of accounts you can use to sign into your ACCESS account.
         Please remove any accounts that you do not recognize.
@@ -70,7 +68,7 @@ function LinkedAccountsRoute() {
         {identityDetails.map((identity) => (
           <div
             key={identity.identityId}
-            className="mb-3 overflow-hidden rounded-sm border"
+            className="mb-3 overflow-hidden border"
           >
             <div className="grid gap-4 p-4 md:grid-cols-[56px_minmax(0,1fr)_120px_180px_auto] md:items-center">
               <div className="flex items-center justify-center self-center">
@@ -137,6 +135,6 @@ function LinkedAccountsRoute() {
         Share with ORCID page
       </a>
       .
-    </div>
+    </>
   );
 }

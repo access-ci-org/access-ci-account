@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { siteTitle } from "@/config";
 
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 import RegistrationLayout from "@/components/registration-layout";
@@ -24,7 +24,7 @@ function Success() {
       <h1>Your ACCESS ID</h1>
       <RegistrationLayout>
         <Card>
-          <div className="p-6">
+          <CardContent>
             <p>
               Your new ACCESS ID is: <strong>{username}</strong>
             </p>
@@ -37,7 +37,7 @@ function Success() {
             <Button asChild className="bg-primary mt-4 align-center">
               <Link to="/login">Login</Link>
             </Button>
-          </div>
+          </CardContent>
         </Card>
       </RegistrationLayout>
     </>

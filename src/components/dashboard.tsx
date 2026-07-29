@@ -26,8 +26,49 @@ export default function Dashboard() {
   const accessId = "username" in account ? account.username : "";
   return (
     <>
-      <div className="flex items-end justify-between">
-        <h1>My ACCESS Account</h1>
+      {showWelcomeMessage && (
+        <Alert className="border-none rounded-none shadow-none bg-transparent bg-[var(--teal-050)] p-4 mb-5 text-[var(--contrast)]">
+          <CheckCircle2Icon />
+          <AlertTitle className="text-lg font-medium">
+            Congratulations! You've successfully created your ACCESS Account.
+          </AlertTitle>
+          <button
+            type="button"
+            onClick={() => setShowWelcomeMessage(false)}
+            className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-black/5"
+            aria-label="Dismiss welcome message"
+          >
+            <X className="h-4 w-4" />
+          </button>
+          <AlertDescription>
+            <h3 className="text-base"> Next steps: </h3>
+            <ol className="list-decimal pl-5">
+              <div className="text-base">
+                <li>
+                  <Link to="/profile">Review and edit your profile.</Link>
+                </li>
+                <li>
+                  <a href="https://allocations.access-ci.org/orcid">
+                    Share your account with ORCID.
+                  </a>
+                </li>
+                <li>
+                  <a href="https://allocations.access-ci.org/get-your-first-project">
+                    Start a project and get an allocation.
+                  </a>
+                </li>
+                <li>
+                  <a href="https://support.access-ci.org/community-persona">
+                    Add information to your Community Persona.
+                  </a>
+                </li>
+              </div>
+            </ol>
+          </AlertDescription>
+        </Alert>
+      )}
+      <div className="flex items-end justify-between mb-9">
+        <h1 className="mb-0!">My ACCESS Account</h1>
 
         {accessId && (
           <div className="flex flex-col items-end">
@@ -39,49 +80,6 @@ export default function Dashboard() {
               Change password
             </Link>
           </div>
-        )}
-      </div>
-      <div className="min-h-full pt-3">
-        {showWelcomeMessage && (
-          <Alert className="border-none rounded-none shadow-none bg-transparent bg-[var(--teal-050)] p-4  text-[var(--contrast)]">
-            <CheckCircle2Icon />
-            <AlertTitle className="text-lg font-medium">
-              Congratulations! You've successfully created your ACCESS Account.
-            </AlertTitle>
-            <button
-              type="button"
-              onClick={() => setShowWelcomeMessage(false)}
-              className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-black/5"
-              aria-label="Dismiss welcome message"
-            >
-              <X className="h-4 w-4" />
-            </button>
-            <AlertDescription>
-              <h3 className="text-base"> Next steps: </h3>
-              <ol className="list-decimal pl-5">
-                <div className="text-base">
-                  <li>
-                    <Link to="/profile">Review and edit your profile.</Link>
-                  </li>
-                  <li>
-                    <a href="https://allocations.access-ci.org/orcid">
-                      Share your account with ORCID.
-                    </a>
-                  </li>
-                  <li>
-                    <a href="https://allocations.access-ci.org/get-your-first-project">
-                      Start a project and get an allocation.
-                    </a>
-                  </li>
-                  <li>
-                    <a href="https://support.access-ci.org/community-persona">
-                      Add information to your Community Persona.
-                    </a>
-                  </li>
-                </div>
-              </ol>
-            </AlertDescription>
-          </Alert>
         )}
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch pt-6">

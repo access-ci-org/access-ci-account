@@ -65,7 +65,7 @@ h1 {
   font-size: 36px;
   font-stretch: 70%;
   font-weight: 500;
-  /* margin-top: 60px; */
+  margin-bottom: 2.25rem;
 }
 a {
   color: var(--contrast);

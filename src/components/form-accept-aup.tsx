@@ -23,7 +23,7 @@ const FormAcceptAup = withForm({
             form.handleSubmit(); //this triggers the route's useAppForm onSubmit
           }}
         >
-          <Card className="w-full my-5 border-none rounded-none shadow-none bg-transparent bg-[var(--teal-050)]">
+          <Card>
             <CardHeader className="sr-only">
               Acceptable Use Policy
               <CardDescription className="font-normal">
