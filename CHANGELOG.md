@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.11.0](https://github.com/access-ci-org/access-ci-account/compare/v0.10.2...v0.11.0) (2026-07-29)
+
+
+### Features
+
+* **register:** add escape hatch to allow users to register without an ([db2cfff](https://github.com/access-ci-org/access-ci-account/commit/db2cfff6b06372cdd9d1218bcab0ed2b21d0a0d8))
+* **ssh-keys:** move video links to sidebar ([64a0d18](https://github.com/access-ci-org/access-ci-account/commit/64a0d18437f01b405f6c3f4679078f4a116381da))
+
+
+### Bug Fixes
+
+* **button:** fix destructive variant styles ([1fa1a92](https://github.com/access-ci-org/access-ci-account/commit/1fa1a92844ed47bae788df5c48b2c3430d4baa1a))
+* **dashboard:** use black text for welcome message ([90a701c](https://github.com/access-ci-org/access-ci-account/commit/90a701cfb9556a91312a2d19beb48894cc121b11))
+* fix issues that emerged from test development ([5bf7601](https://github.com/access-ci-org/access-ci-account/commit/5bf76011567b0e3a42f9ebc514146375c804d95c))
+* hide redundant form headings ([c740093](https://github.com/access-ci-org/access-ci-account/commit/c7400931d7eba625afd17bb610a31a9709c5ce83))
+* improve header spacing ([6c2a373](https://github.com/access-ci-org/access-ci-account/commit/6c2a3730d9760b8db20ea25f8ae7f90fc1011fa9))
+* **register:** show the correct IdP when using the escape hatch ([b4a638c](https://github.com/access-ci-org/access-ci-account/commit/b4a638c7a24aa3296b11b3efac4586972204917c))
+
 ## [0.10.2](https://github.com/access-ci-org/access-ci-account/compare/v0.10.1...v0.10.2) (2026-07-13)
 
 
