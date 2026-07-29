@@ -33,7 +33,10 @@ export const Route = createFileRoute("/password")({
 });
 
 const sendOtpFormSchema = z.object({
-  email: z.string().trim().pipe(z.email({ message: "Invalid email address." })),
+  email: z
+    .string()
+    .trim()
+    .pipe(z.email({ message: "Invalid email address." })),
 });
 
 function Password() {
@@ -87,7 +90,7 @@ function Password() {
         <FormSendOtp
           form={sendOtpForm}
           title="Reset your Password"
-          description="Enter your email address and we will send you a verification code."
+          description="Enter your email address to receive a verification code."
           emailPlaceholder="Email address"
           submitLabel="Send Verification Code"
         />

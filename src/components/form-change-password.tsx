@@ -25,7 +25,7 @@ const FormPasswordChange = withForm({
         }}
       >
         <Card className="w-full mb-20">
-          <CardHeader>
+          <CardHeader className="sr-only">
             <CardTitle>Change your Password</CardTitle>
           </CardHeader>
           <CardContent>

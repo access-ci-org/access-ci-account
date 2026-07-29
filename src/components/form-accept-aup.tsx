@@ -24,7 +24,7 @@ const FormAcceptAup = withForm({
           }}
         >
           <Card className="w-full my-5 border-none rounded-none shadow-none bg-transparent bg-[var(--teal-050)]">
-            <CardHeader className="text-lg font-bold font-archivo text-[24px]">
+            <CardHeader className="sr-only">
               Acceptable Use Policy
               <CardDescription className="font-normal">
                 Please review and accept the ACCESS Acceptable Use Policy to

@@ -38,7 +38,7 @@ const FormSendOtp = withForm({
         }}
       >
         <Card>
-          <CardHeader>
+          <CardHeader className="sr-only">
             <CardTitle>{title}</CardTitle>
             <CardDescription>{description}</CardDescription>
           </CardHeader>

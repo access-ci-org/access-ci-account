@@ -45,7 +45,7 @@ const FormProfile = withForm({
         }}
       >
         <Card className="w-full">
-          <CardHeader>
+          <CardHeader className="sr-only">
             <CardTitle>Edit Profile</CardTitle>
             <CardDescription>Edit your ACCESS profile.</CardDescription>
           </CardHeader>
