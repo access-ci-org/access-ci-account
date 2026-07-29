@@ -425,7 +425,7 @@ export const createAccountAtom = atom(
 
     const domain = await get(domainAtom);
     const idp =
-      domain?.idps && domain.idps.length > 0
+      domain?.idps && domain.idps.length > 0 && !get(bypassIdpAtom)
         ? domain.idps[0].displayName
         : "ACCESS CI (XSEDE)";
 
