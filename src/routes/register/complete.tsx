@@ -10,11 +10,13 @@ import {
 
 import { useAtom, useSetAtom } from "jotai";
 import {
+  bypassIdpAtom,
   domainAtom,
   hasOtpTokenAtom,
   linkTokensAtom,
   registrationFormAtom,
   registrationPasswordAtom,
+  shouldShowPasswordFields,
   store,
 } from "@/helpers/state";
 import { useAtomValue } from "jotai";
@@ -42,11 +44,13 @@ function RegisterComplete() {
   const email = useAtomValue(emailAtom);
   const domain = useAtomValue(domainAtom);
   const linkTokens = useAtomValue(linkTokensAtom);
-  const showPasswordFields = domain ? domain.idps.length === 0 : false;
+  const bypassIdp = useAtomValue(bypassIdpAtom);
+  const showPasswordFields = shouldShowPasswordFields(domain, bypassIdp);
   const needsIdpSignIn = !!(
     domain &&
     domain.idps.length &&
-    !linkTokens.accessToken
+    !linkTokens.accessToken &&
+    !bypassIdp
   );
 
   const form = useAppForm({

@@ -4,12 +4,14 @@ import { useAppForm } from "@/hooks/form";
 import { siteTitle } from "@/config";
 import { useAtom, useSetAtom } from "jotai";
 import {
+  bypassIdpAtom,
   emailAtom,
   linkTokensAtom,
   otpTokensAtom,
   sendOtpAtom,
   store,
 } from "@/helpers/state";
+import { registerSearchSchema } from "@/helpers/validation";
 
 import FormSendOtp from "@/components/form-send-otp";
 import RegistrationLayout from "@/components/registration-layout";
@@ -17,11 +19,13 @@ import RegistrationLayout from "@/components/registration-layout";
 export const Route = createFileRoute("/register/")({
   component: RegisterStart,
   head: () => ({ meta: [{ title: `Register | ${siteTitle}` }] }),
-  beforeLoad: () => {
+  validateSearch: (search) => registerSearchSchema.parse(search),
+  beforeLoad: ({ search }) => {
     // Reset everything
     store.set(emailAtom, "");
     store.set(linkTokensAtom, { accessToken: "", refreshToken: "" });
     store.set(otpTokensAtom, { accessToken: "", refreshToken: "" });
+    store.set(bypassIdpAtom, search.idp?.trim().toLowerCase() === "access");
   },
 });
 

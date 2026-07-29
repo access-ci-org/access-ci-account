@@ -70,3 +70,7 @@ export const authTokenSchema = z.object({
   code: z.string(),
   state: z.string(),
 });
+
+export const registerSearchSchema = z.object({
+  idp: z.string().optional().catch(undefined),
+});

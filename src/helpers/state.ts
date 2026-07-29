@@ -271,6 +271,10 @@ export const otpTokensAtom = tokensAtom("otpTokensAtom");
 export const isLoggedInAtom = atom(
   (get) => get(loginTokensAtom).accessToken != "",
 );
+// Set when registration is started with `?idp=access`, letting a user whose
+// email domain has IdPs configured skip forced IdP sign-in and set an
+// ACCESS password instead.
+export const bypassIdpAtom = atomWithLocalStorage("bypassIdp", false);
 export const logoutAtom = atom(null, (_get, set) => {
   set(emailAtom, "");
   set(usernameAtom, "");
@@ -278,6 +282,7 @@ export const logoutAtom = atom(null, (_get, set) => {
   set(linkTokensAtom, { ...noTokens });
   set(loginTokensAtom, { ...noTokens });
   set(otpTokensAtom, { ...noTokens });
+  set(bypassIdpAtom, false);
   deleteSsoCookie();
 });
 
@@ -686,6 +691,15 @@ export const domainAtom = atom(async (get) => {
     isEligible,
   };
 });
+
+// Whether the password fields should be shown for account completion: either
+// the domain has no IdPs, or the user opted into the `?idp=access` bypass.
+export function shouldShowPasswordFields(
+  domain: DomainResponse | null,
+  bypassIdp: boolean,
+): boolean {
+  return domain ? domain.idps.length === 0 || bypassIdp : false;
+}
 
 export const organizationIdOptionsAtom = atom<Promise<Option<number>[]>>(
   async (get) =>

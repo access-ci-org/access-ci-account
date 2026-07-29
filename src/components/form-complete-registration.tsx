@@ -5,7 +5,11 @@ import {
 } from "@/helpers/defaults";
 import { passwordFields, registrationFields } from "@/helpers/fields";
 import { withForm } from "@/hooks/form";
-import { domainAtom } from "@/helpers/state";
+import {
+  bypassIdpAtom,
+  domainAtom,
+  shouldShowPasswordFields,
+} from "@/helpers/state";
 
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Field } from "@/components/ui/field";
@@ -19,7 +23,8 @@ const FormCompleteRegistration = withForm({
   },
   render: function Render({ form }) {
     const domain = useAtomValue(domainAtom);
-    const domainHasIdps = (domain?.idps ?? []).length > 0;
+    const bypassIdp = useAtomValue(bypassIdpAtom);
+    const showPasswordFields = shouldShowPasswordFields(domain, bypassIdp);
 
     return (
       <form
@@ -35,7 +40,7 @@ const FormCompleteRegistration = withForm({
               fields={registrationFields}
               emailDisabled={true}
             />
-            {!domainHasIdps && (
+            {showPasswordFields && (
               <FieldGroupPassword form={form} fields={passwordFields} />
             )}
           </CardContent>

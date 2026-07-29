@@ -404,6 +404,37 @@ describe("createAccountAtom", () => {
   });
 });
 
+describe("shouldShowPasswordFields / bypassIdpAtom", () => {
+  const idp = { displayName: "Example University", entityId: "https://idp.example.edu" };
+
+  it("is false with no domain", () => {
+    expect(state.shouldShowPasswordFields(null, false)).toBe(false);
+  });
+
+  it("is true when the domain has no IdPs", () => {
+    const domain = { domain: "example.edu", organizations: [], idps: [] };
+    expect(state.shouldShowPasswordFields(domain, false)).toBe(true);
+  });
+
+  it("is false when the domain has IdPs and the bypass is not set", () => {
+    const domain = { domain: "example.edu", organizations: [], idps: [idp] };
+    expect(state.shouldShowPasswordFields(domain, false)).toBe(false);
+  });
+
+  it("is true when the domain has IdPs but the bypass is set", () => {
+    const domain = { domain: "example.edu", organizations: [], idps: [idp] };
+    expect(state.shouldShowPasswordFields(domain, true)).toBe(true);
+  });
+
+  it("logoutAtom resets bypassIdpAtom to false", () => {
+    const { store, bypassIdpAtom, logoutAtom } = state;
+    store.set(bypassIdpAtom, true);
+    expect(store.get(bypassIdpAtom)).toBe(true);
+    store.set(logoutAtom);
+    expect(store.get(bypassIdpAtom)).toBe(false);
+  });
+});
+
 describe("domainAtom — eligibility computation", () => {
   const seedAuthed = () =>
     state.store.set(state.loginTokensAtom, { accessToken: "t", refreshToken: "" });
