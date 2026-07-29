@@ -18,9 +18,8 @@ import { FaKey } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { FieldSeparator } from "@/components/ui/field";
 import ButtonRow from "@/components/button-row";
-import CreateShhKeyLink from "@/components/link-create-ssh-key";
-import ShhKeyLink from "@/components/link-ssh-key";
 import type { SshKeyResponse } from "@/helpers/types";
+import { SquarePlay } from "lucide-react";
 
 export const Route = createFileRoute("/ssh-keys")({
   component: SSHKeysRoute,
@@ -58,69 +57,100 @@ function SSHKeysRoute() {
 
       <FieldSeparator />
 
-      <p className="text-xs mt-4!">
-        <ShhKeyLink /> provide a way to log into the command line interface of
-        some ACCESS resources. This is a list of SSH keys associated with your
-        account. Please remove any keys that you do not recognize. You can also{" "}
-        <CreateShhKeyLink /> and add it to your account.
-      </p>
-
-      <div className="w-full mb-8 mt-4">
-        {sshKeyDetails?.length === 0 && (
-          <p className="text-sm text-muted-foreground mt-4">
-            No SSH keys added yet.
+      <div className="xl:flex items-start">
+        <div>
+          <p className="text-xs mt-4!">
+            SSH keys provide a way to log into the command line interface of
+            some ACCESS resources. This is a list of SSH keys associated with
+            your account. Please remove any keys that you do not recognize.
           </p>
-        )}
-        {sshKeyDetails?.map((key) => {
-          return (
-            <div key={key.keyId} className="rounded-sm border overflow-hidden">
-              <div className="flex flex-col gap-3 p-2 m-2 sm:flex-row sm:items-center sm:justify-between">
-                {/* LEFT ICON */}
-                <div className="flex flex-col items-start gap-1 sm:w-auto">
-                  <FaKey
-                    className="!text-2xl mb-1 self-center"
-                    style={{ color: "#1a5b6e" }}
-                  />
-                  <p className="rounded-sm border !text-sm px-2 py-0.5 text-center self-center bg-muted">
-                    SSH
-                  </p>
-                </div>
 
-                {/* DETAILS */}
-                <div className="text-xs sm:flex-1 sm:ml-4 min-w-0">
-                  <p className="break-words">{key.hash}</p>
-                  <p className="!text-sm">Added on {key.created}</p>
-                </div>
+          <div className="w-full mb-8 mt-4">
+            {sshKeyDetails?.length === 0 && (
+              <p className="text-sm text-muted-foreground mt-4">
+                No SSH keys added yet.
+              </p>
+            )}
+            {sshKeyDetails?.map((key) => {
+              return (
+                <div
+                  key={key.keyId}
+                  className="rounded-sm border overflow-hidden"
+                >
+                  <div className="flex flex-col gap-3 p-2 m-2 sm:flex-row sm:items-center sm:justify-between">
+                    {/* LEFT ICON */}
+                    <div className="flex flex-col items-start gap-1 sm:w-auto">
+                      <FaKey
+                        className="!text-2xl mb-1 self-center"
+                        style={{ color: "#1a5b6e" }}
+                      />
+                      <p className="rounded-sm border !text-sm px-2 py-0.5 text-center self-center bg-muted">
+                        SSH
+                      </p>
+                    </div>
 
-                {/* ACTION */}
-                <div className="flex justify-end sm:justify-end">
-                  <ButtonRow
-                    disabled={isImpersonating}
-                    label="Delete"
-                    variant="destructive"
-                    onSubmit={async () => {
-                      try {
-                        await deleteSshKey(key.keyId);
-                        router.invalidate({
-                          filter: (match) => match.routeId === "/ssh-keys",
-                        });
-                        setNotification({
-                          variant: "success",
-                          message: "SSH key deleted successfully.",
-                        });
-                      } catch (error) {
-                        setNotification({
-                          variant: "error",
-                          message: "Unable to delete SSH key.",
-                        });
-                      }
-                    }}
-                  />
+                    {/* DETAILS */}
+                    <div className="text-xs sm:flex-1 sm:ml-4 min-w-0">
+                      <p className="break-words">{key.hash}</p>
+                      <p className="!text-sm">Added on {key.created}</p>
+                    </div>
+
+                    {/* ACTION */}
+                    <div className="flex justify-end sm:justify-end">
+                      <ButtonRow
+                        disabled={isImpersonating}
+                        label="Delete"
+                        variant="destructive"
+                        onSubmit={async () => {
+                          try {
+                            await deleteSshKey(key.keyId);
+                            router.invalidate({
+                              filter: (match) => match.routeId === "/ssh-keys",
+                            });
+                            setNotification({
+                              variant: "success",
+                              message: "SSH key deleted successfully.",
+                            });
+                          } catch (error) {
+                            setNotification({
+                              variant: "error",
+                              message: "Unable to delete SSH key.",
+                            });
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          );
-        })}
+              );
+            })}
+          </div>
+        </div>
+        <section className="bg-[var(--teal-050)] p-5 xl:ml-5 mt-5 xl:w-[280px] shrink-0">
+          <h2 className="font-extrabold text-2xl mb-3">Learn More</h2>
+          <ul>
+            <li>
+              <a
+                href="https://www.youtube.com/watch?v=kkEnezr6MWo"
+                target="_blank"
+                rel="noreferrer"
+                className="underline"
+              >
+                <SquarePlay className="inline me-0.5" /> Intro to SSH Keys
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.youtube.com/watch?v=DjTBQykeg0c"
+                target="_blank"
+                rel="noreferrer"
+                className="underline"
+              >
+                <SquarePlay className="inline me-0.5" /> Creating SSH Keys
+              </a>
+            </li>
+          </ul>
+        </section>
       </div>
     </div>
   );
