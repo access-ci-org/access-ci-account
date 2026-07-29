@@ -9,6 +9,7 @@ import {
 } from "@/helpers/state";
 import { registrationDefaultValues } from "@/helpers/defaults";
 import type { DomainResponse } from "@/helpers/types";
+import type React from "react";
 
 import { FieldGroup } from "@/components/ui/field";
 import DomainValidationResponse from "@/components/domain-validation-response";
@@ -18,12 +19,21 @@ import OrganizationRequestLink from "@/components/organization-request-link";
 type FieldGroupRegistrationProps = {
   domain?: DomainResponse | null;
   emailDisabled?: boolean;
+  // Overrides the default plain-text email field, e.g. with the profile
+  // form's combined primary/recovery token field. Registration passes
+  // nothing and keeps the default text input.
+  emailSlot?: React.ReactNode;
 };
 
 export const FieldGroupRegistration = withFieldGroup({
   defaultValues: registrationDefaultValues,
   props: {} as FieldGroupRegistrationProps,
-  render: function Render({ group, emailDisabled = false, domain = null }) {
+  render: function Render({
+    group,
+    emailDisabled = false,
+    emailSlot,
+    domain = null,
+  }) {
     return (
       <FieldGroup>
         <group.AppField
@@ -40,31 +50,33 @@ export const FieldGroupRegistration = withFieldGroup({
           )}
         />
 
-        <group.AppField
-          name="email"
-          validators={{
-            onBlurAsync: async ({ value }: { value: string }) => {
-              store.set(emailAtom, value);
-              const newDomain = await store.get(domainAtom);
-              const message = DomainValidationResponse({ domain: newDomain });
-              if (message) return { message };
-            },
-            onMount: () => {
-              if (domain) {
-                const message = DomainValidationResponse({ domain });
+        {emailSlot ?? (
+          <group.AppField
+            name="email"
+            validators={{
+              onBlurAsync: async ({ value }: { value: string }) => {
+                store.set(emailAtom, value);
+                const newDomain = await store.get(domainAtom);
+                const message = DomainValidationResponse({ domain: newDomain });
                 if (message) return { message };
-              }
-            },
-          }}
-          children={(field) => (
-            <field.FieldText
-              label="Email Address"
-              placeholder="University or work email address"
-              required
-              disabled={emailDisabled}
-            />
-          )}
-        />
+              },
+              onMount: () => {
+                if (domain) {
+                  const message = DomainValidationResponse({ domain });
+                  if (message) return { message };
+                }
+              },
+            }}
+            children={(field) => (
+              <field.FieldText
+                label="Email Address"
+                placeholder="University or work email address"
+                required
+                disabled={emailDisabled}
+              />
+            )}
+          />
+        )}
 
         <group.AppField
           name="organizationId"

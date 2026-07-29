@@ -1,6 +1,6 @@
 import { apiBaseUrl, initEmail, initToken, initUsername } from "@/config";
 import { deleteSsoCookie } from "./cookie";
-import { atom, createStore, type WritableAtom } from "jotai";
+import { atom, createStore, type Atom, type WritableAtom } from "jotai";
 import {
   atomWithRefresh,
   atomWithReset,
@@ -268,6 +268,14 @@ const tokensAtom = (key: string) => atomWithLocalStorage(key, { ...noTokens });
 export const linkTokensAtom = tokensAtom("linkTokens");
 export const loginTokensAtom = tokensAtom("loginTokens");
 export const otpTokensAtom = tokensAtom("otpTokensAtom");
+
+// Map of lowercased email address -> OTP JWT proving ownership of that address.
+// Accumulates a token per newly verified email so the profile form can save its
+// whole email set (primary + recoveries) in a single atomic update.
+export const emailOtpTokensAtom = atomWithLocalStorage<Record<string, string>>(
+  "emailOtpTokensAtom",
+  {},
+);
 export const isLoggedInAtom = atom(
   (get) => get(loginTokensAtom).accessToken != "",
 );
@@ -283,6 +291,7 @@ export const logoutAtom = atom(null, (_get, set) => {
   set(loginTokensAtom, { ...noTokens });
   set(otpTokensAtom, { ...noTokens });
   set(bypassIdpAtom, false);
+  set(emailOtpTokensAtom, {});
   deleteSsoCookie();
 });
 
@@ -362,6 +371,12 @@ export const verifyOtpAtom = atom(
         const jwt = parseJwt(response.jwt);
         status = { error: "", verified: true, username: jwt?.uid || null };
         set(otpTokensAtom, { accessToken: response.jwt, refreshToken: "" });
+        // Also record the token keyed by address so the profile form can commit
+        // multiple verified emails (primary + recoveries) in one save.
+        set(emailOtpTokensAtom, {
+          ...get(emailOtpTokensAtom),
+          [email.trim().toLowerCase()]: response.jwt,
+        });
       }
     }
     set(otpVerifyStatusAtom, status);
@@ -647,12 +662,12 @@ export const identityDeleteAtom = atom(
   },
 );
 
-// Retrieving Domain information based on email address
-export const domainAtom = atom(async (get) => {
-  const email = get(emailAtom);
-  const domain = getDomainFromEmail(email);
-  if (!domain) return null;
-
+// Fetches eligibility info for a single domain (shared by domainAtom, which
+// resolves it for the current primary email, and domainInfoAtomFamily, which
+// resolves it for an arbitrary domain such as a recovery email's).
+const fetchDomainInfo = async (
+  domain: string,
+): Promise<DomainResponse | null> => {
   const response = await fetchApiJson<DomainResponse>(`/domain/${domain}`);
   // Handle backend errors
   if ("error" in response) {
@@ -690,6 +705,14 @@ export const domainAtom = atom(async (get) => {
     idps: data.idps || [],
     isEligible,
   };
+};
+
+// Retrieving Domain information based on email address
+export const domainAtom = atom(async (get) => {
+  const email = get(emailAtom);
+  const domain = getDomainFromEmail(email);
+  if (!domain) return null;
+  return fetchDomainInfo(domain);
 });
 
 // Whether the password fields should be shown for account completion: either
@@ -700,6 +723,21 @@ export function shouldShowPasswordFields(
 ): boolean {
   return domain ? domain.idps.length === 0 || bypassIdp : false;
 }
+
+// Per-domain eligibility lookup, keyed by domain rather than the current
+// primary email, so callers (e.g. recovery emails) can check eligibility for
+// addresses other than the current primary. A plain cache (rather than
+// jotai/utils's atomFamily, which is deprecated) since the key set is small
+// and bounded by the number of distinct domains on the account.
+const domainInfoAtomCache = new Map<string, Atom<Promise<DomainResponse | null>>>();
+export const getDomainInfoAtom = (domain: string) => {
+  let domainInfoAtom = domainInfoAtomCache.get(domain);
+  if (!domainInfoAtom) {
+    domainInfoAtom = atom(async () => fetchDomainInfo(domain));
+    domainInfoAtomCache.set(domain, domainInfoAtom);
+  }
+  return domainInfoAtom;
+};
 
 export const organizationIdOptionsAtom = atom<Promise<Option<number>[]>>(
   async (get) =>
@@ -762,11 +800,29 @@ export const profileFormAtom = atom<AccountResponse>(profileDefaultValues);
 
 export const saveProfileAtom = atom(null, async (get, set) => {
   const profileForm = get(profileFormAtom);
+  const tokens = get(emailOtpTokensAtom);
+  const tokenFor = (email: string) => tokens[email.trim().toLowerCase()];
+
+  // Assemble the full desired email set (one primary + recoveries). A per-address
+  // OTP token is attached when we have one; the backend only requires it for
+  // addresses that are new to the account and ignores it for existing ones.
+  const emails = [
+    { email: profileForm.email, primary: true, otpToken: tokenFor(profileForm.email) },
+    ...(profileForm.recoveryEmails ?? []).map((b) => ({
+      email: b.email,
+      primary: false,
+      otpToken: tokenFor(b.email),
+    })),
+  ];
+
   const { saved, error } = await set(updateAccountAtom, {
     ...profileForm,
-    emailOtpToken: get(otpTokensAtom).accessToken,
+    emails,
   });
   if (saved) {
+    // Consumed the OTP tokens and in-flight edits on a successful save.
+    set(emailOtpTokensAtom, {});
+    set(profileFormAtom, profileDefaultValues);
     set(pushNotificationAtom, {
       id: "profile-saved",
       title: "Profile Saved",

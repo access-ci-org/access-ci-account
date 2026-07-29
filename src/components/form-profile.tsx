@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldGroup } from "@/components/ui/field";
 import FieldsetDegrees from "@/components/fieldset-degrees";
+import FieldEmailTokens from "@/components/field-email-tokens";
 import { FieldGroupRegistration } from "@/components/field-group-registration";
 
 // ROLE_OPTIONS defines selectable user roles
@@ -39,9 +40,13 @@ const FormProfile = withForm({
   render: function Render({ form, domain = null }) {
     return (
       <form
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
-          form.handleSubmit();
+          await form.handleSubmit();
+          // If validation blocked submission (so the route's onSubmit never ran),
+          // scroll up so the field errors above — otherwise easy to miss with
+          // "Save Profile" at the bottom of a long form — are visible.
+          if (!form.state.isSubmitSuccessful) window.scrollTo({ top: 0 });
         }}
       >
         <Card className="w-full">
@@ -67,6 +72,7 @@ const FormProfile = withForm({
               form={form}
               fields={registrationFields}
               domain={domain}
+              emailSlot={<FieldEmailTokens form={form} />}
             />
 
             <FieldGroup>

@@ -2,17 +2,19 @@ import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { siteTitle } from "@/config";
 import { useAppForm } from "@/hooks/form";
 import * as z from "zod";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
   domainAtom,
   emailAtom,
   otpAtom,
+  profileFormAtom,
   pushNotificationAtom,
-  saveProfileAtom,
   sendOtpAtom,
   store,
+  usernameAtom,
   verifyOtpAtom,
 } from "@/helpers/state";
+import type { RecoveryEmail } from "@/helpers/types";
 
 import { Link } from "@tanstack/react-router";
 import DomainValidationResponse from "@/components/domain-validation-response";
@@ -63,7 +65,7 @@ function VerifyEmail() {
   const [otp, setOtp] = useAtom(otpAtom);
   const verifyOtp = useSetAtom(verifyOtpAtom);
   const pushNotification = useSetAtom(pushNotificationAtom);
-  const saveProfile = useSetAtom(saveProfileAtom);
+  const currentUsername = useAtomValue(usernameAtom);
   const navigate = useNavigate();
 
   const prevPath = getPrevPath(flow);
@@ -104,31 +106,69 @@ function VerifyEmail() {
         return;
       }
 
-      const shouldCheckExistingAccount = flow !== "password";
+      // Profile flow: the verified address is a primary or recovery email for the
+      // profile form. Recovery emails are exempt from eligibility, so there is no domain
+      // gate here (primary eligibility is enforced at save via the organization).
+      if (flow === "profile") {
+        // Only block if the address belongs to a DIFFERENT ACCESS account; an
+        // address that resolves to the user's own account is legitimate (e.g. one
+        // of their existing emails) and must not be blocked.
+        if (status.username && status.username !== currentUsername) {
+          setEmail("");
+          pushNotification({
+            title: "Existing Account",
+            message: (
+              <>
+                The email address {email} is already associated with ACCESS ID{" "}
+                {status.username}. Please <HelpTicketLink /> if you have multiple
+                ACCESS IDs and need to have them merged.
+              </>
+            ),
+            variant: "error",
+          });
+          navigate({ to: existingAccountPath });
+          return;
+        }
 
-      if (shouldCheckExistingAccount && status.username) {
+        // The OTP token is now recorded (keyed by address) by verifyOtp.
+        // Ownership is verified — only now does the address join the form.
+        // If the user had instead abandoned verification (e.g. via the
+        // browser back button), nothing would have been added. An account
+        // must always have exactly one primary once it has any address, so
+        // the very first address added becomes primary; every address after
+        // that starts as a recovery address.
+        const current = store.get(profileFormAtom);
+        if (!current.email) {
+          store.set(profileFormAtom, { ...current, email });
+        } else {
+          const recoveryEmails = (current.recoveryEmails ??
+            []) as RecoveryEmail[];
+          store.set(profileFormAtom, {
+            ...current,
+            recoveryEmails: [...recoveryEmails, { email, verified: true }],
+          });
+        }
+        navigate({ to: "/profile" });
+        return;
+      }
+
+      // Registration / password flows (unchanged).
+      if (flow !== "password" && status.username) {
         setEmail("");
 
         pushNotification({
           title: "Existing Account",
-          message:
-            flow === "profile" ? (
-              <>
-                The email address {email} is already associated with ACCESS ID{" "}
-                {status.username}. Please <HelpTicketLink /> if you have
-                multiple ACCESS IDs and need to have them merged.
-              </>
-            ) : (
-              <>
-                You already have an ACCESS account. Your ACCESS ID is{" "}
-                <strong>{status.username}</strong>. You can{" "}
-                <Link to="/login">login</Link> or{" "}
-                <a href="https://identity.access-ci.org/password-reset">
-                  reset your password
-                </a>
-                .
-              </>
-            ),
+          message: (
+            <>
+              You already have an ACCESS account. Your ACCESS ID is{" "}
+              <strong>{status.username}</strong>. You can{" "}
+              <Link to="/login">login</Link> or{" "}
+              <a href="https://identity.access-ci.org/password-reset">
+                reset your password
+              </a>
+              .
+            </>
+          ),
           variant: "error",
         });
 
@@ -159,10 +199,6 @@ function VerifyEmail() {
 
         navigate({ to: prevPath });
         return;
-      }
-
-      if (flow === "profile") {
-        await saveProfile();
       }
 
       navigate({ to: nextPath });
