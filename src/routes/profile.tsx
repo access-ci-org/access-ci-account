@@ -25,11 +25,11 @@ export const Route = createFileRoute("/profile")({
   beforeLoad: () => {
     store.set(dismissNotificationAtom, ["profile-saved", "profile-error"]);
   },
-  loader: async () => {
+  loader: async ({ location }) => {
     const account = await store.get(accountAtom);
     let domain: DomainResponse | null = null;
     if ("error" in account) {
-      throw redirect({ to: "/login" });
+      throw redirect({ to: "/login", search: { next: location.href } });
     } else {
       store.set(emailAtom, account.email);
       domain = await store.get(domainAtom);

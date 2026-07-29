@@ -74,3 +74,7 @@ export const authTokenSchema = z.object({
 export const registerSearchSchema = z.object({
   idp: z.string().optional().catch(undefined),
 });
+
+export const loginSearchSchema = z.object({
+  next: z.string().optional().catch(undefined),
+});

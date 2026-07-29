@@ -18,10 +18,11 @@ import type { IdentityResponse } from "@/helpers/types";
 export const Route = createFileRoute("/linked-accounts")({
   component: LinkedAccountsRoute,
   head: () => ({ meta: [{ title: `Linked Accounts | ${siteTitle}` }] }),
-  loader: async () => {
+  loader: async ({ location }) => {
     const identitiesResponse = await store.get(identityAtom);
 
-    if ("error" in identitiesResponse) throw redirect({ to: "/login" });
+    if ("error" in identitiesResponse)
+      throw redirect({ to: "/login", search: { next: location.href } });
 
     return identitiesResponse.filter(
       (identity) =>

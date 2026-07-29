@@ -198,6 +198,7 @@ export const oidcInfoAtom = atom(async () =>
 );
 
 export const oidcStateAtom = atomWithLocalStorage("oidcState", "");
+export const oidcNextAtom = atomWithLocalStorage("oidcNext", "");
 const generateOidcStateValue = () => {
   const array = new Uint8Array(128);
   window.crypto.getRandomValues(array);

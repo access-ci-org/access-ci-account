@@ -43,9 +43,13 @@ function SsoRedirectHandler() {
       !isLogoutRoute &&
       !isAuthTokenRoute
     ) {
-      navigate({ to: "/login", replace: true });
+      navigate({
+        to: "/login",
+        search: { next: location.href },
+        replace: true,
+      });
     }
-  }, [location.pathname, navigate, isLoggedIn]);
+  }, [location.pathname, location.href, navigate, isLoggedIn]);
 
   return null;
 }

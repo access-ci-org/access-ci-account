@@ -9,6 +9,7 @@ import {
   registrationFormAtom,
   usernameAtom,
   identityAddAtom,
+  oidcNextAtom,
   oidcStateAtom,
   oidcTokensAtom,
   store,
@@ -82,6 +83,13 @@ export const Route = createFileRoute("/auth-token/$client")({
         store.set(usernameAtom, username);
         if (isAdmin) store.set(adminUsernameAtom, username);
         store.set(loginTokensAtom, { accessToken, refreshToken });
+
+        const next = store.get(oidcNextAtom);
+        store.set(oidcNextAtom, "");
+        // Only redirect to a same-site path, never an absolute or
+        // protocol-relative URL, to avoid an open redirect.
+        if (/^\/(?!\/)/.test(next)) throw redirect({ href: next });
+
         throw redirect({ to: "/" });
       } else {
         authError("Authentication failed due to invalid subject.");

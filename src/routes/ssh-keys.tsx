@@ -23,11 +23,15 @@ import { SquarePlay } from "lucide-react";
 export const Route = createFileRoute("/ssh-keys")({
   component: SSHKeysRoute,
   head: () => ({ meta: [{ title: `SSH Keys | ${siteTitle}` }] }),
-  loader: async () => {
+  loader: async ({ location }) => {
     const sshKeys = await store.get(sshKeysAtom);
 
     if ("error" in sshKeys) {
-      redirect({ to: "/login", throw: true });
+      redirect({
+        to: "/login",
+        search: { next: location.href },
+        throw: true,
+      });
     }
 
     return sshKeys;
