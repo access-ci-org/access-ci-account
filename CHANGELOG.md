@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.0](https://github.com/access-ci-org/access-ci-account/compare/v0.11.0...v0.12.0) (2026-07-29)
+
+
+### Features
+
+* update My ACCESS menu ([df7e143](https://github.com/access-ci-org/access-ci-account/commit/df7e1435034f63d1b27be54e5c1d728e69e4754d))
+
 ## [0.11.0](https://github.com/access-ci-org/access-ci-account/compare/v0.10.2...v0.11.0) (2026-07-29)
 
 
