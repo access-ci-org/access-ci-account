@@ -43,7 +43,7 @@ export default function Dashboard() {
       </div>
       <div className="min-h-full pt-3">
         {showWelcomeMessage && (
-          <Alert className="border-none rounded-none shadow-none bg-transparent bg-[var(--teal-050)] p-4">
+          <Alert className="border-none rounded-none shadow-none bg-transparent bg-[var(--teal-050)] p-4  text-[var(--contrast)]">
             <CheckCircle2Icon />
             <AlertTitle className="text-lg font-medium">
               Congratulations! You've successfully created your ACCESS Account.
