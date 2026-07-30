@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.0](https://github.com/access-ci-org/access-ci-account/compare/v0.12.0...v0.13.0) (2026-07-30)
+
+
+### Features
+
+* **auth:** return user to previous URL after login ([e64a533](https://github.com/access-ci-org/access-ci-account/commit/e64a533f524737ae7d5fae8691b40ebdb6d3dc8b))
+
 ## [0.12.0](https://github.com/access-ci-org/access-ci-account/compare/v0.11.0...v0.12.0) (2026-07-29)
 
 
