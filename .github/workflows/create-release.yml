@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - ramps-1120-recovery-email-updated
 
 jobs:
   release:
