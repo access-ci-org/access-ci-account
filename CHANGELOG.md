@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.14.0-beta1](https://github.com/access-ci-org/access-ci-account/compare/v0.11.0...v0.14.0-beta1) (2026-07-30)
+
+
+### Features
+
+* update My ACCESS menu ([df7e143](https://github.com/access-ci-org/access-ci-account/commit/df7e1435034f63d1b27be54e5c1d728e69e4754d))
+
+
+### Miscellaneous Chores
+
+* release 0.14.0-beta1 ([a0beb57](https://github.com/access-ci-org/access-ci-account/commit/a0beb572d445603877394cff1d3de3e062cf2c52))
+
 ## [0.11.0](https://github.com/access-ci-org/access-ci-account/compare/v0.10.2...v0.11.0) (2026-07-29)
 
 
