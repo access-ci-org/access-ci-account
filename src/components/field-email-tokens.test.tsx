@@ -119,12 +119,16 @@ describe("FieldEmailTokens (integration)", () => {
     const account = makeAccount({ recoveryEmails: [] });
     renderHarness({ account, onSubmit: vi.fn() });
 
-    expect(screen.queryByText("Unsaved changes")).not.toBeInTheDocument();
+    expect(
+      screen.queryByText("Email addresses have unsaved changes."),
+    ).not.toBeInTheDocument();
 
     await user.click(
       await screen.findByRole("button", { name: "simulate verified add" }),
     );
 
-    expect(await screen.findByText("Unsaved changes")).toBeInTheDocument();
+    expect(
+      await screen.findByText("Email addresses have unsaved changes."),
+    ).toBeInTheDocument();
   });
 });
