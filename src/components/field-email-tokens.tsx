@@ -2,7 +2,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useAtomValue, useSetAtom } from "jotai";
 import { loadable } from "jotai/utils";
 import { useAppForm } from "@/hooks/form";
-import type { RecoveryEmail } from "@/helpers/types";
+import type { AccountResponse, RecoveryEmail } from "@/helpers/types";
 import {
   emailAtom,
   getDomainInfoAtom,
@@ -12,6 +12,7 @@ import {
 } from "@/helpers/state";
 import { getDomainFromEmail } from "@/helpers/email";
 import { recoveryEmailSchema } from "@/helpers/validation";
+import { useUnsavedProfileChanges } from "@/hooks/use-unsaved-profile-changes";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -52,9 +53,19 @@ function RecoveryToken({
 // emailSlot prop so the registration form keeps a plain text email field.
 // Adding an address routes through the existing OTP verification flow;
 // removes and "make primary" are staged in the form and committed on Save.
-export default function FieldEmailTokens({ form }: { form: any }) {
+export default function FieldEmailTokens({
+  form,
+  account,
+}: {
+  form: any;
+  account: AccountResponse;
+}) {
   const navigate = useNavigate();
   const sendOtp = useSetAtom(sendOtpAtom);
+
+  // The nav-away blocker lives in the route component (Profile), which owns
+  // the save-and-redirect flow; this only needs the banner-scoped flag.
+  const { emailsDirty } = useUnsavedProfileChanges(form, account);
 
   // A standalone form for the "add an email" input only, so it can render
   // without staging its value in the profile form itself. Its own onSubmit
@@ -80,8 +91,24 @@ export default function FieldEmailTokens({ form }: { form: any }) {
   });
 
   return (
-    <form.AppField name="recoveryEmails" mode="array">
+    <form.AppField
+      name="recoveryEmails"
+      mode="array"
+      validators={{
+        onSubmit: () => {
+          if (addEmailForm.state.values.newEmail.trim()) {
+            return {
+              message:
+                'Click "Verify and Add" to add this address, or clear the field before saving.',
+            };
+          }
+        },
+      }}
+    >
       {(recoveryField: any) => {
+        const pendingEmailInvalid =
+          recoveryField.state.meta.isTouched &&
+          !recoveryField.state.meta.isValid;
         const rows = (recoveryField.state.value ?? []) as RecoveryEmail[];
         const primaryEmail = form.state.values.email as string;
 
@@ -134,9 +161,21 @@ export default function FieldEmailTokens({ form }: { form: any }) {
 
         return (
           <Field>
-            <FieldLabel>Email Addresses</FieldLabel>
+            <FieldLabel>
+              Email Addresses
+              {emailsDirty && (
+                <span className="rounded-full bg-[var(--yellow-200)] px-2 py-0.5 text-xs font-medium text-[var(--contrast)]">
+                  Email addresses have unsaved changes.
+                </span>
+              )}
+            </FieldLabel>
 
-            <p className="text-sm! text-muted-foreground">You can add one primary and multiple recovery email addresses. Your primary email must match your institution. Your recovery email addresses can be used to change your password if you lose access to your primary email address.</p>
+            <p className="text-sm! text-muted-foreground">
+              You can add one primary and multiple recovery email addresses.
+              Your primary email must match your institution. Your recovery
+              email addresses can be used to change your password if you lose
+              access to your primary email address.
+            </p>
 
             <div className="flex flex-wrap items-center gap-2">
               {primaryEmail && (
@@ -144,7 +183,9 @@ export default function FieldEmailTokens({ form }: { form: any }) {
                   email={primaryEmail}
                   label="Primary"
                   primaryActionLabel="Make Recovery"
-                  onPrimaryAction={rows.length > 0 ? () => makePrimary(0) : undefined}
+                  onPrimaryAction={
+                    rows.length > 0 ? () => makePrimary(0) : undefined
+                  }
                   onDelete={rows.length > 0 ? deletePrimary : undefined}
                 />
               )}
@@ -183,14 +224,34 @@ export default function FieldEmailTokens({ form }: { form: any }) {
                   },
                 }}
                 children={(field) => {
-                  const isInvalid =
+                  const ownInvalid =
                     field.state.meta.isTouched && !field.state.meta.isValid;
+                  const isInvalid = ownInvalid || pendingEmailInvalid;
+                  const errors = ownInvalid
+                    ? field.state.meta.errors
+                    : recoveryField.state.meta.errors;
                   return (
                     <Field data-invalid={isInvalid}>
                       <Input
                         value={field.state.value}
                         onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.target.value)}
+                        onChange={(e) => {
+                          field.handleChange(e.target.value);
+                          // form.handleSubmit() bails out on canSubmit=false
+                          // before it would otherwise re-run this field's
+                          // onSubmit validator, so a stale "click Verify and
+                          // Add" error would never clear on its own once the
+                          // user fixes the input — force it to re-check live
+                          // (skipping the whole-form schema pass; only this
+                          // field's own validator needs to rerun here), but
+                          // only once a submit attempt has actually touched
+                          // this field, so typing isn't validated pre-emptively.
+                          if (recoveryField.state.meta.isTouched) {
+                            recoveryField.validate("submit", {
+                              skipFormValidation: true,
+                            });
+                          }
+                        }}
                         onKeyDown={(e) => {
                           if (e.key === "Enter") {
                             e.preventDefault();
@@ -202,9 +263,7 @@ export default function FieldEmailTokens({ form }: { form: any }) {
                         autoComplete="off"
                         className="bg-white border-[var(--teal-700)] rounded-none shadow-none"
                       />
-                      {isInvalid && (
-                        <FieldError errors={field.state.meta.errors} />
-                      )}
+                      {isInvalid && <FieldError errors={errors} />}
                     </Field>
                   );
                 }}

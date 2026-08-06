@@ -1,5 +1,12 @@
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { useRef } from "react";
+import {
+  createFileRoute,
+  redirect,
+  useBlocker,
+  useNavigate,
+} from "@tanstack/react-router";
 import { useAppForm } from "@/hooks/form";
+import { useUnsavedProfileChanges } from "@/hooks/use-unsaved-profile-changes";
 import { siteTitle } from "@/config";
 import FormProfile from "@/components/form-profile";
 import {
@@ -46,10 +53,11 @@ export const Route = createFileRoute("/profile")({
 });
 
 function Profile() {
-  const { initial, domain } = Route.useLoaderData();
+  const { account, initial, domain } = Route.useLoaderData();
   const setProfileForm = useSetAtom(profileFormAtom);
   const saveProfile = useSetAtom(saveProfileAtom);
   const navigate = useNavigate();
+  const leavingAfterSaveRef = useRef(false);
 
   const form = useAppForm({
     defaultValues: initial,
@@ -61,6 +69,11 @@ function Profile() {
 
       const { saved } = await saveProfile();
       if (saved) {
+        // Leaving on purpose after a successful save — don't let the
+        // unsaved-changes blocker below intercept this navigate() (the form
+        // itself still holds the just-submitted, now-stale-vs-account
+        // values at this point, so pageIsDirty is still true).
+        leavingAfterSaveRef.current = true;
         navigate({ to: "/" });
       } else {
         window.scrollTo({ top: 0 });
@@ -68,10 +81,26 @@ function Profile() {
     },
   });
 
+  const { pageIsDirty } = useUnsavedProfileChanges(form, account);
+
+  useBlocker({
+    shouldBlockFn: ({ next }) => {
+      if (leavingAfterSaveRef.current) return false;
+      if (!pageIsDirty) return false;
+      // Don't block the "Verify and Add" -> OTP hop, even if an earlier
+      // unsaved recovery email is already staged in this session.
+      if (next.routeId === "/$flow/verify") return false;
+      return !window.confirm(
+        "You have unsaved changes. If you leave this page now, they will be lost. Continue?",
+      );
+    },
+    enableBeforeUnload: () => pageIsDirty,
+  });
+
   return (
     <>
       <h1>ACCESS Profile</h1>
-      <FormProfile form={form} domain={domain} />
+      <FormProfile form={form} domain={domain} account={account} />
     </>
   );
 }

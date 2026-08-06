@@ -1,5 +1,5 @@
 import { withForm } from "@/hooks/form";
-import type { DomainResponse, Option } from "@/helpers/types";
+import type { AccountResponse, DomainResponse, Option } from "@/helpers/types";
 import { profileDefaultValues } from "@/helpers/defaults";
 import { registrationFields } from "@/helpers/fields";
 
@@ -32,12 +32,13 @@ const TIMEZONE_OPTIONS: Option<string>[] = Intl.supportedValuesOf(
 
 type FormProfileProps = {
   domain?: DomainResponse | null;
+  account: AccountResponse;
 };
 
 const FormProfile = withForm({
   defaultValues: profileDefaultValues,
   props: {} as FormProfileProps,
-  render: function Render({ form, domain = null }) {
+  render: function Render({ form, domain = null, account }) {
     return (
       <form
         onSubmit={async (e) => {
@@ -72,7 +73,7 @@ const FormProfile = withForm({
               form={form}
               fields={registrationFields}
               domain={domain}
-              emailSlot={<FieldEmailTokens form={form} />}
+              emailSlot={<FieldEmailTokens form={form} account={account} />}
             />
 
             <FieldGroup>
