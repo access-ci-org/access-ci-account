@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.0-beta1](https://github.com/access-ci-org/access-ci-account/compare/v0.14.0-beta1...v0.15.0-beta1) (2026-08-06)
+
+
+### Features
+
+* **profile:** add alerts for unsaved changes ([2c97e92](https://github.com/access-ci-org/access-ci-account/commit/2c97e92c42be33555e038d2b3e00f602166a625c))
+
 ## [0.14.0-beta1](https://github.com/access-ci-org/access-ci-account/compare/v0.11.0...v0.14.0-beta1) (2026-07-30)
 
 
