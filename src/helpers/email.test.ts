@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { getDomainFromEmail } from "@/helpers/email";
+import { getDomainFromEmail, recoveryEmailsEqual } from "@/helpers/email";
 
 describe("getDomainFromEmail", () => {
   it("extracts the domain from a simple address", () => {
@@ -29,5 +29,43 @@ describe("getDomainFromEmail", () => {
   it("returns the domain when the local part is empty (documents current behavior)", () => {
     // Only the domain half is required to be non-empty, so "@b" yields "b".
     expect(getDomainFromEmail("@example.com")).toBe("example.com");
+  });
+});
+
+describe("recoveryEmailsEqual", () => {
+  it("treats identical lists as equal", () => {
+    expect(
+      recoveryEmailsEqual(
+        [{ email: "a@example.edu" }, { email: "b@example.edu" }],
+        [{ email: "a@example.edu" }, { email: "b@example.edu" }],
+      ),
+    ).toBe(true);
+  });
+
+  it("is order-insensitive (makePrimary/deletePrimary reorder the list)", () => {
+    expect(
+      recoveryEmailsEqual(
+        [{ email: "a@example.edu" }, { email: "b@example.edu" }],
+        [{ email: "b@example.edu" }, { email: "a@example.edu" }],
+      ),
+    ).toBe(true);
+  });
+
+  it("is case- and whitespace-insensitive", () => {
+    expect(
+      recoveryEmailsEqual(
+        [{ email: " A@Example.edu " }],
+        [{ email: "a@example.edu" }],
+      ),
+    ).toBe(true);
+  });
+
+  it("detects an added address", () => {
+    expect(
+      recoveryEmailsEqual(
+        [{ email: "a@example.edu" }, { email: "b@example.edu" }],
+        [{ email: "a@example.edu" }],
+      ),
+    ).toBe(false);
   });
 });

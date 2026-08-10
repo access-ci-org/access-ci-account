@@ -1,6 +1,6 @@
 {
   "name": "@access-ci/account",
-  "version": "0.13.0",
+  "version": "0.14.0-beta1",
   "description": "Account and registration interface for ACCESS CI",
   "repository": "github:access-ci-org/access-ci-account",
   "license": "Apache-2.0",
@@ -35,6 +35,7 @@
     "input-otp": "^1.4.2",
     "jotai": "^2.16.0",
     "lucide-react": "^0.548.0",
+    "radix-ui": "^1.6.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-icons": "^5.5.0",

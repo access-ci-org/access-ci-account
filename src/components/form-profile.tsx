@@ -1,5 +1,5 @@
 import { withForm } from "@/hooks/form";
-import type { DomainResponse, Option } from "@/helpers/types";
+import type { AccountResponse, DomainResponse, Option } from "@/helpers/types";
 import { profileDefaultValues } from "@/helpers/defaults";
 import { registrationFields } from "@/helpers/fields";
 
@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldGroup } from "@/components/ui/field";
 import FieldsetDegrees from "@/components/fieldset-degrees";
+import FieldEmailTokens from "@/components/field-email-tokens";
 import { FieldGroupRegistration } from "@/components/field-group-registration";
 
 // ROLE_OPTIONS defines selectable user roles
@@ -31,17 +32,22 @@ const TIMEZONE_OPTIONS: Option<string>[] = Intl.supportedValuesOf(
 
 type FormProfileProps = {
   domain?: DomainResponse | null;
+  account: AccountResponse;
 };
 
 const FormProfile = withForm({
   defaultValues: profileDefaultValues,
   props: {} as FormProfileProps,
-  render: function Render({ form, domain = null }) {
+  render: function Render({ form, domain = null, account }) {
     return (
       <form
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
-          form.handleSubmit();
+          await form.handleSubmit();
+          // If validation blocked submission (so the route's onSubmit never ran),
+          // scroll up so the field errors above — otherwise easy to miss with
+          // "Save Profile" at the bottom of a long form — are visible.
+          if (!form.state.isSubmitSuccessful) window.scrollTo({ top: 0 });
         }}
       >
         <Card className="w-full">
@@ -67,6 +73,8 @@ const FormProfile = withForm({
               form={form}
               fields={registrationFields}
               domain={domain}
+              emailSlot={<FieldEmailTokens form={form} account={account} />}
+              showOrganizationChangeInfo={true}
             />
 
             <FieldGroup>

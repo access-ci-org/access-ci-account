@@ -200,6 +200,7 @@ export function makeAccount(
     citizenshipCountryIds: [1],
     department: "Computer Science",
     degrees: [{ degreeId: 1, degreeField: "Mathematics" }],
+    recoveryEmails: [],
     timeZone: "America/New_York",
     role: [],
     username: "alovelace",

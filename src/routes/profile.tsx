@@ -1,5 +1,12 @@
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { useRef } from "react";
+import {
+  createFileRoute,
+  redirect,
+  useBlocker,
+  useNavigate,
+} from "@tanstack/react-router";
 import { useAppForm } from "@/hooks/form";
+import { useUnsavedProfileChanges } from "@/hooks/use-unsaved-profile-changes";
 import { siteTitle } from "@/config";
 import FormProfile from "@/components/form-profile";
 import {
@@ -9,14 +16,15 @@ import {
   emailAtom,
   profileFormAtom,
   saveProfileAtom,
-  sendOtpAtom,
   store,
 } from "@/helpers/state";
 
-import { profileFormSchema, usernameSchema } from "@/helpers/validation";
+import {
+  profileFormSchemaWithRecoveries,
+  usernameSchema,
+} from "@/helpers/validation";
 import { useSetAtom } from "jotai";
 import type { DomainResponse } from "@/helpers/types";
-import { getDomainFromEmail } from "@/helpers/email";
 
 export const Route = createFileRoute("/profile")({
   component: Profile,
@@ -30,63 +38,69 @@ export const Route = createFileRoute("/profile")({
     let domain: DomainResponse | null = null;
     if ("error" in account) {
       throw redirect({ to: "/login", search: { next: location.href } });
-    } else {
-      store.set(emailAtom, account.email);
-      domain = await store.get(domainAtom);
     }
-    return { account, domain };
+    // Restore in-flight edits when returning from the OTP verification page
+    // (e.g. after adding a recovery email); otherwise start fresh from the account.
+    const pending = store.get(profileFormAtom);
+    const initial =
+      pending.username && pending.username === account.username
+        ? pending
+        : account;
+    store.set(emailAtom, initial.email);
+    domain = await store.get(domainAtom);
+    return { account, initial, domain };
   },
 });
 
 function Profile() {
-  const { account, domain } = Route.useLoaderData();
+  const { account, initial, domain } = Route.useLoaderData();
   const setProfileForm = useSetAtom(profileFormAtom);
   const saveProfile = useSetAtom(saveProfileAtom);
-  const sendOtp = useSetAtom(sendOtpAtom);
   const navigate = useNavigate();
+  const leavingAfterSaveRef = useRef(false);
 
   const form = useAppForm({
-    defaultValues: account,
-    listeners: {
-      onBlur: async ({ fieldApi, formApi }) => {
-        if (fieldApi.name === "email") {
-          if (
-            getDomainFromEmail(account.email) !==
-            getDomainFromEmail(fieldApi.state.value)
-          )
-            formApi.setFieldValue("organizationId", 0);
-        }
-      },
-    },
+    defaultValues: initial,
     validators: {
-      onSubmit: profileFormSchema.and(usernameSchema),
+      onSubmit: profileFormSchemaWithRecoveries.and(usernameSchema),
     },
     onSubmit: async ({ value }) => {
       setProfileForm(value);
-      if (value.email === account.email) {
-        // The email address has not changed. Save the profile now.
-        const { saved } = await saveProfile();
-        if (saved) {
-          navigate({ to: "/" });
-        } else {
-          window.scrollTo({ top: 0 });
-        }
+
+      const { saved } = await saveProfile();
+      if (saved) {
+        // Leaving on purpose after a successful save — don't let the
+        // unsaved-changes blocker below intercept this navigate() (the form
+        // itself still holds the just-submitted, now-stale-vs-account
+        // values at this point, so pageIsDirty is still true).
+        leavingAfterSaveRef.current = true;
+        navigate({ to: "/" });
       } else {
-        // The email address has changed. Verify the email address before
-        // saving the profile.
-        await sendOtp();
-        navigate({
-          to: "/$flow/verify",
-          params: { flow: "profile" },
-        });
+        window.scrollTo({ top: 0 });
       }
     },
+  });
+
+  const { pageIsDirty } = useUnsavedProfileChanges(form, account);
+
+  useBlocker({
+    shouldBlockFn: ({ next }) => {
+      if (leavingAfterSaveRef.current) return false;
+      if (!pageIsDirty) return false;
+      // Don't block the "Verify and Add" -> OTP hop, even if an earlier
+      // unsaved recovery email is already staged in this session.
+      if (next.routeId === "/$flow/verify") return false;
+      return !window.confirm(
+        "You have unsaved changes. If you leave this page now, they will be lost. Continue?",
+      );
+    },
+    enableBeforeUnload: () => pageIsDirty,
   });
 
   return (
     <>
       <h1>ACCESS Profile</h1>
-      <FormProfile form={form} domain={domain} />
+      <FormProfile form={form} domain={domain} account={account} />
     </>
   );
 }

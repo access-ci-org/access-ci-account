@@ -88,6 +88,7 @@ function startStubApi() {
         citizenshipCountryIds: [1],
         department: "Testing",
         degrees: [],
+        recoveryEmails: [],
         timeZone: "",
         role: [],
       });

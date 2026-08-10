@@ -62,6 +62,18 @@ export const profileFormSchema = z.object({
 
 export const usernameSchema = z.object({ username: z.string().catch("") });
 
+// The profile form additionally carries the recovery email list. Kept separate
+// from profileFormSchema so the registration forms (which reuse
+// profileFormSchema and have no recovery emails) are unaffected.
+export const profileFormSchemaWithRecoveries = profileFormSchema.extend({
+  recoveryEmails: z.array(z.object({ email: z.string(), verified: z.boolean() })),
+});
+
+export const recoveryEmailSchema = z
+  .string()
+  .trim()
+  .email({ message: "Invalid email address." });
+
 export const sshKeyFormSchema = z.object({
   sshKey: z.string().min(1, { message: "SSH Key is required." }),
 });

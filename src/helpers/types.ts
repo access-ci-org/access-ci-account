@@ -128,7 +128,14 @@ export type PasswordFields = {
   confirmPassword: string;
 };
 
+export type RecoveryEmail = { email: string; verified: boolean };
+
+// A single entry in the profile-update `emails` list. `otpToken` is only needed
+// for an address that is new to the account.
+export type EmailEntry = { email: string; primary: boolean; otpToken?: string };
+
 export type AccountResponse = RegistrationFields & {
+  recoveryEmails: RecoveryEmail[];
   timeZone: string;
   role: string[];
   username: string;
