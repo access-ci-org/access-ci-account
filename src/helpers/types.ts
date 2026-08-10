@@ -128,12 +128,29 @@ export type PasswordFields = {
   confirmPassword: string;
 };
 
-export type RecoveryEmail = { email: string; verified: boolean };
+export type RecoveryEmail = { email: string };
 
-// A single entry in the profile-update `emails` list. `otpToken` is only needed
-// for an address that is new to the account.
+// A single entry in the account-update request's `emails` list. `primary`
+// marks the desired primary address; `otpToken` is only needed for an
+// address that is new to the account.
 export type EmailEntry = { email: string; primary: boolean; otpToken?: string };
 
+// A single entry in the account GET response's `emails` list. No `otpToken`
+// here — it's a request-only concept.
+export type AccountEmailEntry = { email: string; primary: boolean };
+
+// Wire shape returned by GET /account/{username} (mirrors the backend's
+// AccountResponse model).
+export type AccountApiResponse = Omit<RegistrationFields, "email"> & {
+  emails: AccountEmailEntry[];
+  timeZone: string;
+  username: string;
+};
+
+// Client-side profile form shape. The primary address is kept as its own
+// `email` field (separate from `recoveryEmails`) so the profile form can
+// reuse FieldGroupRegistration/registrationFields, which are shared with the
+// registration forms and expect a plain `email` field.
 export type AccountResponse = RegistrationFields & {
   recoveryEmails: RecoveryEmail[];
   timeZone: string;

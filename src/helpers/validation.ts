@@ -66,7 +66,7 @@ export const usernameSchema = z.object({ username: z.string().catch("") });
 // from profileFormSchema so the registration forms (which reuse
 // profileFormSchema and have no recovery emails) are unaffected.
 export const profileFormSchemaWithRecoveries = profileFormSchema.extend({
-  recoveryEmails: z.array(z.object({ email: z.string(), verified: z.boolean() })),
+  recoveryEmails: z.array(z.object({ email: z.string() })),
 });
 
 export const recoveryEmailSchema = z

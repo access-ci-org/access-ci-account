@@ -128,7 +128,7 @@ export default function FieldEmailTokens({
           // address becomes the primary. No OTP is needed for an
           // already-verified email.
           const nextRecoveries = recoveries.filter((_, i) => i !== idx);
-          nextRecoveries.push({ email: values.email, verified: true });
+          nextRecoveries.push({ email: values.email });
 
           form.setFieldValue("recoveryEmails", nextRecoveries);
           form.setFieldValue("email", promoted.email);

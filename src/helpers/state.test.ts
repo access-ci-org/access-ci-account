@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import {
   makeJwt,
   makeAccount,
+  makeAccountApiResponse,
   makeOrganization,
   fakeResponse,
 } from "@/test/utils";
@@ -124,7 +125,12 @@ describe("impersonation", () => {
     const { store, impersonateAtom, adminUsernameAtom, usernameAtom, loginTokensAtom } =
       state;
     const account = makeAccount({ username: "victim" });
-    stubFetch(() => fakeResponse({ status: 200, json: account }));
+    stubFetch(() =>
+      fakeResponse({
+        status: 200,
+        json: makeAccountApiResponse({ username: "victim" }),
+      }),
+    );
 
     // Not an admin: no-op.
     await store.set(impersonateAtom, "victim");
@@ -140,7 +146,9 @@ describe("impersonation", () => {
   it("stopImpersonatingAtom returns to the admin's own username", async () => {
     const { store, impersonateAtom, stopImpersonatingAtom, adminUsernameAtom, usernameAtom, loginTokensAtom } =
       state;
-    stubFetch(() => fakeResponse({ status: 200, json: makeAccount() }));
+    stubFetch(() =>
+      fakeResponse({ status: 200, json: makeAccountApiResponse() }),
+    );
     store.set(adminUsernameAtom, "admin");
     store.set(loginTokensAtom, { accessToken: "t", refreshToken: "" });
     await store.set(impersonateAtom, "victim");
@@ -183,7 +191,10 @@ describe("fetchApiJson — 401 refresh & retry (via accountAtom)", () => {
     const fetchFn = stubFetch(
       oidcHandler([
         fakeResponse({ status: 401, json: { detail: "expired" } }),
-        fakeResponse({ status: 200, json: account }),
+        fakeResponse({
+          status: 200,
+          json: makeAccountApiResponse({ username: "ada" }),
+        }),
       ]),
     );
 

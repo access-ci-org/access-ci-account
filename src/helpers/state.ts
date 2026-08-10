@@ -11,6 +11,7 @@ import {
 import { parseJwt } from "./jwt";
 import {
   type AcademicStatusesResponse,
+  type AccountApiResponse,
   type AccountResponse,
   type ApiError,
   type AppNotification,
@@ -454,8 +455,23 @@ export const createAccountAtom = atom(
   },
 );
 
+// Splits the API's unified `emails` list back into the primary/recoveries
+// shape the profile form works with (see AccountResponse in helpers/types).
+const toProfileForm = (data: AccountApiResponse): AccountResponse => {
+  const { emails, ...rest } = data;
+  return {
+    ...rest,
+    email: emails.find((e) => e.primary)?.email ?? "",
+    recoveryEmails: emails.filter((e) => !e.primary).map((e) => ({ email: e.email })),
+    role: [],
+  };
+};
+
 export const accountAtom = atomWithRefresh(async (get) => {
-  return await fetchApiJson<AccountResponse>(`/account/${get(usernameAtom)}`);
+  const response = await fetchApiJson<AccountApiResponse>(
+    `/account/${get(usernameAtom)}`,
+  );
+  return "error" in response ? response : toProfileForm(response);
 });
 
 export const updateAccountAtom = atom(

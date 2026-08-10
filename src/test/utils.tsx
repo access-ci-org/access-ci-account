@@ -7,6 +7,7 @@ import { Provider, createStore } from "jotai";
 import { useAppForm } from "@/hooks/form";
 import type {
   AcademicStatusesResponse,
+  AccountApiResponse,
   AccountResponse,
   ApiError,
   CountriesResponse,
@@ -203,6 +204,26 @@ export function makeAccount(
     recoveryEmails: [],
     timeZone: "America/New_York",
     role: [],
+    username: "alovelace",
+    ...overrides,
+  };
+}
+
+/** The raw GET /account/{username} wire shape (see AccountApiResponse). */
+export function makeAccountApiResponse(
+  overrides: Partial<AccountApiResponse> = {},
+): AccountApiResponse {
+  return {
+    firstName: "Ada",
+    lastName: "Lovelace",
+    organizationId: 1,
+    academicStatusId: 1,
+    residenceCountryId: 1,
+    citizenshipCountryIds: [1],
+    department: "Computer Science",
+    degrees: [{ degreeId: 1, degreeField: "Mathematics" }],
+    emails: [{ email: "ada@example.edu", primary: true }],
+    timeZone: "America/New_York",
     username: "alovelace",
     ...overrides,
   };

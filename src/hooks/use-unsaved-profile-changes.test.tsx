@@ -29,7 +29,7 @@ function Harness({ account }: { account: AccountResponse }) {
         onClick={() =>
           form.setFieldValue("recoveryEmails", [
             ...form.state.values.recoveryEmails,
-            { email: "new@example.edu", verified: true },
+            { email: "new@example.edu" },
           ])
         }
       >
@@ -50,7 +50,7 @@ function Harness({ account }: { account: AccountResponse }) {
 describe("useUnsavedProfileChanges", () => {
   it("starts clean when form values match the account", () => {
     const account = makeAccount({
-      recoveryEmails: [{ email: "r@example.edu", verified: true }],
+      recoveryEmails: [{ email: "r@example.edu" }],
     });
     renderWithProviders(<Harness account={account} />);
 
@@ -90,8 +90,8 @@ describe("useUnsavedProfileChanges", () => {
     const user = userEvent.setup();
     const account = makeAccount({
       recoveryEmails: [
-        { email: "a@example.edu", verified: true },
-        { email: "b@example.edu", verified: true },
+        { email: "a@example.edu" },
+        { email: "b@example.edu" },
       ],
     });
     renderWithProviders(<Harness account={account} />);

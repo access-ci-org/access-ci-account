@@ -145,7 +145,7 @@ function VerifyEmail() {
             []) as RecoveryEmail[];
           store.set(profileFormAtom, {
             ...current,
-            recoveryEmails: [...recoveryEmails, { email, verified: true }],
+            recoveryEmails: [...recoveryEmails, { email }],
           });
         }
         navigate({ to: "/profile" });

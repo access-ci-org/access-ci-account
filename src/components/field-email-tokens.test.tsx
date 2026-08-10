@@ -40,7 +40,7 @@ function renderHarness({
           onClick={() =>
             form.setFieldValue("recoveryEmails", [
               ...form.state.values.recoveryEmails,
-              { email: "new@example.edu", verified: true },
+              { email: "new@example.edu" },
             ])
           }
         >
