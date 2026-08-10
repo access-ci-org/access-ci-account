@@ -62,7 +62,10 @@ function makeFakeJwt(claims) {
 function startStubApi() {
   const server = http.createServer((req, res) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "GET,POST,PUT,DELETE,OPTIONS",
+    );
     res.setHeader("Access-Control-Allow-Headers", "*");
     if (req.method === "OPTIONS") {
       res.writeHead(204);
@@ -81,29 +84,38 @@ function startStubApi() {
         username: SMOKE_USERNAME,
         firstName: "Smoke",
         lastName: "Test",
-        email: SMOKE_EMAIL,
+        emails: [{ email: SMOKE_EMAIL, primary: true }],
         organizationId: 1,
         academicStatusId: 1,
         residenceCountryId: 1,
         citizenshipCountryIds: [1],
         department: "Testing",
         degrees: [],
-        recoveryEmails: [],
         timeZone: "",
         role: [],
       });
     }
 
-    if (req.method === "GET" && path === `/api/v1/account/${SMOKE_USERNAME}/ssh-key`) {
+    if (
+      req.method === "GET" &&
+      path === `/api/v1/account/${SMOKE_USERNAME}/ssh-key`
+    ) {
       return send({ sshKeys: [] });
     }
 
-    if (req.method === "GET" && path === `/api/v1/account/${SMOKE_USERNAME}/identity`) {
+    if (
+      req.method === "GET" &&
+      path === `/api/v1/account/${SMOKE_USERNAME}/identity`
+    ) {
       return send({ identities: [] });
     }
 
     if (req.method === "GET" && path.startsWith("/api/v1/domain/")) {
-      return send({ domain: path.split("/").pop(), organizations: [], idps: [] });
+      return send({
+        domain: path.split("/").pop(),
+        organizations: [],
+        idps: [],
+      });
     }
 
     res.writeHead(404, { "content-type": "application/json" });
