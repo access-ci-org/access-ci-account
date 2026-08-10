@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.0](https://github.com/access-ci-org/access-ci-account/compare/v0.14.0...v0.15.0) (2026-08-10)
+
+
+### Features
+
+* accept a combined email array from the get account API route ([3b5c9e4](https://github.com/access-ci-org/access-ci-account/commit/3b5c9e43a5c0a84b4bf7c17bea54d9e50cd68e43))
+
 ## [0.14.0](https://github.com/access-ci-org/access-ci-account/compare/v0.14.0-beta1...v0.14.0) (2026-08-10)
 
 
