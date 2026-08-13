@@ -175,7 +175,7 @@ export default function FieldEmailTokens({
               Your primary email must match your institution. Your recovery
               email addresses can be used to change your password if you lose
               access to your primary email address. Changing your email address
-              does affect your current allocations.
+              does not affect your current allocations.
             </p>
 
             <div className="flex flex-wrap items-center gap-2">
