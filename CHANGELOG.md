@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.1](https://github.com/access-ci-org/access-ci-account/compare/v0.15.0...v0.15.1) (2026-08-13)
+
+
+### Bug Fixes
+
+* add missing word in email help text ([d7620c0](https://github.com/access-ci-org/access-ci-account/commit/d7620c01c9d59fa6d1f3986e7b933d7030426d9e))
+
 ## [0.15.0](https://github.com/access-ci-org/access-ci-account/compare/v0.14.0...v0.15.0) (2026-08-10)
 
 
