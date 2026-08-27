@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.0](https://github.com/access-ci-org/access-ci-account/compare/v0.15.1...v0.16.0) (2026-08-27)
+
+
+### Features
+
+* **profile:** update email help text ([6ab8b4b](https://github.com/access-ci-org/access-ci-account/commit/6ab8b4b3f03628673d1081f630863018320a727e))
+
 ## [0.15.1](https://github.com/access-ci-org/access-ci-account/compare/v0.15.0...v0.15.1) (2026-08-13)
 
 
