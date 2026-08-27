@@ -170,13 +170,24 @@ export default function FieldEmailTokens({
               )}
             </FieldLabel>
 
-            <p className="text-sm! text-muted-foreground">
-              You can add one primary and multiple recovery email addresses.
-              Your primary email must match your institution. Your recovery
-              email addresses can be used to change your password if you lose
-              access to your primary email address. Changing your email address
-              does not affect your current allocations.
+            <p className="text-sm! text-muted-foreground mb-0!">
+              You can add one primary and multiple recovery email addresses:
             </p>
+            <ul className="text-sm/[1]! text-muted-foreground list-disc list-inside">
+              <li>Your primary email address must match your institution.</li>
+              <li>
+                Your recovery email addresses can be used to change your
+                password if you lose access to your primary email address.
+              </li>
+              <li>
+                To change your primary email address, first add the new email
+                address. Then you can delete the old email address.
+              </li>
+              <li>
+                Changing your email address does not affect your current
+                allocations.
+              </li>
+            </ul>
 
             <div className="flex flex-wrap items-center gap-2">
               {primaryEmail && (
