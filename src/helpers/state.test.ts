@@ -538,6 +538,36 @@ describe("domainAtom — eligibility computation", () => {
   });
 });
 
+describe("timeZoneOptionsAtom", () => {
+  const seedAuthed = () =>
+    state.store.set(state.loginTokensAtom, { accessToken: "t", refreshToken: "" });
+
+  it("turns the API's identifier list into select options", async () => {
+    const { store, timeZoneOptionsAtom } = state;
+    seedAuthed();
+    const fetchFn = stubFetch(() =>
+      fakeResponse({
+        status: 200,
+        json: { timeZones: ["America/New_York", "UTC"] },
+      }),
+    );
+
+    expect(await store.get(timeZoneOptionsAtom)).toEqual([
+      { label: "America/New_York", value: "America/New_York" },
+      { label: "UTC", value: "UTC" },
+    ]);
+    expect(fetchFn.mock.calls[0][0]).toMatch(/\/time-zone$/);
+  });
+
+  it("falls back to an empty list when the request fails", async () => {
+    const { store, timeZoneOptionsAtom } = state;
+    seedAuthed();
+    stubFetch(() => fakeResponse({ status: 500, json: { detail: "boom" } }));
+
+    expect(await store.get(timeZoneOptionsAtom)).toEqual([]);
+  });
+});
+
 describe("notifications", () => {
   it("push replaces same-id, dismiss removes, clear empties", () => {
     const {

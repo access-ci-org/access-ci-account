@@ -2,6 +2,7 @@ import { withForm } from "@/hooks/form";
 import type { AccountResponse, DomainResponse, Option } from "@/helpers/types";
 import { profileDefaultValues } from "@/helpers/defaults";
 import { registrationFields } from "@/helpers/fields";
+import { timeZoneOptionsAtom } from "@/helpers/state";
 
 import {
   Card,
@@ -24,11 +25,6 @@ const ROLE_OPTIONS: Option<string>[] = [
   { label: "Resource Provider", value: "resource_provider" },
   { label: "Cyberinfrastructure (CI) Community Member", value: "ci_member" },
 ];
-
-// TIMEZONE_OPTIONS defines selectable time zones
-const TIMEZONE_OPTIONS: Option<string>[] = Intl.supportedValuesOf(
-  "timeZone",
-).map((tz) => ({ label: tz, value: tz }));
 
 type FormProfileProps = {
   domain?: DomainResponse | null;
@@ -111,7 +107,7 @@ const FormProfile = withForm({
                       value={value}
                       onChange={(v: string | null) => field.setValue(v ?? "")}
                       placeholder="Select Time Zone"
-                      options={TIMEZONE_OPTIONS}
+                      optionsAtom={timeZoneOptionsAtom}
                     />
                   );
                 }}

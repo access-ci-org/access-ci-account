@@ -35,6 +35,10 @@ export type DegreesResponse = {
   degrees: { degreeId: number; name: string }[];
 };
 
+export type TimeZonesResponse = {
+  timeZones: string[];
+};
+
 export type DomainResponse = {
   domain: string;
   organizations: Organization[];

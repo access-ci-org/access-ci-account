@@ -31,6 +31,7 @@ import {
   type SshKeyResponse,
   type SuccessResponse,
   type TermsAndConditionsResponse,
+  type TimeZonesResponse,
   type VerifyOtpResponse,
 } from "./types";
 import { profileDefaultValues, registrationDefaultValues } from "./defaults";
@@ -534,6 +535,21 @@ export const academicStatusOptionsAtom = atom<Promise<Option<number>[]>>(
       value: status.academicStatusId,
       label: status.name,
     })),
+);
+
+// Time zones come from the API rather than Intl.supportedValuesOf("timeZone"):
+// browsers ship differing ICU time zone lists, and identifiers CoManage doesn't
+// know about are rejected when the profile is saved.
+export const timeZonesAtom = atom(async () => {
+  const response = await fetchApiJson<TimeZonesResponse>("/time-zone");
+  return "error" in response ? [] : response.timeZones;
+});
+
+export const timeZoneOptionsAtom = atom<Promise<Option<string>[]>>(async (get) =>
+  (await get(timeZonesAtom)).map((timeZone) => ({
+    value: timeZone,
+    label: timeZone,
+  })),
 );
 
 export const termsAndConditionsAtom = atom(async () => {
