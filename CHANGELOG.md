@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.1](https://github.com/access-ci-org/access-ci-account/compare/v0.18.0...v0.18.1) (2026-10-21)
+
+
+### Bug Fixes
+
+* **registration:** show maintenance message instead of incorrect code if ([64386ee](https://github.com/access-ci-org/access-ci-account/commit/64386ee8284d34da5523de1bd2be9d9dedc1b92f))
+
 ## [0.18.0](https://github.com/access-ci-org/access-ci-account/compare/v0.17.0...v0.18.0) (2026-10-21)
 
 
