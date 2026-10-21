@@ -89,7 +89,11 @@ describe("FormProfile — time zone field", () => {
 
     // The account's saved zone survives the options load: FieldSelect prunes
     // values missing from its options, so a mismatched list would blank it.
-    expect(await screen.findByText("America/New_York")).toBeInTheDocument();
+    // The first render mounts the whole form, which can exceed findBy's 1s
+    // default when test files run in parallel.
+    expect(
+      await screen.findByText("America/New_York", {}, { timeout: 5000 }),
+    ).toBeInTheDocument();
     expect(
       fetchFn.mock.calls.some(([url]) => String(url).endsWith("/time-zone")),
     ).toBe(true);
@@ -102,7 +106,7 @@ describe("FormProfile — time zone field", () => {
     const onSubmit = vi.fn();
     renderProfileForm({ account: makeAccount(), onSubmit });
 
-    await screen.findByText("America/New_York");
+    await screen.findByText("America/New_York", {}, { timeout: 5000 });
     await user.click(timeZoneInput());
     await user.click(await screen.findByText("America/Ciudad_Juarez"));
 

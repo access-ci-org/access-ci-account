@@ -1,6 +1,7 @@
 import { ErrorComponent, type ErrorComponentProps } from "@tanstack/react-router";
 import { Wrench } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { maintenanceMessage, maintenanceTitle } from "@/helpers/state";
 
 // Thrown from route loaders when the API reports that a backend service (e.g.
 // CoManage Registry) is down. Without this, loaders treat every API error as an
@@ -17,11 +18,8 @@ export function ServiceUnavailable() {
   return (
     <Alert variant="warning" role="alert">
       <Wrench />
-      <AlertTitle>Down for Maintenance</AlertTitle>
-      <AlertDescription>
-        ACCESS account services are temporarily unavailable while we perform
-        maintenance. Please try again later.
-      </AlertDescription>
+      <AlertTitle>{maintenanceTitle}</AlertTitle>
+      <AlertDescription>{maintenanceMessage}</AlertDescription>
     </Alert>
   );
 }

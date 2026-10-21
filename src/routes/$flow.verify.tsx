@@ -6,6 +6,8 @@ import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
   domainAtom,
   emailAtom,
+  maintenanceMessage,
+  maintenanceTitle,
   otpAtom,
   profileFormAtom,
   pushNotificationAtom,
@@ -92,6 +94,18 @@ function VerifyEmail() {
       const status = await verifyOtp();
 
       setOtp("");
+
+      if (status.unavailable) {
+        pushNotification({
+          title: maintenanceTitle,
+          message: maintenanceMessage,
+          variant: "error",
+        });
+
+        setEmail("");
+        navigate({ to: prevPath });
+        return;
+      }
 
       if (!status.verified) {
         pushNotification({

@@ -1,12 +1,16 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { fakeResponse } from "@/test/utils";
 
 // Drives the real route tree, so the loaders' error handling is exercised the
 // same way it is in the app. Modules are re-imported per test because state.ts
 // keeps a singleton store that reads tokens from localStorage at load.
-async function renderAt(path: string) {
+async function renderAt(
+  path: string,
+  setup?: (state: typeof import("@/helpers/state")) => Promise<unknown>,
+) {
   vi.resetModules();
+  await setup?.(await import("@/helpers/state"));
   const { createMemoryHistory, createRouter, RouterProvider } = await import(
     "@tanstack/react-router"
   );
@@ -71,3 +75,46 @@ describe.each(["/profile", "/linked-accounts", "/ssh-keys"])(
     });
   },
 );
+
+describe("/register/verify when a backend service is down", () => {
+  it("shows a maintenance message instead of 'Incorrect Code'", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (url: string) =>
+        String(url).endsWith("/auth/send-otp")
+          ? fakeResponse({ status: 200, json: { success: true } })
+          : fakeResponse({
+              status: 503,
+              json: { detail: "CoManageRegistryClient API is unavailable" },
+            }),
+      ),
+    );
+    const router = await renderAt("/register/verify", async (state) => {
+      state.store.set(state.emailAtom, "ada@example.edu");
+      await state.store.set(state.sendOtpAtom);
+    });
+
+    fireEvent.change(
+      await waitFor(() => {
+        const input = document.querySelector<HTMLInputElement>(
+          "input[data-input-otp]",
+        );
+        expect(input).not.toBeNull();
+        return input!;
+      }),
+      { target: { value: "123456" } },
+    );
+    // Submit the form rather than clicking: the @access-ci/ui header adds a
+    // document.body click listener it never removes, and listeners leaked
+    // from earlier tests' unmounted headers throw on any click.
+    fireEvent.submit(
+      screen.getByRole("button", { name: "Continue" }).closest("form")!,
+    );
+
+    expect(await screen.findByText("Down for Maintenance")).toBeInTheDocument();
+    expect(screen.queryByText("Incorrect Code")).toBeNull();
+    await waitFor(() =>
+      expect(router.state.location.pathname).toBe("/register"),
+    );
+  });
+});

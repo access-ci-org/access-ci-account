@@ -13,6 +13,8 @@ import {
   createAccountAtom,
   pushNotificationAtom,
   hasOtpTokenAtom,
+  maintenanceMessage,
+  maintenanceTitle,
   registrationFormAtom,
 } from "@/helpers/state";
 import { profileFormSchema } from "@/helpers/validation";
@@ -52,7 +54,10 @@ function AcceptableUsePolicy() {
         navigate({ to: "/register/success" });
       } else {
         store.set(pushNotificationAtom, {
-          title: "Account Creation Failed",
+          title:
+            status.error === maintenanceMessage
+              ? maintenanceTitle
+              : "Account Creation Failed",
           message: status.error,
           variant: "error",
         });

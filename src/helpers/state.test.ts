@@ -269,6 +269,23 @@ describe("verifyOtpAtom", () => {
     expect(status.verified).toBe(false);
     expect(status.error).toBe("Invalid code");
   });
+
+  it("reports a 5xx as unavailable rather than an incorrect code", async () => {
+    const { store, verifyOtpAtom, emailAtom, otpAtom, maintenanceMessage } =
+      state;
+    stubFetch(() =>
+      fakeResponse({
+        status: 503,
+        json: { detail: "CoManageRegistryClient API is unavailable" },
+      }),
+    );
+    store.set(emailAtom, "ada@example.edu");
+    store.set(otpAtom, "123456");
+    const status = await store.set(verifyOtpAtom);
+    expect(status.verified).toBe(false);
+    expect(status.unavailable).toBe(true);
+    expect(status.error).toBe(maintenanceMessage);
+  });
 });
 
 describe("sendOtpAtom", () => {
@@ -334,6 +351,23 @@ describe("updatePasswordAtom", () => {
     const ok = await store.set(updatePasswordAtom, "NewPassw0rd!x");
     expect(ok).toBe(true);
     expect(String(fetchFn.mock.calls[0][0])).toContain("/auth/password-reset");
+  });
+
+  it("shows the maintenance message on a 5xx", async () => {
+    const { store, updatePasswordAtom, otpTokensAtom, notificationsAtom } = state;
+    stubFetch(() =>
+      fakeResponse({
+        status: 503,
+        json: { detail: "CoManageRegistryClient API is unavailable" },
+      }),
+    );
+    store.set(otpTokensAtom, { accessToken: unexpiredJwt(), refreshToken: "" });
+
+    const ok = await store.set(updatePasswordAtom, "NewPassw0rd!x");
+    expect(ok).toBe(false);
+    const note = store.get(notificationsAtom)[0];
+    expect(note.title).toBe(state.maintenanceTitle);
+    expect(note.message).toBe(state.maintenanceMessage);
   });
 
   it("rewrites the 'previous password' error message", async () => {
@@ -412,6 +446,24 @@ describe("createAccountAtom", () => {
     expect(fetchFn.mock.calls.some((c) => String(c[0]).endsWith("/account"))).toBe(
       false,
     );
+  });
+});
+
+describe("createAccountAtom — service unavailable", () => {
+  it("reports the maintenance message on a 5xx", async () => {
+    const { store, createAccountAtom, otpTokensAtom, maintenanceMessage } = state;
+    stubFetch(() =>
+      fakeResponse({
+        status: 503,
+        json: { detail: "CoManageRegistryClient API is unavailable" },
+      }),
+    );
+    store.set(otpTokensAtom, { accessToken: unexpiredJwt(), refreshToken: "" });
+
+    const status = await store.set(createAccountAtom);
+
+    expect(status.created).toBe(false);
+    expect(status.error).toBe(maintenanceMessage);
   });
 });
 

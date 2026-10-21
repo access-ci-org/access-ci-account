@@ -94,9 +94,15 @@ export const fetchJson = async <T extends object>(
 // True when the API couldn't reach a backend service it depends on (it
 // reports these as 5xx, e.g. 503 while CoManage Registry is down). Callers
 // should show a maintenance message rather than treating it as an auth failure.
-export const isServiceUnavailable = (response: object): response is ApiError =>
+// Deliberately a plain boolean rather than a type guard: a guard would
+// narrow the `false` branch to exclude ApiError entirely.
+export const isServiceUnavailable = (response: object): boolean =>
   "error" in response &&
   ((response as ApiError).error.status ?? 0) >= 500;
+
+export const maintenanceTitle = "Down for Maintenance";
+export const maintenanceMessage =
+  "ACCESS account services are temporarily unavailable while we perform maintenance. Please try again later.";
 
 const doRefresh = async (client: OidcClientType): Promise<boolean> => {
   const clientTokensAtom: WritableAtom<
@@ -358,6 +364,7 @@ export const verifyOtpAtom = atom(
     let status = {
       error: "Email address or verification code are not set.",
       verified: false,
+      unavailable: false,
       username: null,
     };
     if (email && otp) {
@@ -369,17 +376,32 @@ export const verifyOtpAtom = atom(
           body: { email, otp },
         },
       );
-      if ("error" in response) {
+      if (isServiceUnavailable(response)) {
+        // The code itself may have been fine; the account lookup behind it
+        // failed, so don't report this as an incorrect code.
+        status = {
+          error: maintenanceMessage,
+          verified: false,
+          unavailable: true,
+          username: null,
+        };
+      } else if ("error" in response) {
         status = {
           error:
             response.error.message ||
             "Verification code could not be checked. Please try again later.",
           verified: false,
+          unavailable: false,
           username: null,
         };
       } else {
         const jwt = parseJwt(response.jwt);
-        status = { error: "", verified: true, username: jwt?.uid || null };
+        status = {
+          error: "",
+          verified: true,
+          unavailable: false,
+          username: jwt?.uid || null,
+        };
         set(otpTokensAtom, { accessToken: response.jwt, refreshToken: "" });
         // Also record the token keyed by address so the profile form can commit
         // multiple verified emails (primary + recoveries) in one save.
@@ -439,7 +461,9 @@ export const createAccountAtom = atom(
 
     if ("error" in creationResponse)
       return exitWithStatus({
-        error: creationResponse.error.message,
+        error: isServiceUnavailable(creationResponse)
+          ? maintenanceMessage
+          : creationResponse.error.message,
         created: false,
         username: "",
         idp: "",
@@ -919,6 +943,17 @@ export const updatePasswordAtom = atom(
         title: "Error Updating Password",
         message:
           "You must be logged in or verify your email before changing your password.",
+        variant: "error",
+      });
+
+      return false;
+    }
+
+    if (isServiceUnavailable(response)) {
+      set(pushNotificationAtom, {
+        id: "password-update-error",
+        title: maintenanceTitle,
+        message: maintenanceMessage,
         variant: "error",
       });
 
