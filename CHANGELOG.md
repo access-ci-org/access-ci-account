@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.0](https://github.com/access-ci-org/access-ci-account/compare/v0.17.0...v0.18.0) (2026-10-21)
+
+
+### Features
+
+* show a maintenance message when upstream APIs are unavailable ([64055c5](https://github.com/access-ci-org/access-ci-account/commit/64055c53531c80221b568b05160277378de0710a))
+
 ## [0.17.0](https://github.com/access-ci-org/access-ci-account/compare/v0.16.0...v0.17.0) (2026-09-23)
 
 
