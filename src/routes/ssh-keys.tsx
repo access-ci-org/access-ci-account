@@ -8,6 +8,7 @@ import { siteTitle } from "@/config";
 import { useSetAtom, useAtomValue } from "jotai";
 import {
   isImpersonatingAtom,
+  isServiceUnavailable,
   pushNotificationAtom,
   sshKeysAtom,
   sshKeysDeleteAtom,
@@ -18,6 +19,7 @@ import { FaKey } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import ButtonRow from "@/components/button-row";
 import type { SshKeyResponse } from "@/helpers/types";
+import { ServiceUnavailableError } from "@/components/service-unavailable";
 import { SquarePlay } from "lucide-react";
 
 export const Route = createFileRoute("/ssh-keys")({
@@ -26,6 +28,7 @@ export const Route = createFileRoute("/ssh-keys")({
   loader: async ({ location }) => {
     const sshKeys = await store.get(sshKeysAtom);
 
+    if (isServiceUnavailable(sshKeys)) throw new ServiceUnavailableError();
     if ("error" in sshKeys) {
       redirect({
         to: "/login",

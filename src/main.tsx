@@ -10,6 +10,7 @@ import { routeTree } from "./routeTree.gen";
 import "./styles.css";
 import reportWebVitals from "./reportWebVitals.ts";
 import { LoaderCircle } from "lucide-react";
+import { RouteErrorComponent } from "@/components/service-unavailable";
 
 import { store } from "@/helpers/state";
 import { Provider as JotaiProvider } from "jotai";
@@ -23,6 +24,7 @@ const router = createRouter({
     ...TanStackQueryProviderContext,
   },
   defaultPendingComponent: () => <LoaderCircle className="animate-spin" />,
+  defaultErrorComponent: RouteErrorComponent,
   defaultPreload: false,
   scrollRestoration: true,
   defaultStructuralSharing: true,

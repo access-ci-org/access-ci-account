@@ -14,6 +14,7 @@ import {
   dismissNotificationAtom,
   domainAtom,
   emailAtom,
+  isServiceUnavailable,
   profileFormAtom,
   saveProfileAtom,
   store,
@@ -25,6 +26,7 @@ import {
 } from "@/helpers/validation";
 import { useSetAtom } from "jotai";
 import type { DomainResponse } from "@/helpers/types";
+import { ServiceUnavailableError } from "@/components/service-unavailable";
 
 export const Route = createFileRoute("/profile")({
   component: Profile,
@@ -36,6 +38,7 @@ export const Route = createFileRoute("/profile")({
   loader: async ({ location }) => {
     const account = await store.get(accountAtom);
     let domain: DomainResponse | null = null;
+    if (isServiceUnavailable(account)) throw new ServiceUnavailableError();
     if ("error" in account) {
       throw redirect({ to: "/login", search: { next: location.href } });
     }

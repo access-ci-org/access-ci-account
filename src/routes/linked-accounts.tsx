@@ -5,6 +5,7 @@ import {
   identityAtom,
   identityDeleteAtom,
   isImpersonatingAtom,
+  isServiceUnavailable,
   oidcAuthorizeAtom,
   pushNotificationAtom,
   store,
@@ -14,6 +15,7 @@ import { siteTitle } from "@/config";
 import { IoPerson } from "react-icons/io5";
 import ButtonRow from "@/components/button-row";
 import type { IdentityResponse } from "@/helpers/types";
+import { ServiceUnavailableError } from "@/components/service-unavailable";
 
 export const Route = createFileRoute("/linked-accounts")({
   component: LinkedAccountsRoute,
@@ -21,6 +23,8 @@ export const Route = createFileRoute("/linked-accounts")({
   loader: async ({ location }) => {
     const identitiesResponse = await store.get(identityAtom);
 
+    if (isServiceUnavailable(identitiesResponse))
+      throw new ServiceUnavailableError();
     if ("error" in identitiesResponse)
       throw redirect({ to: "/login", search: { next: location.href } });
 

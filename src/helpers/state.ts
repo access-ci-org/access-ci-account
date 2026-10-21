@@ -91,6 +91,13 @@ export const fetchJson = async <T extends object>(
   }
 };
 
+// True when the API couldn't reach a backend service it depends on (it
+// reports these as 5xx, e.g. 503 while CoManage Registry is down). Callers
+// should show a maintenance message rather than treating it as an auth failure.
+export const isServiceUnavailable = (response: object): response is ApiError =>
+  "error" in response &&
+  ((response as ApiError).error.status ?? 0) >= 500;
+
 const doRefresh = async (client: OidcClientType): Promise<boolean> => {
   const clientTokensAtom: WritableAtom<
     { accessToken: string; refreshToken: string },
