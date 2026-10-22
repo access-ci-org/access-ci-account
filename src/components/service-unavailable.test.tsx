@@ -39,6 +39,25 @@ function stubApi(status: number, detail: string) {
   );
 }
 
+// A loader throwing ServiceUnavailableError is the expected outage path, but
+// React (console.error) and TanStack Router (console.warn) both log errors
+// caught by a route's error boundary. Drop just those logs; anything else
+// still prints. Matched by name since resetModules gives each test its own
+// copy of the error class.
+function silenceExpectedOutageLogs() {
+  const isOutageError = (arg: unknown) =>
+    arg instanceof Error && arg.name === "ServiceUnavailableError";
+  const error = console.error.bind(console);
+  const warn = console.warn.bind(console);
+  vi.spyOn(console, "error").mockImplementation((...args) => {
+    if (!args.some(isOutageError)) error(...args);
+  });
+  vi.spyOn(console, "warn").mockImplementation((...args) => {
+    if (!String(args[0]).startsWith("Warning: Error in route match:"))
+      warn(...args);
+  });
+}
+
 beforeEach(() => {
   localStorage.setItem(
     "loginTokens",
@@ -49,12 +68,14 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.unstubAllGlobals();
+  vi.restoreAllMocks();
 });
 
 describe.each(["/profile", "/linked-accounts", "/ssh-keys"])(
   "%s when a backend service is down",
   (path) => {
     it("shows a maintenance message instead of redirecting to login", async () => {
+      silenceExpectedOutageLogs();
       stubApi(503, "CoManageRegistryClient API is unavailable");
       const router = await renderAt(path);
 
