@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach } from "vitest";
-import { screen, waitFor } from "@testing-library/react";
+import { act, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useAppForm } from "@/hooks/form";
 import { renderWithProviders } from "@/test/utils";
@@ -8,9 +8,10 @@ import { renderWithProviders } from "@/test/utils";
 // changes. This file-level afterEach runs before the global cleanup() unmount
 // (afterEach is LIFO), so draining ~60ms of real time here lets those timers
 // fire while the component is still mounted — otherwise they run after jsdom
-// teardown and throw "window is not defined".
+// teardown and throw "window is not defined". The wait runs inside act()
+// because those timers update input-otp's state.
 afterEach(async () => {
-  await new Promise((resolve) => setTimeout(resolve, 60));
+  await act(() => new Promise((resolve) => setTimeout(resolve, 60)));
 });
 
 // Note: FieldOtp renders per-slot <input data-otp-index> children, but the

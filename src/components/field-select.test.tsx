@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { screen } from "@testing-library/react";
+import { act, screen } from "@testing-library/react";
 import { atom } from "jotai";
 import { renderField, type TestStore } from "@/test/utils";
 import type { Option } from "@/helpers/types";
@@ -61,11 +61,16 @@ describe("FieldSelect", () => {
     expect(onChange).not.toHaveBeenCalled();
   });
 
-  it("routes optionsAtom through AwaitAtom's Suspense boundary", () => {
+  it("routes optionsAtom through AwaitAtom's Suspense boundary", async () => {
     // Passing optionsAtom (instead of static options) must suspend behind a
     // spinner while the async atom loads, rather than render an empty select.
-    const optionsAtom = atom(async () => OPTIONS);
-    const { container } = renderSelect({ label: "Pick", optionsAtom, placeholder: "Ready" });
+    // Never resolves: only the fallback is under test, and a load finishing
+    // after the test ends triggers a React act() warning. React also warns
+    // when a render suspends inside an act() that isn't awaited.
+    const optionsAtom = atom(() => new Promise<typeof OPTIONS>(() => {}));
+    const { container } = await act(async () =>
+      renderSelect({ label: "Pick", optionsAtom, placeholder: "Ready" }),
+    );
     expect(container.querySelector(".animate-spin")).toBeInTheDocument();
   });
 });
