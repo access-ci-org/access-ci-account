@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.2](https://github.com/access-ci-org/access-ci-account/compare/v0.18.1...v0.18.2) (2026-10-23)
+
+
+### Bug Fixes
+
+* **registration:** temporarily disable new registrations ([ea41e01](https://github.com/access-ci-org/access-ci-account/commit/ea41e0189e5d6611ffbd142b169b23a3f5a7e93e))
+
 ## [0.18.1](https://github.com/access-ci-org/access-ci-account/compare/v0.18.0...v0.18.1) (2026-10-21)
 
 
