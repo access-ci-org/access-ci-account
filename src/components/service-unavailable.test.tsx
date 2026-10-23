@@ -139,3 +139,17 @@ describe("/register/verify when a backend service is down", () => {
     );
   });
 });
+
+describe("/register while registration is disabled", () => {
+  it("shows a maintenance notice instead of the email prompt", async () => {
+    stubApi(500, "no API calls expected");
+    await renderAt("/register");
+
+    expect(
+      await screen.findByText(
+        /ACCESS registration is temporarily unavailable due to system maintenance/,
+      ),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("textbox")).toBeNull();
+  });
+});

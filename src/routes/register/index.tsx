@@ -1,18 +1,21 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import * as z from "zod";
 import { useAppForm } from "@/hooks/form";
-import { siteTitle } from "@/config";
+import { registrationDisabled, siteTitle } from "@/config";
 import { useAtom, useSetAtom } from "jotai";
 import {
   bypassIdpAtom,
   emailAtom,
   linkTokensAtom,
+  maintenanceTitle,
   otpTokensAtom,
   sendOtpAtom,
   store,
 } from "@/helpers/state";
 import { registerSearchSchema } from "@/helpers/validation";
+import { Wrench } from "lucide-react";
 
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import FormSendOtp from "@/components/form-send-otp";
 import RegistrationLayout from "@/components/registration-layout";
 
@@ -65,7 +68,18 @@ function RegisterStart() {
         projects.
       </p>
       <RegistrationLayout>
-        <FormSendOtp form={form} />
+        {registrationDisabled ? (
+          <Alert variant="warning" role="alert">
+            <Wrench />
+            <AlertTitle>{maintenanceTitle}</AlertTitle>
+            <AlertDescription>
+              ACCESS registration is temporarily unavailable due to system
+              maintenance. Please try again later.
+            </AlertDescription>
+          </Alert>
+        ) : (
+          <FormSendOtp form={form} />
+        )}
       </RegistrationLayout>
     </>
   );
