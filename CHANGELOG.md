@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.3](https://github.com/access-ci-org/access-ci-account/compare/v0.18.2...v0.18.3) (2026-10-26)
+
+
+### Bug Fixes
+
+* **password:** temporarily disable password changes ([496263c](https://github.com/access-ci-org/access-ci-account/commit/496263c99c07e0e63dc050f113815b8333172eed))
+
 ## [0.18.2](https://github.com/access-ci-org/access-ci-account/compare/v0.18.1...v0.18.2) (2026-10-23)
 
 
