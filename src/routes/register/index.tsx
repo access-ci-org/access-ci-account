@@ -7,17 +7,15 @@ import {
   bypassIdpAtom,
   emailAtom,
   linkTokensAtom,
-  maintenanceTitle,
   otpTokensAtom,
   sendOtpAtom,
   store,
 } from "@/helpers/state";
 import { registerSearchSchema } from "@/helpers/validation";
-import { Wrench } from "lucide-react";
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import FormSendOtp from "@/components/form-send-otp";
 import RegistrationLayout from "@/components/registration-layout";
+import { ServiceUnavailable } from "@/components/service-unavailable";
 
 export const Route = createFileRoute("/register/")({
   component: RegisterStart,
@@ -33,7 +31,10 @@ export const Route = createFileRoute("/register/")({
 });
 
 const formSchema = z.object({
-  email: z.string().trim().pipe(z.email({ message: "Invalid email address." })),
+  email: z
+    .string()
+    .trim()
+    .pipe(z.email({ message: "Invalid email address." })),
 });
 
 function RegisterStart() {
@@ -69,14 +70,7 @@ function RegisterStart() {
       </p>
       <RegistrationLayout>
         {registrationDisabled ? (
-          <Alert variant="warning" role="alert">
-            <Wrench />
-            <AlertTitle>{maintenanceTitle}</AlertTitle>
-            <AlertDescription>
-              ACCESS registration is temporarily unavailable due to system
-              maintenance. Please try again later.
-            </AlertDescription>
-          </Alert>
+          <ServiceUnavailable message="ACCESS registration is temporarily unavailable due to system maintenance. Please try again later." />
         ) : (
           <FormSendOtp form={form} />
         )}

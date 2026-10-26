@@ -153,3 +153,24 @@ describe("/register while registration is disabled", () => {
     expect(screen.queryByRole("textbox")).toBeNull();
   });
 });
+
+describe("/password while password changes are disabled", () => {
+  it.each([
+    ["logged in", () => {}],
+    ["logged out", () => localStorage.clear()],
+  ])(
+    "shows a maintenance notice instead of the form when %s",
+    async (_, setup) => {
+      setup();
+      stubApi(500, "no API calls expected");
+      await renderAt("/password");
+
+      expect(
+        await screen.findByText(
+          /ACCESS password changes are temporarily unavailable due to system maintenance/,
+        ),
+      ).toBeInTheDocument();
+      expect(document.querySelector("form input")).toBeNull();
+    },
+  );
+});

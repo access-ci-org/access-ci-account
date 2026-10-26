@@ -1,10 +1,11 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import * as z from "zod";
 import { useAtomValue, useSetAtom } from "jotai";
-import { siteTitle } from "@/config";
+import { passwordChangeDisabled, siteTitle } from "@/config";
 import { useAppForm } from "@/hooks/form";
 import FormChangePassword from "@/components/form-change-password";
 import FormSendOtp from "@/components/form-send-otp";
+import { ServiceUnavailable } from "@/components/service-unavailable";
 import {
   emailAtom,
   hasOtpTokenAtom,
@@ -82,6 +83,15 @@ function Password() {
       if (success) navigate({ to: "/" });
     },
   });
+
+  if (passwordChangeDisabled) {
+    return (
+      <>
+        <h1>Change ACCESS Password</h1>
+        <ServiceUnavailable message="ACCESS password changes are temporarily unavailable due to system maintenance. Please try again later." />
+      </>
+    );
+  }
 
   if (!isLoggedIn && !hasOtpToken) {
     return (

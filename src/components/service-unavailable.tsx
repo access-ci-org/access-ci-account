@@ -1,4 +1,7 @@
-import { ErrorComponent, type ErrorComponentProps } from "@tanstack/react-router";
+import {
+  ErrorComponent,
+  type ErrorComponentProps,
+} from "@tanstack/react-router";
 import { Wrench } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { maintenanceMessage, maintenanceTitle } from "@/helpers/state";
@@ -14,12 +17,16 @@ export class ServiceUnavailableError extends Error {
   }
 }
 
-export function ServiceUnavailable() {
+export function ServiceUnavailable({
+  message = maintenanceMessage,
+}: {
+  message?: string;
+}) {
   return (
     <Alert variant="warning" role="alert">
       <Wrench />
       <AlertTitle>{maintenanceTitle}</AlertTitle>
-      <AlertDescription>{maintenanceMessage}</AlertDescription>
+      <AlertDescription>{message}</AlertDescription>
     </Alert>
   );
 }
