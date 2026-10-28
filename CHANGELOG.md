@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.4](https://github.com/access-ci-org/access-ci-account/compare/v0.18.3...v0.18.4) (2026-10-28)
+
+
+### Bug Fixes
+
+* **config:** enable registration and password change ([d430923](https://github.com/access-ci-org/access-ci-account/commit/d430923ebd5cad1832c5ff67cedc413580ac5098))
+
 ## [0.18.3](https://github.com/access-ci-org/access-ci-account/compare/v0.18.2...v0.18.3) (2026-10-26)
 
 
