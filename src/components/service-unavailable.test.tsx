@@ -8,8 +8,16 @@ import { fakeResponse } from "@/test/utils";
 async function renderAt(
   path: string,
   setup?: (state: typeof import("@/helpers/state")) => Promise<unknown>,
+  config?: { registrationDisabled?: boolean; passwordChangeDisabled?: boolean },
 ) {
   vi.resetModules();
+  vi.doUnmock("@/config");
+  if (config) {
+    vi.doMock("@/config", async (importOriginal) => ({
+      ...(await importOriginal<typeof import("@/config")>()),
+      ...config,
+    }));
+  }
   await setup?.(await import("@/helpers/state"));
   const { createMemoryHistory, createRouter, RouterProvider } = await import(
     "@tanstack/react-router"
@@ -143,7 +151,7 @@ describe("/register/verify when a backend service is down", () => {
 describe("/register while registration is disabled", () => {
   it("shows a maintenance notice instead of the email prompt", async () => {
     stubApi(500, "no API calls expected");
-    await renderAt("/register");
+    await renderAt("/register", undefined, { registrationDisabled: true });
 
     expect(
       await screen.findByText(
@@ -151,6 +159,18 @@ describe("/register while registration is disabled", () => {
       ),
     ).toBeInTheDocument();
     expect(screen.queryByRole("textbox")).toBeNull();
+  });
+});
+
+describe("/register while registration is enabled", () => {
+  it("shows the email prompt instead of a maintenance notice", async () => {
+    stubApi(500, "no API calls expected");
+    await renderAt("/register", undefined, { registrationDisabled: false });
+
+    expect(await screen.findByLabelText("Email Address")).toBeInTheDocument();
+    expect(
+      screen.queryByText(/ACCESS registration is temporarily unavailable/),
+    ).toBeNull();
   });
 });
 
@@ -163,7 +183,7 @@ describe("/password while password changes are disabled", () => {
     async (_, setup) => {
       setup();
       stubApi(500, "no API calls expected");
-      await renderAt("/password");
+      await renderAt("/password", undefined, { passwordChangeDisabled: true });
 
       expect(
         await screen.findByText(
@@ -171,6 +191,27 @@ describe("/password while password changes are disabled", () => {
         ),
       ).toBeInTheDocument();
       expect(document.querySelector("form input")).toBeNull();
+    },
+  );
+});
+
+describe("/password while password changes are enabled", () => {
+  it.each([
+    ["logged in", () => {}, 'input[type="password"]'],
+    ["logged out", () => localStorage.clear(), "input#email"],
+  ])(
+    "shows the form instead of a maintenance notice when %s",
+    async (_, setup, selector) => {
+      setup();
+      stubApi(500, "no API calls expected");
+      await renderAt("/password", undefined, { passwordChangeDisabled: false });
+
+      await waitFor(() =>
+        expect(document.querySelector(`form ${selector}`)).not.toBeNull(),
+      );
+      expect(
+        screen.queryByText(/ACCESS password changes are temporarily unavailable/),
+      ).toBeNull();
     },
   );
 });
