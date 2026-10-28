@@ -2,11 +2,11 @@ export const siteTitle = "ACCESS Account";
 
 // Set to true to replace the registration start page with a maintenance notice
 // (e.g. while CoManage Registry cannot create new accounts).
-export const registrationDisabled = true;
+export const registrationDisabled = false;
 
 // Set to true to replace the password reset/change page with a maintenance
 // notice (e.g. while CoManage Registry cannot update passwords).
-export const passwordChangeDisabled = true;
+export const passwordChangeDisabled = false;
 export const apiBaseUrl =
   import.meta.env.VITE_API_BASE_URL || `https://${window.location.host}/api/v1`;
 
