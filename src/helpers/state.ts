@@ -28,6 +28,7 @@ import {
   type Option,
   type RefreshResponse,
   type RegistrationFields,
+  type ResourceUsernamesResponse,
   type SshKeyResponse,
   type SuccessResponse,
   type TermsAndConditionsResponse,
@@ -104,7 +105,23 @@ export const maintenanceTitle = "Down for Maintenance";
 export const maintenanceMessage =
   "ACCESS account services are temporarily unavailable while we perform maintenance. Please try again later.";
 
-const doRefresh = async (client: OidcClientType): Promise<boolean> => {
+// Concurrent requests that all get a 401 share one refresh. Otherwise each
+// would spend the same refresh token, and a failed duplicate could clear the
+// tokens that the successful refresh just stored.
+const refreshesInFlight = new Map<OidcClientType, Promise<boolean>>();
+
+const doRefresh = (client: OidcClientType): Promise<boolean> => {
+  let refresh = refreshesInFlight.get(client);
+  if (!refresh) {
+    refresh = refreshTokens(client).finally(() =>
+      refreshesInFlight.delete(client),
+    );
+    refreshesInFlight.set(client, refresh);
+  }
+  return refresh;
+};
+
+const refreshTokens = async (client: OidcClientType): Promise<boolean> => {
   const clientTokensAtom: WritableAtom<
     { accessToken: string; refreshToken: string },
     [RefreshResponse],
@@ -640,6 +657,17 @@ export const sshKeysAddAtom = atom(
     return response;
   },
 );
+
+export const resourceUsernamesAtom = atomWithRefresh(async (get) => {
+  const response = await fetchApiJson<ResourceUsernamesResponse>(
+    `/account/${get(usernameAtom)}/resource-usernames`,
+    {
+      method: "GET",
+      body: null,
+    },
+  );
+  return "error" in response ? response : response.organizations;
+});
 
 export const identityAtom = atomWithRefresh(async (get) => {
   const response = await fetchApiJson<IdentityResponse>(
