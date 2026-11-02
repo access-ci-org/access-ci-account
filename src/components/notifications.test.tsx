@@ -31,6 +31,24 @@ describe("NotificationsBar", () => {
     expect(screen.getByRole("status")).toBeInTheDocument();
   });
 
+  it("links the help ticket phrase in a plain-text message", () => {
+    renderBar([
+      {
+        id: "a",
+        message:
+          "Your login is already linked to ACCESS account x, which is not active. Please open a help ticket.",
+      },
+    ]);
+    const link = screen.getByRole("link", { name: "open a help ticket" });
+    expect(link).toHaveAttribute(
+      "href",
+      "https://support.access-ci.org/help-ticket",
+    );
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "Your login is already linked to ACCESS account x, which is not active. Please open a help ticket.",
+    );
+  });
+
   it("removes a notification when its dismiss button is clicked", async () => {
     const user = userEvent.setup();
     renderBar([{ id: "a", message: "Dismiss me", dismissible: true }]);

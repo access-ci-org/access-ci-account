@@ -9,6 +9,7 @@ import {
   registrationFormAtom,
   usernameAtom,
   identityAddAtom,
+  identityCheckAtom,
   oidcNextAtom,
   oidcStateAtom,
   oidcTokensAtom,
@@ -60,10 +61,17 @@ export const Route = createFileRoute("/auth-token/$client")({
       if (store.get(isLoggedInAtom)) {
         // The user is linking a new account.
         store.set(linkTokensAtom, { accessToken, refreshToken });
-        const { added } = await store.set(identityAddAtom);
-        if (added) throw redirect({ to: "/linked-accounts" });
+        // Either way, identityAddAtom leaves a notification to show there.
+        await store.set(identityAddAtom);
+        throw redirect({ to: "/linked-accounts" });
       } else {
         // The user is registering with an existing identity.
+        store.set(linkTokensAtom, { accessToken, refreshToken });
+        // If the login is already linked to an account, this shows why and
+        // clears the link tokens. Signing in with the IdP again won't help, so
+        // send the user home, where they can log in with that account.
+        const { available } = await store.set(identityCheckAtom);
+        if (!available) throw redirect({ to: "/" });
         if ("given_name" in userInfo && "family_name" in userInfo) {
           const { given_name: firstName, family_name: lastName } = userInfo;
           store.set(registrationFormAtom, {
@@ -72,7 +80,6 @@ export const Route = createFileRoute("/auth-token/$client")({
             lastName,
           });
         }
-        store.set(linkTokensAtom, { accessToken, refreshToken });
         throw redirect({ to: "/register/complete" });
       }
     } else if (client === "login") {

@@ -6,6 +6,25 @@ import { notificationsAtom, dismissNotificationAtom } from "@/helpers/state";
 
 import { X } from "lucide-react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import HelpTicketLink from "@/components/help-ticket-link";
+import type { AppNotification } from "@/helpers/types";
+
+// Error messages from the API are plain text, so the API asks users to "open a
+// help ticket" in words and the link is added here, matching the rest of the UI.
+const HELP_TICKET_PHRASE = "open a help ticket";
+
+function renderMessage(message: AppNotification["message"]) {
+  if (typeof message !== "string") return message;
+  const index = message.indexOf(HELP_TICKET_PHRASE);
+  if (index === -1) return message;
+  return (
+    <>
+      {message.slice(0, index)}
+      <HelpTicketLink />
+      {message.slice(index + HELP_TICKET_PHRASE.length)}
+    </>
+  );
+}
 
 export function NotificationsBar() {
   const notifications = useAtomValue(notificationsAtom);
@@ -36,7 +55,7 @@ export function NotificationsBar() {
           >
             {n.title ? <AlertTitle>{n.title}</AlertTitle> : null}
 
-            <AlertDescription>{n.message}</AlertDescription>
+            <AlertDescription>{renderMessage(n.message)}</AlertDescription>
 
             {n.dismissible !== false ? (
               <button

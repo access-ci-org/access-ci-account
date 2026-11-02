@@ -467,6 +467,93 @@ describe("createAccountAtom — service unavailable", () => {
   });
 });
 
+describe("identityCheckAtom", () => {
+  it("keeps the link tokens when the login is available", async () => {
+    const { store, identityCheckAtom, linkTokensAtom, otpTokensAtom, notificationsAtom } =
+      state;
+    const fetchFn = stubFetch(() =>
+      fakeResponse({ status: 200, json: { success: true } }),
+    );
+    store.set(linkTokensAtom, { accessToken: "cilogon", refreshToken: "r" });
+    store.set(otpTokensAtom, { accessToken: unexpiredJwt(), refreshToken: "" });
+
+    expect(await store.set(identityCheckAtom)).toEqual({ available: true });
+
+    const [url, init] = fetchFn.mock.calls[0];
+    expect(url).toMatch(/\/identity\/check$/);
+    expect(JSON.parse(init.body)).toEqual({ cilogonToken: "cilogon" });
+    expect(store.get(linkTokensAtom)).toEqual({ accessToken: "cilogon", refreshToken: "r" });
+    expect(store.get(notificationsAtom)).toHaveLength(0);
+  });
+
+  it("drops the link and email tokens and shows the API's message when the login is in use", async () => {
+    const { store, identityCheckAtom, linkTokensAtom, otpTokensAtom, notificationsAtom } =
+      state;
+    const detail =
+      "Your Uni login is already linked to ACCESS account x. Please log in with that account, or open a help ticket if you need help.";
+    stubFetch(() => fakeResponse({ status: 400, json: { detail } }));
+    store.set(linkTokensAtom, { accessToken: "cilogon", refreshToken: "r" });
+    store.set(otpTokensAtom, { accessToken: unexpiredJwt(), refreshToken: "" });
+
+    expect(await store.set(identityCheckAtom)).toEqual({ available: false });
+
+    expect(store.get(linkTokensAtom)).toEqual({ accessToken: "", refreshToken: "" });
+    expect(store.get(otpTokensAtom)).toEqual({ accessToken: "", refreshToken: "" });
+    expect(store.get(notificationsAtom)).toMatchObject([
+      { id: "identity-check-error", message: detail, variant: "error" },
+    ]);
+  });
+
+  it("lets the user continue when the API is unavailable", async () => {
+    const { store, identityCheckAtom, linkTokensAtom, otpTokensAtom, notificationsAtom } =
+      state;
+    stubFetch(() => fakeResponse({ status: 503, json: { detail: "down" } }));
+    store.set(linkTokensAtom, { accessToken: "cilogon", refreshToken: "r" });
+    store.set(otpTokensAtom, { accessToken: unexpiredJwt(), refreshToken: "" });
+
+    expect(await store.set(identityCheckAtom)).toEqual({ available: true });
+    expect(store.get(linkTokensAtom).accessToken).toBe("cilogon");
+    expect(store.get(notificationsAtom)).toHaveLength(0);
+  });
+});
+
+describe("identityAddAtom", () => {
+  it("drops the link tokens and shows the API's message when linking fails", async () => {
+    const { store, identityAddAtom, linkTokensAtom, loginTokensAtom, usernameAtom, notificationsAtom } =
+      state;
+    const detail =
+      "Your Uni login is already linked to ACCESS account x. If you believe that account is a duplicate of yours, please open a help ticket.";
+    stubFetch(() => fakeResponse({ status: 400, json: { detail } }));
+    store.set(usernameAtom, "ada");
+    store.set(loginTokensAtom, { accessToken: unexpiredJwt(), refreshToken: "" });
+    store.set(linkTokensAtom, { accessToken: "cilogon", refreshToken: "" });
+
+    expect(await store.set(identityAddAtom)).toEqual({ added: false, error: detail });
+
+    expect(store.get(linkTokensAtom)).toEqual({ accessToken: "", refreshToken: "" });
+    expect(store.get(notificationsAtom)).toMatchObject([
+      { id: "add-identity-error", message: detail, variant: "error" },
+    ]);
+  });
+
+  it("shows an error when the link token can't be refreshed", async () => {
+    const { store, identityAddAtom, linkTokensAtom, notificationsAtom } = state;
+    stubFetch(() => fakeResponse({ status: 400, json: { detail: "bad refresh" } }));
+    store.set(linkTokensAtom, { accessToken: "cilogon", refreshToken: "r" });
+
+    expect((await store.set(identityAddAtom)).added).toBe(false);
+
+    expect(store.get(linkTokensAtom)).toEqual({ accessToken: "", refreshToken: "" });
+    expect(store.get(notificationsAtom)).toMatchObject([
+      {
+        id: "add-identity-error",
+        message: "Access token is invalid or has expired.",
+        variant: "error",
+      },
+    ]);
+  });
+});
+
 describe("shouldShowPasswordFields / bypassIdpAtom", () => {
   const idp = { displayName: "Example University", entityId: "https://idp.example.edu" };
 

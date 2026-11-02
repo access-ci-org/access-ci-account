@@ -652,6 +652,34 @@ export const identityAtom = atomWithRefresh(async (get) => {
   return "error" in response ? response : response.identities;
 });
 
+// Check that the login the user just signed in with is not already linked to
+// an account, so registration can report a conflict before the user fills in
+// the rest of the form. Account creation repeats the check.
+export const identityCheckAtom = atom(null, async (get, set) => {
+  const response = await fetchApiJson<SuccessResponse>("/identity/check", {
+    method: "POST",
+    body: { cilogonToken: get(linkTokensAtom).accessToken },
+  });
+
+  // If the API is down, let the user carry on: account creation will run the
+  // check again (and report the outage) once the form is complete.
+  if (!("error" in response) || isServiceUnavailable(response))
+    return { available: true };
+
+  // The login can't be used to register, so drop its tokens. The user should
+  // log in with the other account or open a help ticket, not register again,
+  // so drop the email verification too.
+  set(linkTokensAtom, { ...noTokens });
+  set(otpTokensAtom, { ...noTokens });
+  set(pushNotificationAtom, {
+    id: "identity-check-error",
+    title: "Login Already in Use",
+    message: response.error.message || "This login cannot be used to register.",
+    variant: "error",
+  });
+  return { available: false };
+});
+
 export const identityAddAtom = atom(null, async (get, set) => {
   const linkTokens = get(linkTokensAtom);
   // Ensure access token is valid before adding identity and attempt refresh if possible.
@@ -661,6 +689,12 @@ export const identityAddAtom = atom(null, async (get, set) => {
         error: "Access token is invalid or has expired.",
         added: false,
       };
+      set(pushNotificationAtom, {
+        id: "add-identity-error",
+        title: "Error Adding Linked Account",
+        message: status.error,
+        variant: "error",
+      });
       return status;
     }
   }
