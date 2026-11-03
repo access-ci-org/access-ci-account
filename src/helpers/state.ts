@@ -713,13 +713,16 @@ export const identityAddAtom = atom(null, async (get, set) => {
 
   // Profile Save Errors
   if ("error" in response) {
+    const unavailable = isServiceUnavailable(response);
     const status = {
       added: false,
-      error: response.error.message || "Linked account could not be added.",
+      error: unavailable
+        ? maintenanceMessage
+        : response.error.message || "Linked account could not be added.",
     };
     set(pushNotificationAtom, {
       id: "add-identity-error",
-      title: "Error Adding Linked Account",
+      title: unavailable ? maintenanceTitle : "Error Adding Linked Account",
       message: status.error,
       variant: "error",
     });
@@ -751,6 +754,19 @@ export const identityDeleteAtom = atom(
         method: "DELETE",
       },
     );
+
+    if ("error" in response) {
+      const unavailable = isServiceUnavailable(response);
+      set(pushNotificationAtom, {
+        id: "delete-identity-error",
+        title: unavailable ? maintenanceTitle : undefined,
+        message: unavailable
+          ? maintenanceMessage
+          : "Unable to delete linked account.",
+        variant: "error",
+      });
+      return response;
+    }
 
     // Refresh identities list after deletion
     set(identityAtom);

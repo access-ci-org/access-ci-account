@@ -554,6 +554,85 @@ describe("identityAddAtom", () => {
   });
 });
 
+describe("identityAddAtom — service unavailable", () => {
+  it("shows the maintenance message on a 5xx", async () => {
+    const {
+      store,
+      identityAddAtom,
+      linkTokensAtom,
+      loginTokensAtom,
+      usernameAtom,
+      notificationsAtom,
+      maintenanceMessage,
+      maintenanceTitle,
+    } = state;
+    stubFetch(() =>
+      fakeResponse({ status: 503, json: { detail: "CILogonClient API is unavailable" } }),
+    );
+    store.set(usernameAtom, "ada");
+    store.set(loginTokensAtom, { accessToken: unexpiredJwt(), refreshToken: "" });
+    store.set(linkTokensAtom, { accessToken: "cilogon", refreshToken: "" });
+
+    expect(await store.set(identityAddAtom)).toEqual({
+      added: false,
+      error: maintenanceMessage,
+    });
+    expect(store.get(notificationsAtom)).toMatchObject([
+      {
+        id: "add-identity-error",
+        title: maintenanceTitle,
+        message: maintenanceMessage,
+        variant: "error",
+      },
+    ]);
+  });
+});
+
+describe("identityDeleteAtom", () => {
+  const setUp = (status: number) => {
+    const { store, usernameAtom, loginTokensAtom } = state;
+    const fetchFn = stubFetch(() =>
+      fakeResponse({ status, json: { detail: "Something went wrong" } }),
+    );
+    store.set(usernameAtom, "ada");
+    store.set(loginTokensAtom, { accessToken: unexpiredJwt(), refreshToken: "" });
+    return fetchFn;
+  };
+
+  it("shows the maintenance message on a 5xx", async () => {
+    const { store, identityDeleteAtom, notificationsAtom, maintenanceMessage, maintenanceTitle } =
+      state;
+    const fetchFn = setUp(503);
+
+    expect("error" in (await store.set(identityDeleteAtom, 7))).toBe(true);
+
+    expect(fetchFn).toHaveBeenCalledTimes(1);
+    expect(store.get(notificationsAtom)).toMatchObject([
+      {
+        id: "delete-identity-error",
+        title: maintenanceTitle,
+        message: maintenanceMessage,
+        variant: "error",
+      },
+    ]);
+  });
+
+  it("shows a generic error on other failures", async () => {
+    const { store, identityDeleteAtom, notificationsAtom } = state;
+    setUp(400);
+
+    expect("error" in (await store.set(identityDeleteAtom, 7))).toBe(true);
+
+    expect(store.get(notificationsAtom)).toMatchObject([
+      {
+        id: "delete-identity-error",
+        message: "Unable to delete linked account.",
+        variant: "error",
+      },
+    ]);
+  });
+});
+
 describe("shouldShowPasswordFields / bypassIdpAtom", () => {
   const idp = { displayName: "Example University", entityId: "https://idp.example.edu" };
 

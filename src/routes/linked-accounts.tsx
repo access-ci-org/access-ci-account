@@ -111,21 +111,16 @@ function LinkedAccountsRoute() {
                   label="Delete"
                   variant="destructive"
                   onSubmit={async () => {
-                    try {
-                      await deleteIdentity(identity.identityId);
-                      router.invalidate({
-                        filter: (match) => match.routeId === "/linked-accounts",
-                      });
-                      setNotification({
-                        variant: "success",
-                        message: "Linked account deleted successfully.",
-                      });
-                    } catch (error) {
-                      setNotification({
-                        variant: "error",
-                        message: "Unable to delete linked account.",
-                      });
-                    }
+                    // identityDeleteAtom shows its own error notification.
+                    const response = await deleteIdentity(identity.identityId);
+                    if ("error" in response) return;
+                    router.invalidate({
+                      filter: (match) => match.routeId === "/linked-accounts",
+                    });
+                    setNotification({
+                      variant: "success",
+                      message: "Linked account deleted successfully.",
+                    });
                   }}
                 />
               </div>
