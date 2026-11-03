@@ -346,6 +346,7 @@ export const sendOtpAtom = atom(
     }
     if (status.error)
       set(pushNotificationAtom, {
+        id: "send-otp-error",
         title: "Error Sending Verification Code",
         message: status.error,
         variant: "error",
@@ -871,10 +872,20 @@ export const hasIdpsAtom = atom<Promise<boolean>>(async (get) => {
 
 export const notificationsAtom = atom<AppNotification[]>([]);
 
+// Counts the pages the user has visited, so each notification can be tied to
+// the page it is shown on and cleared when the user moves to another page.
+// Kept in sync with the router by subscribeNotificationsToRouter.
+const notificationPageAtom = atom(0);
+const navigationPendingAtom = atom(false);
+
 // Helper: add a notification
 export const pushNotificationAtom = atom(
   null,
-  (get, set, n: Omit<AppNotification, "id"> & { id?: string }) => {
+  (
+    get,
+    set,
+    n: Omit<AppNotification, "id" | "page"> & { id?: string },
+  ) => {
     const id = n.id ?? crypto.randomUUID();
 
     // Filter out existing notifications with the same ID.
@@ -882,13 +893,48 @@ export const pushNotificationAtom = atom(
       (notification) => notification.id !== id,
     );
 
+    // A notification pushed while a navigation is loading (e.g. from a
+    // route's beforeLoad before it redirects) or just before the caller
+    // navigates away (`persist`) belongs to the next page, not this one.
+    const page =
+      get(notificationPageAtom) +
+      (n.persist || get(navigationPendingAtom) ? 1 : 0);
+
     const next: AppNotification = {
       id,
       variant: n.variant ?? "info",
       dismissible: n.dismissible ?? true,
       ...n,
+      page,
     };
     set(notificationsAtom, [...current, next]);
+  },
+);
+
+// Router hooks: a navigation started loading.
+export const navigationStartedAtom = atom(null, (_get, set) => {
+  set(navigationPendingAtom, true);
+});
+
+// Router hooks: a navigation (including any redirects) finished. When the
+// user ended up on a different page, clear the notifications that belonged to
+// the previous one.
+export const navigationResolvedAtom = atom(
+  null,
+  (get, set, pathChanged: boolean) => {
+    set(navigationPendingAtom, false);
+    const page = get(notificationPageAtom) + (pathChanged ? 1 : 0);
+    set(notificationPageAtom, page);
+    // Anything meant for a later page is shown on this one (e.g. a
+    // persisted notification whose navigation stayed on the same path).
+    const current = get(notificationsAtom);
+    if (current.every((n) => n.page === page)) return;
+    set(
+      notificationsAtom,
+      current
+        .filter((n) => (n.page ?? page) >= page)
+        .map((n) => (n.page === page ? n : { ...n, page })),
+    );
   },
 );
 
@@ -939,6 +985,8 @@ export const saveProfileAtom = atom(null, async (get, set) => {
     set(profileFormAtom, profileDefaultValues);
     set(pushNotificationAtom, {
       id: "profile-saved",
+      // The profile page navigates home after a successful save.
+      persist: true,
       title: "Profile Saved",
       message: "Changes to your profile have been saved.",
       variant: "success",
@@ -1026,6 +1074,8 @@ export const updatePasswordAtom = atom(
     if (notifySuccess)
       set(pushNotificationAtom, {
         id: "password-updated",
+        // The password page navigates home after a successful update.
+        persist: true,
         title: "Password Updated",
         message: "Your password has been updated successfully.",
         variant: "success",

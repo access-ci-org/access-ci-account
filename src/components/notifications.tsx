@@ -2,7 +2,14 @@
 
 import * as React from "react";
 import { useAtomValue, useSetAtom } from "jotai";
-import { notificationsAtom, dismissNotificationAtom } from "@/helpers/state";
+import type { AnyRouter } from "@tanstack/react-router";
+import {
+  notificationsAtom,
+  dismissNotificationAtom,
+  navigationResolvedAtom,
+  navigationStartedAtom,
+  store as appStore,
+} from "@/helpers/state";
 
 import { X } from "lucide-react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
@@ -24,6 +31,30 @@ function renderMessage(message: AppNotification["message"]) {
       {message.slice(index + HELP_TICKET_PHRASE.length)}
     </>
   );
+}
+
+// Clear notifications once the user moves to a different page, so a message
+// about an earlier action isn't mistaken for one about the current page.
+// onResolved fires once a navigation and any redirects it triggers settle.
+export function subscribeNotificationsToRouter(
+  router: AnyRouter,
+  store = appStore,
+) {
+  const unsubscribeStart = router.subscribe("onBeforeLoad", () =>
+    store.set(navigationStartedAtom),
+  );
+  const unsubscribeResolved = router.subscribe("onResolved", (event) => {
+    // A route whose beforeLoad outlasts pendingMs (e.g. /auth-token waiting
+    // on CILogon) first resolves on its pending spinner, then redirects as a
+    // separate navigation. The user hasn't reached a page yet, so wait.
+    if (router.state.matches.some((match) => match.status === "redirected"))
+      return;
+    store.set(navigationResolvedAtom, event.pathChanged);
+  });
+  return () => {
+    unsubscribeStart();
+    unsubscribeResolved();
+  };
 }
 
 export function NotificationsBar() {
@@ -49,8 +80,9 @@ export function NotificationsBar() {
           <Alert
             key={n.id}
             variant={n.variant}
-            role="status"
-            aria-live="polite"
+            // Errors interrupt screen readers so a new failure is announced.
+            role={n.variant === "error" ? "alert" : "status"}
+            aria-live={n.variant === "error" ? "assertive" : "polite"}
             className="pr-14"
           >
             {n.title ? <AlertTitle>{n.title}</AlertTitle> : null}

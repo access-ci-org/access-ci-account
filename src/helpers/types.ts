@@ -179,6 +179,12 @@ export type AppNotification = {
   variant?: NotificationType;
   dismissible?: boolean;
   autoCloseMs?: number; // time in milliseconds to auto close the notification
+  // Notifications belong to the page they are shown on and are cleared when
+  // the user navigates to a different page. Set `persist` when the caller
+  // navigates away right after pushing the notification, so it is shown on
+  // the destination page instead.
+  persist?: boolean;
+  page?: number; // set by pushNotificationAtom: the page it is shown on
 };
 
 export type OidcClientType = "link" | "login";

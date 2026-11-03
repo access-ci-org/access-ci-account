@@ -11,6 +11,7 @@ import "./styles.css";
 import reportWebVitals from "./reportWebVitals.ts";
 import { LoaderCircle } from "lucide-react";
 import { RouteErrorComponent } from "@/components/service-unavailable";
+import { subscribeNotificationsToRouter } from "@/components/notifications";
 
 import { store } from "@/helpers/state";
 import { Provider as JotaiProvider } from "jotai";
@@ -30,6 +31,8 @@ const router = createRouter({
   defaultStructuralSharing: true,
   defaultPreloadStaleTime: 0,
 });
+
+subscribeNotificationsToRouter(router);
 
 // Register the router instance for type safety
 declare module "@tanstack/react-router" {

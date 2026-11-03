@@ -53,6 +53,7 @@ export const Menus = () => {
               if (account && "error" in account) {
                 pushNotification({
                   id: "impersonate",
+                  persist: true,
                   title: "Error Impersonating",
                   message:
                     account.error.status === 404
@@ -64,6 +65,7 @@ export const Menus = () => {
               } else {
                 pushNotification({
                   id: "impersonate",
+                  persist: true,
                   title: "Now Impersonating",
                   message: `You are now impersonating ${targetUsername}.`,
                   variant: "warning",
@@ -83,6 +85,7 @@ export const Menus = () => {
               await stopImpersonating();
               pushNotification({
                 id: "impersonate",
+                persist: true,
                 title: "Stopped Impersonating",
                 message: `You have stopped impersonating and are now acting as ${adminUsername}.`,
                 variant: "success",

@@ -28,6 +28,7 @@ function AddSshKey() {
       const trimmed = value.sshKey.trim();
       if (!trimmed) {
         setNotification({
+          id: "add-ssh-key-error",
           variant: "error",
           message: "Please paste an SSH public key.",
         });
@@ -37,6 +38,8 @@ function AddSshKey() {
       const result = await addSshKey(trimmed);
       if ("success" in result && result.success) {
         setNotification({
+          id: "ssh-key-added",
+          persist: true,
           variant: "success",
           message: "SSH key added successfully.",
         });
@@ -45,7 +48,11 @@ function AddSshKey() {
         const errorMessage =
           "error" in result ? result.error.message : "Failed to add SSH key.";
 
-        setNotification({ variant: "error", message: errorMessage });
+        setNotification({
+          id: "add-ssh-key-error",
+          variant: "error",
+          message: errorMessage,
+        });
       }
     },
   });

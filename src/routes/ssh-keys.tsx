@@ -111,11 +111,13 @@ function SSHKeysRoute() {
                             filter: (match) => match.routeId === "/ssh-keys",
                           });
                           setNotification({
+                            id: "delete-ssh-key",
                             variant: "success",
                             message: "SSH key deleted successfully.",
                           });
                         } catch (error) {
                           setNotification({
+                            id: "delete-ssh-key",
                             variant: "error",
                             message: "Unable to delete SSH key.",
                           });

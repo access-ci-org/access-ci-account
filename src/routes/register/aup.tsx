@@ -54,6 +54,7 @@ function AcceptableUsePolicy() {
         navigate({ to: "/register/success" });
       } else {
         store.set(pushNotificationAtom, {
+          id: "create-account-error",
           title:
             status.error === maintenanceMessage
               ? maintenanceTitle

@@ -118,6 +118,7 @@ function LinkedAccountsRoute() {
                       filter: (match) => match.routeId === "/linked-accounts",
                     });
                     setNotification({
+                      id: "delete-identity",
                       variant: "success",
                       message: "Linked account deleted successfully.",
                     });

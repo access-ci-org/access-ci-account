@@ -88,6 +88,9 @@ function VerifyEmail() {
     validators: {
       onSubmit: formSchema,
     },
+    // Each outcome below navigates away, so its notification persists to the
+    // next page. They share an ID so a retry replaces the previous attempt's
+    // message instead of stacking another one.
     onSubmit: async ({ value }) => {
       setOtp(value.otp);
 
@@ -97,6 +100,8 @@ function VerifyEmail() {
 
       if (status.unavailable) {
         pushNotification({
+          id: "verify-result",
+          persist: true,
           title: maintenanceTitle,
           message: maintenanceMessage,
           variant: "error",
@@ -109,6 +114,8 @@ function VerifyEmail() {
 
       if (!status.verified) {
         pushNotification({
+          id: "verify-result",
+          persist: true,
           title: "Incorrect Code",
           message:
             "The verification code you entered did not match. Please try again.",
@@ -130,6 +137,8 @@ function VerifyEmail() {
         if (status.username && status.username !== currentUsername) {
           setEmail("");
           pushNotification({
+            id: "verify-result",
+            persist: true,
             title: "Existing Account",
             message: (
               <>
@@ -171,6 +180,8 @@ function VerifyEmail() {
         setEmail("");
 
         pushNotification({
+          id: "verify-result",
+          persist: true,
           title: "Existing Account",
           message: (
             <>
@@ -195,6 +206,8 @@ function VerifyEmail() {
 
       if (domain === null || !domain.isEligible) {
         pushNotification({
+          id: "verify-result",
+          persist: true,
           variant: "error",
           title: "Ineligible Email Domain",
           message,
@@ -206,6 +219,8 @@ function VerifyEmail() {
 
       if (domain.isEligible && !domain.organizations.length) {
         pushNotification({
+          id: "verify-result",
+          persist: true,
           variant: "error",
           title: "Unknown Email Domain",
           message,

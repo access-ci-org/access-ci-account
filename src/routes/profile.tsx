@@ -11,7 +11,6 @@ import { siteTitle } from "@/config";
 import FormProfile from "@/components/form-profile";
 import {
   accountAtom,
-  dismissNotificationAtom,
   domainAtom,
   emailAtom,
   isServiceUnavailable,
@@ -32,9 +31,6 @@ export const Route = createFileRoute("/profile")({
   component: Profile,
   gcTime: 0, // Prevent the route from showing stale data while the loader resolves.
   head: () => ({ meta: [{ title: `Profile | ${siteTitle}` }] }),
-  beforeLoad: () => {
-    store.set(dismissNotificationAtom, ["profile-saved", "profile-error"]);
-  },
   loader: async ({ location }) => {
     const account = await store.get(accountAtom);
     let domain: DomainResponse | null = null;
