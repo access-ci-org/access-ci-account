@@ -41,7 +41,7 @@ describe("ResourceUsernames", () => {
     expect(screen.queryByRole("table")).toBeNull();
   });
 
-  it("uses a two-column layout when each site has one username", () => {
+  it("shows the Resources column even when each site has one username", () => {
     render(
       <ResourceUsernames
         organizations={[
@@ -59,14 +59,18 @@ describe("ResourceUsernames", () => {
     const headers = screen
       .getAllByRole("columnheader")
       .map((h) => h.textContent);
-    expect(headers).toEqual(["Site", "Username"]);
+    expect(headers).toEqual(["Resource Provider", "Username", "Resources"]);
     // One row per site, even when a site has several resources.
     expect(screen.getAllByRole("row")).toHaveLength(3);
-    expect(screen.getByText("ada1")).toBeInTheDocument();
+
+    // A shared username lists every resource it applies to.
+    const ada1Row = screen.getByText("ada1").closest("tr")!;
+    expect(within(ada1Row).getByText("PSC Bridges-2 RM")).toBeInTheDocument();
+    expect(within(ada1Row).getByText("NCSA Delta GPU")).toBeInTheDocument();
     expect(screen.getByText("ada2")).toBeInTheDocument();
   });
 
-  it("adds a Resources column when a site has more than one username", () => {
+  it("adds a row per username when a site has more than one", () => {
     render(
       <ResourceUsernames
         organizations={[
@@ -88,7 +92,7 @@ describe("ResourceUsernames", () => {
     const headers = screen
       .getAllByRole("columnheader")
       .map((h) => h.textContent);
-    expect(headers).toEqual(["Site", "Username", "Resources"]);
+    expect(headers).toEqual(["Resource Provider", "Username", "Resources"]);
 
     // The site cell spans both of that site's username rows.
     const site = screen.getByText(

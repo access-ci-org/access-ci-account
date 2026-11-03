@@ -1,5 +1,9 @@
 import type { ResourceUsernameOrganization } from "@/helpers/types";
 
+const cellClasses = "border border-[#cccccc] p-2 align-top";
+const headerClasses =
+  "border border-[#cccccc] p-2 text-left align-bottom font-bold";
+
 type ResourceUsernamesProps = {
   organizations: ResourceUsernameOrganization[];
 };
@@ -21,10 +25,6 @@ export default function ResourceUsernames({
     })
     .filter((site) => site.usernames.length > 0);
 
-  // If a user has different usernames on resources at one site, show an
-  // extra column listing the resources. Otherwise use a two-column layout.
-  const showResources = sites.some((site) => site.usernames.length > 1);
-
   if (sites.length === 0) {
     return (
       <p className="text-sm text-muted-foreground mt-4">
@@ -35,32 +35,30 @@ export default function ResourceUsernames({
   }
 
   return (
-    <div className="rounded-sm border overflow-x-auto mt-4">
-      <table className="w-full text-sm">
-        <thead className="bg-muted text-left">
+    <div className="border border-[#cccccc] bg-white overflow-x-auto mt-4">
+      <table className="w-full border-collapse border-hidden">
+        <thead>
           <tr>
-            <th className="p-2 font-semibold">Site</th>
-            <th className="p-2 font-semibold">Username</th>
-            {showResources && <th className="p-2 font-semibold">Resources</th>}
+            <th className={headerClasses}>Resource Provider</th>
+            <th className={headerClasses}>Username</th>
+            <th className={headerClasses}>Resources</th>
           </tr>
         </thead>
         <tbody>
           {sites.map((site) =>
             site.usernames.map(([username, resources], index) => (
-              <tr key={`${site.name}-${username}`} className="border-t">
+              <tr key={`${site.name}-${username}`}>
                 {index === 0 && (
-                  <td className="p-2 align-top" rowSpan={site.usernames.length}>
+                  <td className={cellClasses} rowSpan={site.usernames.length}>
                     {site.name}
                   </td>
                 )}
-                <td className="p-2 align-top">{username}</td>
-                {showResources && (
-                  <td className="p-2 align-top">
-                    {resources.map((resource, i) => (
-                      <div key={`${resource}-${i}`}>{resource}</div>
-                    ))}
-                  </td>
-                )}
+                <td className={cellClasses}>{username}</td>
+                <td className={cellClasses}>
+                  {resources.map((resource, i) => (
+                    <div key={`${resource}-${i}`}>{resource}</div>
+                  ))}
+                </td>
               </tr>
             )),
           )}
