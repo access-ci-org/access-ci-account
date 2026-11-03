@@ -60,7 +60,7 @@ const FormAcceptAup = withForm({
               <form.SubmitButton label="Continue" />
               <p role="status" className="text-sm">
                 {isSubmitting &&
-                  "Creating your account. This can take up to 30 seconds. Please don't close or refresh this page."}
+                  "Creating your account. This can take up to a minute. Please don't close or refresh this page."}
               </p>
             </CardFooter>
           </Card>
