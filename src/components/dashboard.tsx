@@ -102,7 +102,7 @@ export default function Dashboard() {
         <div className="w-full h-full">
           <DashboardCard
             icon={KeyRound}
-            title="SSH Keys"
+            title="SSH Keys and Resource Usernames"
             description="Log into your resources securely."
             to="/ssh-keys"
           />

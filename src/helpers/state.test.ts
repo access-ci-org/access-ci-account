@@ -212,6 +212,53 @@ describe("fetchApiJson — 401 refresh & retry (via accountAtom)", () => {
     expect(accountCalls).toHaveLength(2);
   });
 
+  it("shares one refresh between concurrent 401s", async () => {
+    const { store, sshKeysAtom, resourceUsernamesAtom, usernameAtom, loginTokensAtom } =
+      state;
+    store.set(usernameAtom, "ada");
+    store.set(loginTokensAtom, { accessToken: "old", refreshToken: "r" });
+
+    const fetchFn = stubFetch((url: string, init: any) => {
+      if (url.includes("/auth/info"))
+        return fakeResponse({
+          status: 200,
+          json: {
+            authorizationUrl: "https://cilogon.org/authorize",
+            clientIds: { login: "L", link: "K" },
+          },
+        });
+      if (url.includes("/oauth2/token"))
+        return fakeResponse({
+          status: 200,
+          json: { accessToken: "new", refreshToken: "r2" },
+        });
+      // Only the refreshed access token is accepted.
+      if (new Headers(init?.headers).get("Authorization") !== "Bearer new")
+        return fakeResponse({ status: 401, json: { detail: "expired" } });
+      if (url.endsWith("/ssh-key"))
+        return fakeResponse({ status: 200, json: { sshKeys: [] } });
+      if (url.endsWith("/resource-usernames"))
+        return fakeResponse({ status: 200, json: { organizations: [] } });
+      throw new Error("unexpected url " + url);
+    });
+
+    const [sshKeys, resourceUsernames] = await Promise.all([
+      store.get(sshKeysAtom),
+      store.get(resourceUsernamesAtom),
+    ]);
+
+    expect(sshKeys).toEqual([]);
+    expect(resourceUsernames).toEqual([]);
+    const tokenCalls = fetchFn.mock.calls.filter((c) =>
+      String(c[0]).includes("/oauth2/token"),
+    );
+    expect(tokenCalls).toHaveLength(1);
+    expect(store.get(loginTokensAtom)).toEqual({
+      accessToken: "new",
+      refreshToken: "r2",
+    });
+  });
+
   it("returns the original 401 error when the refresh fails", async () => {
     const { store, accountAtom, usernameAtom, loginTokensAtom } = state;
     store.set(usernameAtom, "ada");

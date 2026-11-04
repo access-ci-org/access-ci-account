@@ -105,6 +105,13 @@ function startStubApi() {
 
     if (
       req.method === "GET" &&
+      path === `/api/v1/account/${SMOKE_USERNAME}/resource-usernames`
+    ) {
+      return send({ organizations: [] });
+    }
+
+    if (
+      req.method === "GET" &&
       path === `/api/v1/account/${SMOKE_USERNAME}/identity`
     ) {
       return send({ identities: [] });

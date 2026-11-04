@@ -26,6 +26,24 @@ export type SshKeyResponse = {
   sshKeys: { keyId: number; hash: string; created: string }[];
 };
 
+export type ResourceLogin = {
+  resourceName: string;
+  displayName: string | null;
+  rdrResourceId: number | null;
+  ciderResourceId: string;
+  username: string;
+};
+
+export type ResourceUsernameOrganization = {
+  organizationId: number;
+  organizationName: string;
+  logins: ResourceLogin[];
+};
+
+export type ResourceUsernamesResponse = {
+  organizations: ResourceUsernameOrganization[];
+};
+
 // Backend responses from type fields
 export type CountriesResponse = {
   countries: { countryId: number; name: string }[];
