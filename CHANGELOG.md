@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.19.0](https://github.com/access-ci-org/access-ci-account/compare/v0.18.4...v0.19.0) (2026-11-05)
+
+
+### Features
+
+* add resource provider usernames to SSH keys page ([0bcd6ca](https://github.com/access-ci-org/access-ci-account/commit/0bcd6ca9e8f29ca1d134a64aad929951bc7df7fe))
+* **linked-accounts:** show maintenance message if CoManage is ([4d57bf7](https://github.com/access-ci-org/access-ci-account/commit/4d57bf7f026c693a7fae00dafc4200903eb027cb))
+* **notifications:** clear notifications on navigation ([7fd20c7](https://github.com/access-ci-org/access-ci-account/commit/7fd20c7ce928981bec54ba64fdc72eb23a5edb5a))
+* **registration:** show a warning that account creation can take time ([7a5fb9f](https://github.com/access-ci-org/access-ci-account/commit/7a5fb9f3c352aef2a394d23cd69150a8b83de0c6))
+* **registration:** update account create wait message ([deffc41](https://github.com/access-ci-org/access-ci-account/commit/deffc41274523f6c4e21fcc175daf25b4cb3d925))
+* show an error for identities that are already linked to another ([c44ea44](https://github.com/access-ci-org/access-ci-account/commit/c44ea44aa591d14d86a805891f11198446f4b42f))
+
 ## [0.18.4](https://github.com/access-ci-org/access-ci-account/compare/v0.18.3...v0.18.4) (2026-10-28)
 
 
