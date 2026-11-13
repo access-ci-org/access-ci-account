@@ -275,6 +275,9 @@ export const oidcTokensAtom = atom(
     client: OidcClientType = "login",
     code: string | null = null,
     refreshToken: string | null = null,
+    // The OAuth error CILogon redirected back with instead of a code. The
+    // backend logs it and answers with an error message to show.
+    callbackError: { error: string; errorDescription?: string } | null = null,
   ) => {
     const oidcInfo = await get(oidcInfoAtom);
     if ("error" in oidcInfo) return oidcInfo;
@@ -285,6 +288,7 @@ export const oidcTokensAtom = atom(
       grantType: refreshToken ? "refresh_token" : "authorization_code",
       redirectUri: getRedirectUri(client),
       refreshToken,
+      ...callbackError,
     };
 
     return await fetchApiJson<OidcTokensResponse>("/auth/oauth2/token", {

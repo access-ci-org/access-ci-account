@@ -78,9 +78,14 @@ export const sshKeyFormSchema = z.object({
   sshKey: z.string().min(1, { message: "SSH Key is required." }),
 });
 
+// CILogon redirects back with either a code or an OAuth `error`, so never
+// throw: TanStack Router still runs beforeLoad when validateSearch fails, with
+// the raw search params.
 export const authTokenSchema = z.object({
-  code: z.string(),
-  state: z.string(),
+  code: z.string().optional().catch(undefined),
+  error: z.string().optional().catch(undefined),
+  error_description: z.string().optional().catch(undefined),
+  state: z.string().catch(""),
 });
 
 export const registerSearchSchema = z.object({

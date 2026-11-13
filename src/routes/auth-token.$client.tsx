@@ -27,7 +27,7 @@ export const Route = createFileRoute("/auth-token/$client")({
   validateSearch: (search) => authTokenSchema.parse(search),
   beforeLoad: async ({ params, search }) => {
     const { client } = params;
-    const { code, state } = search;
+    const { code, error, error_description, state } = search;
 
     const authError = (message: string) => {
       store.set(pushNotificationAtom, {
@@ -45,10 +45,14 @@ export const Route = createFileRoute("/auth-token/$client")({
     if (!state.length || !oidcState.length || state !== oidcState)
       return authError("Authentication failed due to invalid state.");
 
+    // Without a code, the backend logs CILogon's error (or the missing code)
+    // and answers with a message to show, without asking CILogon for tokens.
     const tokens = await store.set(
       oidcTokensAtom,
       client as OidcClientType,
-      code,
+      code ?? null,
+      null,
+      error ? { error, errorDescription: error_description } : null,
     );
     if ("error" in tokens) return authError(tokens.error.message);
 

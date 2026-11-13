@@ -138,10 +138,31 @@ describe("sshKeyFormSchema", () => {
 });
 
 describe("authTokenSchema", () => {
-  it("requires both code and state", () => {
-    expect(authTokenSchema.safeParse({ code: "c", state: "s" }).success).toBe(
-      true,
-    );
-    expect(authTokenSchema.safeParse({ code: "c" }).success).toBe(false);
+  it("accepts a code and state", () => {
+    expect(authTokenSchema.parse({ code: "c", state: "s" })).toEqual({
+      code: "c",
+      state: "s",
+    });
+  });
+
+  it("accepts an OAuth error in place of a code", () => {
+    expect(
+      authTokenSchema.parse({
+        error: "access_denied",
+        error_description: "The user cancelled.",
+        state: "s",
+      }),
+    ).toEqual({
+      error: "access_denied",
+      error_description: "The user cancelled.",
+      state: "s",
+    });
+  });
+
+  it("never throws on missing or malformed params", () => {
+    expect(authTokenSchema.parse({})).toEqual({ state: "" });
+    expect(authTokenSchema.parse({ code: 123, state: null })).toEqual({
+      state: "",
+    });
   });
 });
