@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.20.0](https://github.com/access-ci-org/access-ci-account/compare/v0.19.0...v0.20.0) (2026-11-13)
+
+
+### Features
+
+* **auth:** display and pass through OIDC errors ([cdc2c0c](https://github.com/access-ci-org/access-ci-account/commit/cdc2c0cd35867df683a2fb9ca9ed8607df70864a))
+
 ## [0.19.0](https://github.com/access-ci-org/access-ci-account/compare/v0.18.4...v0.19.0) (2026-11-05)
 
 
