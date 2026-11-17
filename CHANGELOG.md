@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.21.0](https://github.com/access-ci-org/access-ci-account/compare/v0.20.0...v0.21.0) (2026-11-17)
+
+
+### Features
+
+* **auth:** show a more helpful message when an IdP has missing ([b48d5bc](https://github.com/access-ci-org/access-ci-account/commit/b48d5bc111d211052a870d21f6144993e5b003c0))
+
 ## [0.20.0](https://github.com/access-ci-org/access-ci-account/compare/v0.19.0...v0.20.0) (2026-11-13)
 
 
