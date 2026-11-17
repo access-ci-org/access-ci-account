@@ -21,6 +21,17 @@ import { hasSsoCookie, setSsoCookie } from "@/helpers/cookie";
 import { authTokenSchema } from "@/helpers/validation";
 import type { OidcClientType } from "@/helpers/types";
 
+// CILogon's own wording for some errors means little to users, so these get a
+// clearer message. The backend still logs CILogon's original error.
+const callbackErrorMessage = (error?: string, description?: string) => {
+  if (error === "access_denied" && description === "Missing attributes")
+    return (
+      "Your identity provider didn't share the information ACCESS needs to " +
+      "log you in. Please try a different identity provider, or contact " +
+      "your institution's help desk."
+    );
+};
+
 export const Route = createFileRoute("/auth-token/$client")({
   component: AuthToken,
   head: () => ({ meta: [{ title: `Complete Login | ${siteTitle}` }] }),
@@ -54,7 +65,10 @@ export const Route = createFileRoute("/auth-token/$client")({
       null,
       error ? { error, errorDescription: error_description } : null,
     );
-    if ("error" in tokens) return authError(tokens.error.message);
+    if ("error" in tokens)
+      return authError(
+        callbackErrorMessage(error, error_description) ?? tokens.error.message,
+      );
 
     const { accessToken, idToken, isAdmin, refreshToken } = tokens;
     const userInfo = parseJwt(idToken);

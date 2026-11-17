@@ -82,6 +82,32 @@ describe("/auth-token/$client when CILogon redirects back with an error", () => 
     );
   });
 
+  it("explains missing attributes but still reports them", async () => {
+    const { router, state, tokenBody } = await renderCallback(
+      "error=access_denied&error_description=Missing%20attributes&state=the-state",
+      fakeResponse({
+        status: 400,
+        json: { detail: "Authentication failed: Missing attributes" },
+      }),
+    );
+
+    expect(await tokenBody()).toMatchObject({
+      error: "access_denied",
+      errorDescription: "Missing attributes",
+    });
+    await waitFor(() => expect(router.state.location.pathname).toBe("/"));
+    expect(state.store.get(state.notificationsAtom)).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: "auth-error",
+          message: expect.stringMatching(
+            /^Your identity provider didn't share the information ACCESS needs/,
+          ),
+        }),
+      ]),
+    );
+  });
+
   it("still checks the state before calling the backend", async () => {
     const { router, state } = await renderCallback(
       "error=access_denied&state=wrong-state",
