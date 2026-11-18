@@ -129,7 +129,7 @@ export default function Dashboard() {
           <DashboardCard
             icon={FileText}
             title="Publications"
-            description="Add your paper, dataset, software, dissertation, or other publihsed work."
+            description="Add your paper, dataset, software, dissertation, or other published work."
             to="https://allocations.access-ci.org/publications"
           />
         </div>
