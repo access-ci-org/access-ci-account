@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.21.1](https://github.com/access-ci-org/access-ci-account/compare/v0.21.0...v0.21.1) (2026-11-18)
+
+
+### Bug Fixes
+
+* correcting spelling mistake ([3f86895](https://github.com/access-ci-org/access-ci-account/commit/3f86895525928501af8f5adc7ba2eaca27839bad))
+
 ## [0.21.0](https://github.com/access-ci-org/access-ci-account/compare/v0.20.0...v0.21.0) (2026-11-17)
 
 
